@@ -336,38 +336,7 @@ html, body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
-/* Make YouTube iframe fill the whole background */
-#youtubeContainer, 
-#youtubeContainer iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
 
-/* Put the video behind everything else */
-#youtubeSlide {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0; /* behind overlays */
-  background: black;
-}
-
-/* Ensure overlays (text, weather, etc.) stay on top */
-.stage .slide:not(#youtubeSlide),
-#infoBox,
-#timeText,
-#dateText,
-#vikarskemaSlide,
-#gardvagtSlide,
-#morgensamlingSlide {
-  position: relative;
-  z-index: 2; /* above video */
-}
 
 
 
@@ -767,6 +736,7 @@ setInterval(async()=>{
 
 </body>
 </html>
+
 
 
 
