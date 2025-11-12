@@ -578,15 +578,15 @@ async function updateVikarskema() {
     const data = await res.json();
     const content = document.getElementById("vikarskemaContent");
 
+    // Use the correct path your original sheet returned
+    const rows = data.rows || data.sheets?.[0]?.rows || [];
+    const headers = data.headers || (rows[0] || []).map((_,i)=>`Col ${i+1}`);
+
     let html = `<table>
-      <thead><tr>${data.headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
-    data.rows.forEach(r => {
+      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
+    rows.forEach(r => {
       html += "<tr>";
-      r.forEach(cell => {
-        if (cell && typeof cell === "string" && cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
-          html += `<td><img src="${cell}" style="max-width:120px; max-height:80px; border-radius:8px;"></td>`;
-        } else html += `<td>${cell}</td>`;
-      });
+      r.forEach(cell => html += `<td>${cell}</td>`);
       html += "</tr>";
     });
     html += "</tbody></table>";
@@ -598,8 +598,6 @@ async function updateVikarskema() {
     document.getElementById("vikarskemaContent").innerHTML = "Fejl ved indlæsning af vikarskema.";
   }
 }
-updateVikarskema();
-setInterval(updateVikarskema, 60000);
 
 function highlightCurrentVikarskemaRow() {
   const now = new Date();
@@ -773,6 +771,7 @@ runCustomCycle();
 
 </body>
 </html>
+
 
 
 
