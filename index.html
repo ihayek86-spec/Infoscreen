@@ -445,19 +445,32 @@ const slides=Array.from(document.querySelectorAll('.stage .slide'));
 let current=0; const slideDuration=7000;
 let slideInterval=setInterval(nextSlide,slideDuration);
 
+function pauseAllVideos() {
+  document.querySelectorAll('iframe').forEach(frame => {
+    frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+  });
+}
+
 function showSlide(idx){
   slides.forEach((s,i)=>{
     s.classList.toggle('active', i===idx);
   });
+  pauseAllVideos(); // pause any video when switching slides
 }
 
+
 function nextSlide(){
-  current=(current+1)%slides.length;
+  current = (current + 1) % slides.length;
   showSlide(current);
   clearInterval(slideInterval);
-  const duration = slides[current].id === "vikarSlide" ? 30000 : slideDuration;
-  slideInterval=setInterval(nextSlide,duration);
+
+  let duration = slideDuration; // default 7s
+  if (slides[current].id === "vikarSlide") duration = 30000; // 30s
+  if (slides[current].id === "videoSlide") duration = 20000; // 🎬 20s for video
+
+  slideInterval = setInterval(nextSlide, duration);
 }
+
 
 
 
@@ -868,5 +881,6 @@ setInterval(async () => {
 </script>
 </body>
 </html>
+
 
 
