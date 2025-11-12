@@ -1,47 +1,38 @@
 <!doctype html>
 <html lang="da">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Infoskærm Al-Irchad</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Infoskærm – Al-Irchad</title>
 
-<!-- Modern Arabic/Latin font -->
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-  --bg1: #e8f0ff;
-  --bg2: #f9fbff;
-  --fg: #1e293b;
-  --overlay: rgba(255, 255, 255, 0.85);
-  --accent: #007bff;
-  --accent2: #0056b3;
+  --accent: #2563eb;        /* main blue */
+  --accent-light: #e0ecff;  /* background tone */
+  --text: #1e293b;          /* primary text */
+  --white: #ffffff;
+  --glass: rgba(255,255,255,0.85);
   --shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
 
-/* Animated gradient background */
+/* soft gradient background */
 body {
   margin: 0;
   font-family: 'Tajawal', system-ui, sans-serif;
-  color: var(--fg);
-  background: linear-gradient(120deg, var(--bg1), var(--bg2));
-  background-size: 400% 400%;
-  animation: bgShift 20s ease infinite;
+  color: var(--text);
+  background: linear-gradient(120deg, #f8fbff, #eaf2ff);
   height: 100vh;
   overflow: hidden;
 }
-@keyframes bgShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
 
+/* Smooth fade/zoom for slides */
 .stage {
   position: relative;
   width: 100%;
   height: 100%;
 }
-
 .slide {
   position: absolute;
   inset: 0;
@@ -50,26 +41,25 @@ body {
   align-items: center;
   padding: 4%;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity .7s ease, transform .7s ease;
+  transform: scale(0.98);
+  transition: opacity 0.8s ease, transform 1s ease;
 }
 .slide.active {
   opacity: 1;
-  pointer-events: auto;
+  transform: scale(1);
 }
 .text {
-  font-weight: 700;
-  font-size: clamp(28px, 4.5vw, 64px);
-  text-align: center;
-  max-width: 1400px;
-  background: rgba(255,255,255,0.3);
-  padding: 24px 32px;
-  border-radius: 20px;
+  background: var(--glass);
   backdrop-filter: blur(8px);
+  padding: 28px 40px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: clamp(32px, 4vw, 64px);
   box-shadow: var(--shadow);
+  text-align: center;
 }
 
-/* Background image for image slides */
+/* image slides */
 #bgImg {
   position: absolute;
   inset: 0;
@@ -77,116 +67,121 @@ body {
   max-width: 92%;
   max-height: 92%;
   object-fit: contain;
-  border-radius: 16px;
-  transition: opacity .8s ease, transform .8s ease;
+  border-radius: 18px;
   opacity: 0;
+  transition: opacity 1s ease, transform 1s ease;
   box-shadow: var(--shadow);
 }
 #bgImg.show {
   opacity: 1;
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
-/* General glass-card style for UI boxes */
+/* UI boxes */
 .glass {
-  background: var(--overlay);
+  background: var(--glass);
   border-radius: 16px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(6px);
 }
 
-/* Date & time box */
-.datetime {
-  position: absolute;
-  top: 16px;
-  right: 20px;
-  text-align: right;
-  padding: 12px 16px;
-  font-weight: 600;
-}
-#dateText { font-size: 18px; }
-#timeText { font-size: 28px; font-weight: 700; }
-
-/* Logo box */
+/* Logo */
 .logo {
   position: absolute;
-  top: 14px;
-  left: 16px;
-  padding: 10px;
+  top: 18px;
+  left: 20px;
+  padding: 10px 12px;
 }
 .logo img {
-  height: 60px;
+  height: 64px;
   display: block;
 }
 
-/* Schedule box (gårdvagt) */
+/* Clock and date */
+.datetime {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  text-align: right;
+  padding: 10px 18px;
+  font-weight: 600;
+}
+#dateText { font-size: 18px; opacity: 0.8; }
+#timeText { font-size: 32px; font-weight: 700; color: var(--accent); }
+
+/* Info box and schedule */
 .schedule {
   position: absolute;
-  right: 20px;
-  bottom: 18px;
-  font-size: 15px;
-  padding: 10px 14px;
-  max-width: 40%;
+  right: 24px;
+  bottom: 22px;
+  padding: 10px 16px;
+  max-width: 35%;
+  font-size: 16px;
 }
-
-/* Info box */
 .infoBox {
-  position: fixed;
-  left: 20px;
-  bottom: 20px;
+  position: absolute;
+  left: 24px;
+  bottom: 22px;
   padding: 14px 18px;
-  font-weight: 600;
   font-size: 18px;
+  font-weight: 600;
   max-width: 45%;
 }
 
-/* Vikarskema section */
+/* Vikarskema */
 #vikarTitle {
   position: fixed;
-  top: 24px;
+  top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 48px;
+  font-size: 54px;
   font-weight: 800;
-  color: #fff;
-  text-shadow: 0 0 14px rgba(0,0,0,0.5);
-  z-index: 999;
+  color: var(--accent);
+  text-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 .vikarskema {
   position: fixed;
-  top: 50%;
+  top: 52%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 85%;
   max-width: 1400px;
-  max-height: 80vh;
+  max-height: 78vh;
   overflow: auto;
-  padding: 24px;
-  font-size: 20px;
-  border-radius: 18px;
+  padding: 28px;
+  border-radius: 20px;
+  background: var(--glass);
+  backdrop-filter: blur(6px);
+  box-shadow: var(--shadow);
 }
 .vikarskema table {
   width: 100%;
   border-collapse: collapse;
   font-size: 22px;
-}
-.vikarskema th, .vikarskema td {
-  padding: 12px;
-  border: 1px solid rgba(0,0,0,0.1);
-  text-align: center;
+  border-radius: 12px;
+  overflow: hidden;
 }
 .vikarskema th {
   background: var(--accent);
-  color: #fff;
+  color: var(--white);
   font-weight: 700;
-  font-size: 26px;
+  font-size: 24px;
+  padding: 12px;
+}
+.vikarskema td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  text-align: center;
 }
 .vikarskema tr:nth-child(even) td {
-  background: rgba(0,0,0,0.04);
+  background: var(--accent-light);
+}
+.vikarskema tr:hover td {
+  background: rgba(37,99,235,0.12);
 }
 .vikarskema tr.current {
-  background: rgba(0,123,255,0.15);
-  box-shadow: 0 0 10px rgba(0,123,255,0.4) inset;
+  background: rgba(37,99,235,0.15);
+  box-shadow: inset 0 0 12px rgba(37,99,235,0.3);
 }
 
 /* Banners */
@@ -195,15 +190,15 @@ body {
   top: 20px;
   left: 50%;
   transform: translateX(-50%);
-  padding: 16px 32px;
-  border-radius: 18px;
+  padding: 18px 40px;
+  border-radius: 20px;
   font-weight: 800;
   color: #fff;
   display: none;
   z-index: 9999;
   font-size: 36px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.3);
-  animation: fadeSlide 0.4s ease forwards;
+  animation: fadeSlide 0.5s ease forwards;
 }
 @keyframes fadeSlide {
   from { opacity: 0; transform: translate(-50%, -20px); }
@@ -211,47 +206,49 @@ body {
 }
 .banner.active { display: block; }
 .banner.red {
-  background: linear-gradient(135deg, #ff4d4d, #d93025);
+  background: linear-gradient(135deg, #f43f5e, #be123c);
 }
 
-/* Small adjustments for mobile screens */
+/* Mobile adjustments */
 @media (max-width:900px) {
-  .vikarskema { width: 94%; padding: 12px; font-size: 18px; }
-  #vikarTitle { font-size: 36px; }
+  .vikarskema { width: 94%; font-size: 18px; padding: 16px; }
+  #vikarTitle { font-size: 38px; }
   .infoBox { font-size: 16px; max-width: 90%; }
-  .schedule { font-size: 13px; right: 10px; bottom: 80px; }
+  .schedule { font-size: 14px; }
 }
 </style>
 </head>
 
 <body>
-  <!-- Stage (slides container) -->
   <div class="stage" id="stage">
     <div class="slide active" id="welcomeSlide">
       <div class="text">👋 Velkommen til Al-Irchad Skolen</div>
     </div>
     <div class="slide" id="vikarSlide">
       <div id="vikarTitle">Vikarskema</div>
-      <div class="vikarskema glass" id="vikarskemaContent">Indlæser vikarskema…</div>
+      <div class="vikarskema" id="vikarskemaContent">Indlæser vikarskema…</div>
     </div>
     <img id="bgImg" alt="slide image">
   </div>
 
-  <!-- Fixed UI elements -->
-  <div class="logo glass"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
-  <div class="datetime glass"><div id="dateText">–</div><div id="timeText">–</div></div>
+  <div class="logo glass">
+    <img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo">
+  </div>
+
+  <div class="datetime glass">
+    <div id="dateText">–</div>
+    <div id="timeText">–</div>
+  </div>
+
   <div class="schedule glass" id="schedule">–</div>
   <div class="infoBox glass" id="infoBox">Indlæser…</div>
 
-  <!-- Alerts -->
   <div class="banner red" id="morgensamling">⏰ Det er tid til morgensamling!</div>
   <div class="banner red" id="gardvagt">🔔 Gårdvagt!</div>
 
-  <!-- Audio -->
   <audio id="morgensamlingSound" preload="auto" src="sounds/morgensamling.mp3"></audio>
   <audio id="gardvagtSound" preload="auto" src="sounds/gardvagt.mp3"></audio>
 
-  <!-- Existing JS (unchanged) -->
 
 <script>
 /* ===========================
@@ -708,4 +705,5 @@ document.addEventListener("visibilitychange", () => {
 </script>
 </body>
 </html>
+
 
