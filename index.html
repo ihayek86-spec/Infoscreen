@@ -453,9 +453,16 @@ let slideInterval=setInterval(nextSlide,slideDuration);
 
 function showSlide(idx){
   slides.forEach((s,i)=>{
-    s.classList.toggle('active', i===idx);
+    if(i === idx){
+      s.classList.add('active');
+      s.style.display = 'flex';  // show
+    } else {
+      s.classList.remove('active');
+      s.style.display = 'none';  // hide
+    }
   });
 }
+
 
 function nextSlide(){
   current=(current+1)%slides.length;
@@ -879,5 +886,6 @@ setInterval(async () => {
 </script>
 </body>
 </html>
+
 
 
