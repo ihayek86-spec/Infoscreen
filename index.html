@@ -7,6 +7,15 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap');
 
+:root {<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infoskærm Al-irchad Skolen</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap');
+
 :root {
   --bg: linear-gradient(135deg, #e8f0ff, #f9fbff);
   --fg: #1e293b;
@@ -348,17 +357,888 @@ html, body {
 <div class="slide" id="customSlide">
   <div id="customContent"></div>
 </div>
-    <!-- YouTube Video Slide -->
-<div class="slide" id="videoSlide">
-  <iframe 
-    id="videoFrame"
-    src="https://www.youtube.com/embed/51Nq8LWFtUk?autoplay=1&mute=1&controls=0&loop=1&playlist=51Nq8LWFtUk&modestbranding=1&showinfo=0"
-    frameborder="0"
-    allow="autoplay; fullscreen"
-    allowfullscreen
-    style="width:100%;height:100%;border:none;border-radius:12px;">
-  </iframe>
+
+  <!-- Vikarskema Slide -->
+  <div class="slide" id="vikarSlide">
+    <div class="vikarskema">
+     <div id="vikarskemaHeader" style="
+  display:flex;
+  justify-content:Left;
+  align-items:center;
+  gap:20px; /* زيادة التباعد بين العناصر */
+  font-size:clamp(24px,1vw,30px); /* تخفيف حجم الخط قليلاً */
+  font-weight:700;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+">
+  <span id="vikarskemaTitle">Vikarskema</span>
+  <span>📅 <span id="vikarskemaDate">–</span></span>
+  <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
 </div>
+
+      <div id="vikarskemaContent">Indlæser vikarskema...</div>
+    </div>
+  </div>
+</div>
+
+
+<div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="Al‑Irchad Skolen Logo"></div>
+
+<div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
+<div class="schedule" id="schedule"></div>
+
+<div id="morgensamlingSlide">
+  <div id="morgensamlingText">⏰ Det er tid til morgensamling!</div>
+</div>
+
+<div id="gardvagtSlide">
+  <div id="gardvagtText">🔔 Gårdvagt!</div>
+</div>
+<div id="infoBox"></div>
+
+
+<audio id="morgensamlingSound" src="file:///storage/807F-8B2A/Infoscreen/sounds/morgensamling.mp3" muted></audio>
+<audio id="gardvagtSound" src="file:///storage/807F-8B2A/Infoscreen/sounds/gardvagt.mp3" muted></audio>
+<audio id="huskGardvagtSound" src="file:///storage/807F-8B2A/Infoscreen/sounds/husk_gardvagt.mp3" muted></audio>
+
+
+
+<script>
+// ===== Date & Time =====
+const dateEl=document.getElementById('dateText');
+const timeEl=document.getElementById('timeText');
+const dateOptions={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+const timeOptions={hour:'2-digit',minute:'2-digit',second:'2-digit'};
+function updateDateTime(){
+  const now=new Date();
+  dateEl.textContent=now.toLocaleDateString('da-DK',dateOptions);
+  timeEl.textContent=now.toLocaleTimeString('da-DK',timeOptions);
+}
+setInterval(updateDateTime,1000);updateDateTime();
+
+// ===== Vikarskema Clock & Date =====
+const vikarDateEl = document.getElementById("vikarskemaDate");
+const vikarClock = document.getElementById("vikarskemaClock");
+
+function updateVikarskemaClock(){
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,"0");
+  const m = String(now.getMinutes()).padStart(2,"0");
+  const s = String(now.getSeconds()).padStart(2,"0");
+  vikarClock.textContent = `${h}:${m}:${s}`;
+}
+
+function updateVikarskemaDateTime(){
+  const now = new Date();
+  const options = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  vikarDateEl.textContent = now.toLocaleDateString('da-DK', options);
+  updateVikarskemaClock();
+}
+setInterval(updateVikarskemaDateTime, 1000);
+updateVikarskemaDateTime();
+
+
+// ===== Slideshow =====
+const slides=Array.from(document.querySelectorAll('.stage .slide'));
+let current=0; const slideDuration=7000;
+let slideInterval=setInterval(nextSlide,slideDuration);
+
+function showSlide(idx){
+  slides.forEach((s,i)=>{
+    s.classList.toggle('active', i===idx);
+  });
+}
+
+function nextSlide(){
+  current=(current+1)%slides.length;
+  showSlide(current);
+  clearInterval(slideInterval);
+  const duration = slides[current].id === "vikarSlide" ? 30000 : slideDuration;
+  slideInterval=setInterval(nextSlide,duration);
+}
+
+
+
+// ===== Enable Sounds =====
+window.addEventListener("load",()=>{
+  const m=document.getElementById("morgensamlingSound");
+  const g=document.getElementById("gardvagtSound");
+  const h=document.getElementById("huskGardvagtSound");
+  m.play().catch(()=>{}); g.play().catch(()=>{}); h.play().catch(()=>{});
+  setTimeout(()=>{ m.muted=false; g.muted=false; h.muted=false; },1000);
+});
+
+// ===== Morgensamling =====
+let morgensamlingPlayedCount = 0;
+function checkMorgensamling() {
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const start = 8 * 60 + 20; // 08:20
+  const end = start + 5;     // 5 minutes later → 08:25
+
+  const slide = document.getElementById('morgensamlingSlide');
+  const sound = document.getElementById("morgensamlingSound");
+
+  if (currentMinutes >= start && currentMinutes < end) {
+    // Show slide
+    slide.style.display = "flex";
+    slide.classList.add('active');
+
+    // Play sound once per minute (max 5 times)
+    if (morgensamlingPlayedCount < 5) {
+      const currentMinute = now.getMinutes().toString();
+      if (sound.dataset.lastPlayed !== currentMinute) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+        sound.dataset.lastPlayed = currentMinute;
+        morgensamlingPlayedCount++;
+      }
+    }
+  } else {
+    // Hide when time window is over
+    if (slide.style.display !== "none") {
+      slide.style.display = "none";
+      slide.classList.remove('active');
+      morgensamlingPlayedCount = 0;
+      delete sound.dataset.lastPlayed;
+    }
+  }
+}
+
+// Check every 5 seconds
+setInterval(checkMorgensamling, 5000);
+checkMorgensamling();
+
+
+const gardvagtTimes = ["09:10","10:50","12:35"];
+let lastGardvagtMinutePlayed = null;
+
+function checkGardvagt() {
+  const now = new Date();
+  const currentMinutes = now.getHours()*60 + now.getMinutes();
+  const slide = document.getElementById("gardvagtSlide");
+  const sound = document.getElementById("gardvagtSound");
+
+  // Check if current time is within any 5-minute window
+  const activeTime = gardvagtTimes.some(time => {
+    const [h, m] = time.split(":").map(Number);
+    const startMinutes = h*60 + m;
+    return currentMinutes >= startMinutes && currentMinutes < startMinutes + 5;
+  });
+
+  if (activeTime) {
+    slide.classList.add("active");
+
+    // Play sound once per minute
+    if (lastGardvagtMinutePlayed !== now.getMinutes()) {
+      sound.currentTime = 0;
+      sound.play().catch(()=>{});
+      lastGardvagtMinutePlayed = now.getMinutes();
+    }
+  } else {
+    slide.classList.remove("active");
+    lastGardvagtMinutePlayed = null;
+  }
+}
+
+setInterval(checkGardvagt, 5000);
+checkGardvagt();
+
+// ===== Gårdvagtskema =====
+const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}}; 
+function renderSchedule(){
+  const today=new Date().getDay();
+  const el=document.getElementById("schedule");
+  const sch=schedules[today];if(!sch){el.innerHTML="";return;}
+  let html=`<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
+  sch.rows.forEach(r=>{html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";});
+  html+="</tbody></table>";el.innerHTML=html;
+}
+renderSchedule();
+
+// ===== Vikarskema auto-update =====
+const vikarUrl="https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
+async function updateVikarskema() {
+  try {
+    const res = await fetch(vikarUrl);
+    const data = await res.json();
+    const content = document.getElementById("vikarskemaContent");
+
+    // Build table
+    let html = `<table>
+      <thead>
+        <tr>${data.headers.map(h => `<th>${h}</th>`).join("")}</tr>
+      </thead>
+      <tbody>`;
+
+    data.rows.forEach(r => {
+      html += "<tr>";
+      r.forEach(cell => {
+        // If cell looks like an image URL, render an <img>
+        if (cell && typeof cell === "string" && cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
+          html += `<td><img src="${cell}" style="max-width:120px; max-height:80px; border-radius:8px;"></td>`;
+        } else {
+          html += `<td>${cell}</td>`;
+        }
+      });
+      html += "</tr>";
+    });
+
+    html += "</tbody></table>";
+    content.innerHTML = html;
+
+    highlightCurrentVikarskemaRow(); // keep highlighting current row
+  } catch (e) {
+    console.error("Vikarskema update error:", e);
+    document.getElementById("vikarskemaContent").innerHTML = "Fejl ved indlæsning af vikarskema.";
+  }
+}
+updateVikarskema();
+setInterval(updateVikarskema,60000);
+
+// ===== Highlight current vikarskema row =====
+function highlightCurrentVikarskemaRow() {
+  const now = new Date();
+  const hour = now.getHours();
+  const minute = now.getMinutes();
+  const el = document.getElementById("vikarskemaContent");
+  if (!el) return;
+  el.querySelectorAll("tbody tr").forEach(r => r.classList.remove("current"));
+  el.querySelectorAll("tbody tr").forEach(row => {
+    const timeText = row.cells[0].textContent.trim();
+    const [start,end] = timeText.split("-");
+    if(!start || !end) return;
+    const [startH,startM] = start.split(":").map(Number);
+    const [endH,endM] = end.split(":").map(Number);
+    const startMinutes = startH*60 + startM;
+    const endMinutes = endH*60 + endM;
+    const nowMinutes = hour*60 + minute;
+    if(nowMinutes >= startMinutes && nowMinutes < endMinutes){
+      row.classList.add("current");
+    }
+  });
+}
+setInterval(highlightCurrentVikarskemaRow,60000);
+// ===== Weather =====
+let currentWeather = { desc: "-", temp: "-" };
+
+async function fetchWeather() {
+  try {
+    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
+    const data = await res.json();
+    currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
+    currentWeather.desc = `Vind ${data.current_weather.windspeed} km/t`;
+  } catch(e) {
+    currentWeather.temp = "-";
+    currentWeather.desc = "Fejl";
+  }
+}
+
+fetchWeather();
+setInterval(fetchWeather, 15*60*1000);
+
+// ===== InfoBox =====
+const infoItems = [
+
+  () => {
+    return `☀️ Vejr i Helsingør: ${currentWeather.desc}, ${currentWeather.temp}`;
+  }
+];
+
+const infoSheetUrl = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
+let sheetRows = [];
+let currentIndex = 0;
+
+// Fetch sheet rows
+async function fetchSheetRows() {
+  try {
+    const res = await fetch(infoSheetUrl);
+    const data = await res.json();
+    sheetRows = (data.sheets && data.sheets[0]?.rows) || data.rows || [];
+    if (sheetRows.length === 0) sheetRows = [["Ingen data fra sheet"]];
+  } catch (e) {
+    console.error("Error fetching sheet data:", e);
+    sheetRows = [["Fejl ved hentning af data"]];
+  }
+}
+
+// Show next info item
+async function showInfoBox() {
+  infoBox.style.opacity = 0;
+
+  setTimeout(() => {
+    let text;
+
+    if (currentIndex < infoItems.length) {
+      const item = infoItems[currentIndex];
+      text = typeof item === "function" ? item() : item;
+    } else {
+      const rowIndex = (currentIndex - infoItems.length) % sheetRows.length;
+      text = sheetRows[rowIndex].join(" | ");
+    }
+
+    infoBox.textContent = text;
+    infoBox.style.opacity = 1;
+
+    // Increment and wrap around
+    currentIndex = (currentIndex + 1) % (infoItems.length + sheetRows.length);
+
+  }, 800);
+}
+
+// Initial fetch + set interval
+async function initInfoBox() {
+  await fetchSheetRows();
+  fetchWeather(); // ensure latest weather
+  showInfoBox();
+  setInterval(showInfoBox, 10000); // rotate every 10 seconds
+
+  // Refresh sheet data and weather every 1 minute
+  setInterval(fetchSheetRows, 60000);
+  setInterval(fetchWeather, 60000);
+}
+
+initInfoBox();
+
+// ===== Velkommen → Images → Vikarskema → loop =====
+const customWebhookUrl =
+  "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
+
+let customData = [];
+let currentImageIndex = 0;
+let phase = "welcome"; // current phase
+
+const stage = document.querySelector(".stage");
+const vikarSlide = document.getElementById("vikarSlide");
+const welcomeSlide = document.querySelector(".slide .text").closest(".slide");
+const allSlides = Array.from(document.querySelectorAll(".stage .slide"));
+
+async function fetchCustomData() {
+  try {
+    const res = await fetch(customWebhookUrl);
+    const data = await res.json();
+    customData = Array.isArray(data)
+      ? data
+      : data.rows || data.sheets?.[0]?.rows || [];
+
+    // keep only rows with images
+    customData = customData.filter(r => {
+      if (Array.isArray(r))
+        return r.some(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i));
+      return r.img && typeof r.img === "string";
+    });
+  } catch (e) {
+    console.error("Fejl ved hentning af billeder:", e);
+    customData = [];
+  }
+}
+
+function setActiveSlide(slide) {
+  allSlides.forEach(s => s.classList.remove("active"));
+  if (slide) slide.classList.add("active");
+}
+
+function showBackgroundImage(url) {
+  const existingBg = document.getElementById("customBgImage");
+  if (existingBg) existingBg.remove();
+  if (!url) return;
+
+  const img = document.createElement("img");
+  img.id = "customBgImage";
+  img.src = url;
+
+  // Style
+  img.style.maxWidth = "80%";
+  img.style.maxHeight = "80%";
+  img.style.position = "absolute";
+  img.style.top = "50%";
+  img.style.left = "50%";
+  img.style.transform = "translate(-50%, -50%) scale(0.95)";
+  img.style.transition = "all 1s ease-in-out";
+  img.style.zIndex = "0";
+  img.style.opacity = "0"; // start invisible
+
+  // Effects
+  img.style.filter = "blur(1px) brightness(1.05) drop-shadow(0 0 10px rgba(0,0,0,0.3))";
+  img.style.borderRadius = "16px";
+
+  stage.appendChild(img);
+
+  // Animate in
+  requestAnimationFrame(() => {
+    img.style.opacity = "1";
+    img.style.transform = "translate(-50%, -50%) scale(1)";
+  });
+
+  // Optional: pulse effect
+  img.animate(
+    [
+      { transform: "translate(-50%, -50%) scale(1.25)" },
+      { transform: "translate(-50%, -50%) scale(1.3)" },
+      { transform: "translate(-50%, -50%) scale(1.25)" }
+    ],
+    {
+      duration: 4000,
+      iterations: Infinity,
+      easing: "ease-in-out"
+    }
+  );
+}
+
+async function runCustomCycle() {
+  await fetchCustomData();
+  clearInterval(slideInterval); // stop default rotation
+
+  let currentBatchIndex = 0; // index for 3-image batch
+  const batchSize = 3;       // show 3 images per batch
+
+  async function cycle() {
+    // No images: just alternate welcome and vikarskema
+    if (customData.length === 0) {
+      setActiveSlide(welcomeSlide);
+      showBackgroundImage(null);
+      setTimeout(() => {
+        setActiveSlide(vikarSlide);
+        setTimeout(cycle, 30000); // Vikarskema 30s
+      }, 5000); // Velkommen 5s
+      return;
+    }
+
+    // --- Velkommen phase ---
+    setActiveSlide(welcomeSlide);
+    showBackgroundImage(null);
+    await new Promise(res => setTimeout(res, 5000)); // 5s
+
+    // --- Image batch phase ---
+    const batch = customData.slice(currentBatchIndex, currentBatchIndex + batchSize);
+    for (let row of batch) {
+      let imgUrl = Array.isArray(row)
+        ? row.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+        : row.img;
+
+      setActiveSlide(null);
+      showBackgroundImage(imgUrl);
+      await new Promise(res => setTimeout(res, 5000)); // 5s per image
+    }
+
+    currentBatchIndex += batchSize;
+    if (currentBatchIndex >= customData.length) currentBatchIndex = 0;
+
+    // --- Vikarskema phase ---
+    setActiveSlide(vikarSlide);
+    showBackgroundImage(null);
+    setTimeout(cycle, 30000); // 30s
+  }
+
+  cycle();
+}
+
+
+runCustomCycle();
+// 🔄 Live-refresh Google Sheet every 10 seconds (auto-detect new images)
+setInterval(async () => {
+  const oldList = customData.map(r =>
+    Array.isArray(r)
+      ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+      : r.img
+  );
+
+  await fetchCustomData();
+
+  const newList = customData.map(r =>
+    Array.isArray(r)
+      ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+      : r.img
+  );
+
+  // If new or removed images detected, refresh slideshow sequence
+  const changed =
+    oldList.length !== newList.length ||
+    oldList.some((url, i) => url !== newList[i]);
+
+  if (changed) {
+    console.log("🆕 Google Sheet updated — refreshing slideshow");
+    currentImageIndex = 0;
+  }
+}, 10000); // check every 10 seconds
+
+</script>
+</body>
+</html>
+
+  --bg: linear-gradient(135deg, #e8f0ff, #f9fbff);
+  --fg: #1e293b;
+  --overlay: rgba(255,255,255,0.85);
+  --accent: #007bff;
+}
+
+html, body {
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Tajawal',system-ui,sans-serif;
+  overflow:hidden;
+}
+.stage {
+  position:relative;
+  width:100%;
+  height:100%;
+}
+.slide {
+  position:absolute;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:4%;
+  opacity:0;
+  transform:scale(1.02);
+  transition:opacity 1s ease,transform 1s ease;
+}
+.slide.active {opacity:1;transform:scale(1);}
+.slide .text {
+  max-width:1400px;
+  font-size:clamp(28px,6vw,80px);
+  font-weight:600;
+  color:var(--fg);
+  text-shadow:0 2px 6px rgba(255,255,255,0.9);
+}
+.slide img {
+  max-width:80%;
+  max-height:80%;
+  object-fit:contain;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  transition:transform 2s ease-in-out;
+}
+.slide.active img {transform:scale(1.02);}
+
+.datetime {
+  position:absolute;
+  top:16px;
+  right:18px;
+  text-align:right;
+  background:var(--overlay);
+  padding:12px 18px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.2);
+  backdrop-filter:blur(6px);
+}
+.datetime #dateText {font-size:20px;font-weight:600;}
+.datetime #timeText {font-size:34px;font-weight:700;}
+
+.logo {
+  position:absolute;
+  top:12px;
+  left:16px;
+  background:var(--overlay);
+  padding:8px 12px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+}
+.logo img {height:60px;width:auto;opacity:0.9;}
+
+.footer {
+  position:absolute;
+  left:16px;
+  bottom:16px;
+  font-size:16px;
+  background:var(--overlay);
+  padding:10px 16px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+}
+#youtubeSlide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.2);
+}
+
+#youtubeContainer {
+  width: 80%;
+  max-width: 1200px;
+  height: 70%;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+
+#youtubeVideo {
+  width: 100%;
+  height: 100%;
+}
+
+
+#dailyTip {
+  background:#e0f7e9;
+  color:#1b5e20;
+  padding:24px 32px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.1);
+  display:inline-block;
+  font-size:clamp(28px,4vw,48px);
+}
+
+/* ===== Gårdvagt Banner - glowing background ===== */
+/* ===== Gårdvagt Banner (same design as Morgensamling) ===== */
+#gardvagtSlide {
+  position: fixed;
+  top: 20px; /* same position as morgensamling */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  pointer-events: none;
+}
+
+#gardvagtSlide.active {
+  display: flex;
+}
+
+#gardvagtText {
+  background: rgba(255, 0, 0, 0.95);
+  color: white;
+  padding: 20px 50px;
+  border-radius: 18px;
+  font-size: clamp(30px, 3vw, 48px);
+  font-weight: 800;
+  text-align: center;
+  box-shadow:
+    0 0 15px rgba(255, 0, 0, 0.8),
+    0 0 30px rgba(255, 0, 0, 0.6),
+    0 0 60px rgba(255, 0, 0, 0.4);
+  animation: glowPulse 1.5s ease-in-out infinite alternate;
+}
+
+/* Pulsing red background of the banner */
+@keyframes pulseRedBanner {
+  0% { background-color: rgba(255, 0, 0, 0.85); }
+  50% { background-color: rgba(255, 80, 80, 0.95); }
+  100% { background-color: rgba(255, 0, 0, 0.85); }
+}
+
+
+/* ===== Vikarskema Styling ===== */
+#vikarSlide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  transition: opacity 0.5s ease;
+}
+#vikarSlide.active {
+  z-index: 15000;
+  background: Transparent;
+}
+
+.vikarskema {
+  background: rgba(255, 255, 255, 0.5); /* شفافية أكبر */
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1); /* تخفيف الظل */
+  width: 90%;
+  max-width: 1400px;
+  max-height: 90vh;
+  overflow: auto;
+  backdrop-filter: blur(3px); /* ضبابية أقل لزيادة وضوح الخلفية */
+}
+
+
+.vikarskema table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(14px, 2vw, 22px);
+}
+.vikarskema th, .vikarskema td {
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 6px 10px;
+  text-align: center;
+}
+.vikarskema th {
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+}
+.vikarskema tbody tr:nth-child(even) { background: rgba(0,0,0,0.04); }
+.vikarskema tbody tr.current { background: rgba(0, 123, 255, 0.2) !important; }
+
+/* إزالة أي bold افتراضي */
+.vikarskema tbody tr {
+  font-weight: normal !important;
+}
+
+/* العمود السادس أبيض */
+.vikarskema td:nth-child(6), .vikarskema th:nth-child(6) { 
+  background-color: white; 
+  color: var(--fg);
+}
+
+/* Schedule table */
+.schedule {
+  position:absolute;
+  bottom:16px;
+  right:18px;
+  background:var(--overlay);
+  backdrop-filter:blur(6px);
+  padding:8px 10px;              /* smaller padding */
+  border-radius:12px;            /* slightly smaller corners */
+  font-size:15px;                /* smaller text */
+  line-height:1.2;               /* tighter spacing */
+  color:var(--fg);
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  max-height:none;               /* no scrollbars */
+  overflow:hidden;               /* ensures no scrollbars appear */
+}
+.schedule table {border-collapse:collapse;width:100%;border-radius:12px;overflow:hidden;}
+.schedule th, .schedule td {
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 3px 6px;       /* smaller padding inside cells */
+  text-align: center;
+}
+
+.schedule th {background:var(--accent);color:white;font-weight:700;}
+.schedule td {background:rgba(255,255,255,0.7);}
+
+
+/* ===== Morgensamling Banner (Centered Glowing Box) ===== */
+#morgensamlingSlide {
+  position: fixed;
+  top: 20px; /* small gap from top edge */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  pointer-events: none; /* ✅ doesn’t block the clock */
+}
+
+#morgensamlingSlide.active {
+  display: flex;
+}
+#infoBox {
+  position: fixed;
+  bottom: 25px;
+  left: 16px;
+  background: var(--overlay); /* same translucent background as others */
+  backdrop-filter: blur(6px); /* frosted glass effect */
+  color: var(--fg); /* main text color */
+  padding: 14px 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 600;
+  text-align: left;
+  z-index: 10000;
+  transition: opacity 0.8s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+#infoBox.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+#morgensamlingText {
+  background: rgba(255, 0, 0, 0.95);
+  color: white;
+  padding: 20px 50px;
+  border-radius: 18px;
+  font-size: clamp(30px, 3vw, 48px);
+  font-weight: 800;
+  text-align: center;
+  box-shadow:
+    0 0 15px rgba(255, 0, 0, 0.8),
+    0 0 30px rgba(255, 0, 0, 0.6),
+    0 0 60px rgba(255, 0, 0, 0.4);
+  animation: glowPulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow:
+      0 0 15px rgba(255, 0, 0, 0.8),
+      0 0 30px rgba(255, 0, 0, 0.6),
+      0 0 60px rgba(255, 0, 0, 0.4);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow:
+      0 0 25px rgba(255, 0, 0, 1),
+      0 0 50px rgba(255, 0, 0, 0.8),
+      0 0 80px rgba(255, 0, 0, 0.6);
+    transform: scale(1.03);
+  }
+}
+#customSlide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20000; /* أعلى من كل شيء */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  background: rgba(0,0,0,0.2); /* نصف شفاف */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#customSlide.active {
+  opacity: 1;
+}
+
+#customContent {
+  text-align: center;
+  color: white;
+  font-size: clamp(28px, 5vw, 64px);
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+#customContent img {
+  max-width: 100%;
+  max-height: 100%;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  
+<div class="slide active"><div class="text">👋 Velkommen til Al Irchad skolen</div></div>
+<!-- Custom Slide for text + images from Google Sheet -->
+<div class="slide" id="customSlide">
+  <div id="customContent"></div>
+</div>
+<!-- YouTube Video Slide -->
+<div class="slide" id="youtubeSlide">
+  <div id="youtubeContainer">
+    <iframe id="youtubeVideo" width="100%" height="100%" 
+      src="https://www.youtube.com/embed/51Nq8LWFtUk?enablejsapi=1&autoplay=1&mute=1" 
+      title="YouTube video" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+
 
   <!-- Vikarskema Slide -->
   <div class="slide" id="vikarSlide">
@@ -759,43 +1639,68 @@ async function runCustomCycle() {
   const batchSize = 3;
 
   async function cycle() {
-    // Welcome
-    setActiveSlide(welcomeSlide); showBackgroundImage(null);
-    await new Promise(r=>setTimeout(r,5000));
+    // --- Velkommen phase ---
+    setActiveSlide(welcomeSlide);
+    showBackgroundImage(null);
+    await new Promise(res => setTimeout(res, 5000)); // 5s
 
-    // Image batch
-    const batch = customData.slice(currentBatchIndex,currentBatchIndex+batchSize);
-    for(let row of batch){
-      const imgUrl = Array.isArray(row)? row.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):row.img;
-      setActiveSlide(null); showBackgroundImage(imgUrl);
-      await new Promise(r=>setTimeout(r,5000));
+    // --- YouTube video phase (15s) ---
+    const youtubeSlide = document.getElementById("youtubeSlide");
+    setActiveSlide(youtubeSlide);
+    if (ytPlayer) ytPlayer.playVideo();
+    await new Promise(res => setTimeout(res, 15000)); // 15s
+    if (ytPlayer) ytPlayer.pauseVideo();
+
+    // --- Image batch phase ---
+    const batch = customData.slice(currentBatchIndex, currentBatchIndex + batchSize);
+    for (let row of batch) {
+      let imgUrl = Array.isArray(row)
+        ? row.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+        : row.img;
+
+      setActiveSlide(null);
+      showBackgroundImage(imgUrl);
+      await new Promise(res => setTimeout(res, 5000)); // 5s per image
     }
+
     currentBatchIndex += batchSize;
-    if(currentBatchIndex>=customData.length) currentBatchIndex=0;
+    if (currentBatchIndex >= customData.length) currentBatchIndex = 0;
 
-    // Video
-    const videoSlide = document.getElementById("videoSlide");
-    const videoFrame = document.getElementById("videoFrame");
-    setActiveSlide(videoSlide); showBackgroundImage(null);
-    if(videoFrame?.contentWindow){
-      videoFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-    }
-    await new Promise(r=>setTimeout(r,20000));
-
-    // Vikarskema
-    setActiveSlide(vikarSlide); showBackgroundImage(null);
-    await new Promise(r=>setTimeout(r,30000));
-
-    cycle(); // loop
+    // --- Vikarskema phase ---
+    setActiveSlide(vikarSlide);
+    showBackgroundImage(null);
+    setTimeout(cycle, 30000); // 30s
   }
+
   cycle();
 }
 
 runCustomCycle();
+// ===== YouTube API =====
+let ytPlayer;
+
+function onYouTubeIframeAPIReady() {
+  ytPlayer = new YT.Player('youtubeVideo', {
+    events: {
+      'onReady': onPlayerReady
+    }
+  });
+}
+
+function onPlayerReady(event) {
+  event.target.playVideo();
+}
+
+// Load YouTube API
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
 </script>
 
 </body>
 </html>
+
 
 
 
