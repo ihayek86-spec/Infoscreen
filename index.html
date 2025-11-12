@@ -471,7 +471,7 @@ let morgensamlingPlayedCount = 0;
 function checkMorgensamling() {
   const now = new Date();
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  const start = 23 * 60 + 39; // 08:20
+  const start = 23 * 60 + 45; // 08:20
   const end = start + 5;     // until 08:25
   const slide = document.getElementById('morgensamlingSlide');
   const sound = document.getElementById("morgensamlingSound");
@@ -753,6 +753,7 @@ setInterval(async()=>{
 
 </body>
 </html>
+
 
 
 
