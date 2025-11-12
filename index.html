@@ -336,6 +336,14 @@ html, body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+  #youtubeSlide iframe {
+  width: 80%;
+  height: 80%;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+
 
 </style>
 </head>
@@ -347,6 +355,15 @@ html, body {
 <!-- Custom Slide for text + images from Google Sheet -->
 <div class="slide" id="customSlide">
   <div id="customContent"></div>
+</div>
+<!-- YouTube Slide -->
+<div class="slide" id="youtubeSlide">
+  <div id="youtubeContainer">
+    <iframe id="youtubeIframe" width="100%" height="100%" 
+      src="https://www.youtube.com/embed/51Nq8LWFtUk?enablejsapi=1&rel=0&autoplay=1&mute=1" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen></iframe>
+  </div>
 </div>
 
   <!-- Vikarskema Slide -->
@@ -444,9 +461,14 @@ function nextSlide(){
   current=(current+1)%slides.length;
   showSlide(current);
   clearInterval(slideInterval);
-  const duration = slides[current].id === "vikarSlide" ? 30000 : slideDuration;
-  slideInterval=setInterval(nextSlide,duration);
+
+  let duration = slideDuration; // default 7s
+  if(slides[current].id === "vikarSlide") duration = 30000; // 30s
+  else if(slides[current].id === "youtubeSlide") duration = 15000; // 15s
+
+  slideInterval = setInterval(nextSlide, duration);
 }
+
 
 
 
@@ -857,3 +879,4 @@ setInterval(async () => {
 </script>
 </body>
 </html>
+
