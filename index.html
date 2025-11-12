@@ -808,79 +808,44 @@ async function runCustomCycle() {
   let currentBatchIndex = 0; // index for 3-image batch
   const batchSize = 3;       // show 3 images per batch
 
-  async function cycle() {
-    // No images: just alternate welcome and vikarskema
-    if (customData.length === 0) {
-      setActiveSlide(welcomeSlide);
-      showBackgroundImage(null);
-      setTimeout(() => {
-        setActiveSlide(vikarSlide);
-        setTimeout(cycle, 30000); // Vikarskema 30s
-      }, 5000); // Velkommen 5s
-      return;
+ async function runCustomCycle(){
+  await fetchCustomData();
+  let currentBatchIndex = 0;
+  const batchSize = 3;
+  async function cycle(){
+    // Welcome
+    setActiveSlide(welcomeSlide); showBackgroundImage(null);
+    await new Promise(r=>setTimeout(r,5000));
+
+    // Image batch
+    const batch = customData.slice(currentBatchIndex,currentBatchIndex+batchSize);
+    for(let row of batch){
+      const imgUrl = Array.isArray(row)?row.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):row.img;
+      setActiveSlide(null); showBackgroundImage(imgUrl);
+      await new Promise(r=>setTimeout(r,5000));
     }
-
-    // --- Velkommen phase ---
-    setActiveSlide(welcomeSlide);
-    showBackgroundImage(null);
-    await new Promise(res => setTimeout(res, 5000)); // 5s
-
-    // --- Image batch phase ---
-    const batch = customData.slice(currentBatchIndex, currentBatchIndex + batchSize);
-    for (let row of batch) {
-      let imgUrl = Array.isArray(row)
-        ? row.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-        : row.img;
-
-      setActiveSlide(null);
-      showBackgroundImage(imgUrl);
-      await new Promise(res => setTimeout(res, 5000)); // 5s per image
-    }
-
     currentBatchIndex += batchSize;
-    if (currentBatchIndex >= customData.length) currentBatchIndex = 0;
+    if(currentBatchIndex>=customData.length) currentBatchIndex=0;
 
-    // --- Vikarskema phase ---
-    setActiveSlide(vikarSlide);
-    showBackgroundImage(null);
-    setTimeout(cycle, 30000); // 30s
+    // Video
+    setActiveSlide(videoSlide); showBackgroundImage(null);
+    const videoFrame = document.getElementById("videoFrame");
+    videoFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    await new Promise(r=>setTimeout(r,20000));
+
+    // Vikarskema
+    setActiveSlide(vikarSlide); showBackgroundImage(null);
+    await new Promise(r=>setTimeout(r,30000));
+
+    cycle();
   }
-
   cycle();
 }
-
-
-runCustomCycle();
-// 🔄 Live-refresh Google Sheet every 10 seconds (auto-detect new images)
-setInterval(async () => {
-  const oldList = customData.map(r =>
-    Array.isArray(r)
-      ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-      : r.img
-  );
-
-  await fetchCustomData();
-
-  const newList = customData.map(r =>
-    Array.isArray(r)
-      ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
-      : r.img
-  );
-
-  // If new or removed images detected, refresh slideshow sequence
-  const changed =
-    oldList.length !== newList.length ||
-    oldList.some((url, i) => url !== newList[i]);
-
-  if (changed) {
-    console.log("🆕 Google Sheet updated — refreshing slideshow");
-    currentImageIndex = 0;
-  }
-}, 10000); // check every 10 seconds
 
 </script>
 </body>
 </html>
+
 
 
 
