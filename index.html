@@ -404,25 +404,26 @@ html, body {
 <audio id="huskGardvagtSound" src="file:///storage/807F-8B2A/Infoscreen/sounds/husk_gardvagt.mp3" muted></audio>
 
 
-
 <script>
 // ===== Date & Time =====
-const dateEl=document.getElementById('dateText');
-const timeEl=document.getElementById('timeText');
-const dateOptions={weekday:'long',year:'numeric',month:'long',day:'numeric'};
-const timeOptions={hour:'2-digit',minute:'2-digit',second:'2-digit'};
-function updateDateTime(){
-  const now=new Date();
-  dateEl.textContent=now.toLocaleDateString('da-DK',dateOptions);
-  timeEl.textContent=now.toLocaleTimeString('da-DK',timeOptions);
+const dateEl = document.getElementById('dateText');
+const timeEl = document.getElementById('timeText');
+const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+
+function updateDateTime() {
+  const now = new Date();
+  dateEl.textContent = now.toLocaleDateString('da-DK', dateOptions);
+  timeEl.textContent = now.toLocaleTimeString('da-DK', timeOptions);
 }
-setInterval(updateDateTime,1000);updateDateTime();
+setInterval(updateDateTime, 1000);
+updateDateTime();
 
 // ===== Vikarskema Clock & Date =====
 const vikarDateEl = document.getElementById("vikarskemaDate");
 const vikarClock = document.getElementById("vikarskemaClock");
 
-function updateVikarskemaClock(){
+function updateVikarskemaClock() {
   const now = new Date();
   const h = String(now.getHours()).padStart(2,"0");
   const m = String(now.getMinutes()).padStart(2,"0");
@@ -430,57 +431,53 @@ function updateVikarskemaClock(){
   vikarClock.textContent = `${h}:${m}:${s}`;
 }
 
-function updateVikarskemaDateTime(){
+function updateVikarskemaDateTime() {
   const now = new Date();
-  const options = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   vikarDateEl.textContent = now.toLocaleDateString('da-DK', options);
   updateVikarskemaClock();
 }
 setInterval(updateVikarskemaDateTime, 1000);
 updateVikarskemaDateTime();
 
-
 // ===== Slideshow =====
-const slides=Array.from(document.querySelectorAll('.stage .slide'));
-let current=0; const slideDuration=7000;
-let slideInterval=setInterval(nextSlide,slideDuration);
+const slides = Array.from(document.querySelectorAll('.stage .slide'));
+let current = 0;
+const slideDuration = 7000;
+let slideInterval = setInterval(nextSlide, slideDuration);
 
 function pauseAllVideos() {
   document.querySelectorAll('iframe').forEach(frame => {
-    frame.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    frame.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
   });
 }
 
-function showSlide(idx){
-  slides.forEach((s,i)=>{
-    s.classList.toggle('active', i===idx);
-  });
-  pauseAllVideos(); // pause any video when switching slides
+function showSlide(idx) {
+  slides.forEach((s,i) => s.classList.toggle('active', i === idx));
+  pauseAllVideos();
 }
 
-
-function nextSlide(){
+function nextSlide() {
   current = (current + 1) % slides.length;
   showSlide(current);
   clearInterval(slideInterval);
 
-  let duration = slideDuration; // default 7s
-  if (slides[current].id === "vikarSlide") duration = 30000; // 30s
-  if (slides[current].id === "videoSlide") duration = 20000; // 🎬 20s for video
+  let duration = slideDuration;
+  if (slides[current].id === "vikarSlide") duration = 30000;
+  if (slides[current].id === "videoSlide") duration = 20000;
 
   slideInterval = setInterval(nextSlide, duration);
 }
 
-
-
-
 // ===== Enable Sounds =====
-window.addEventListener("load",()=>{
-  const m=document.getElementById("morgensamlingSound");
-  const g=document.getElementById("gardvagtSound");
-  const h=document.getElementById("huskGardvagtSound");
-  m.play().catch(()=>{}); g.play().catch(()=>{}); h.play().catch(()=>{});
-  setTimeout(()=>{ m.muted=false; g.muted=false; h.muted=false; },1000);
+window.addEventListener("load", () => {
+  const m = document.getElementById("morgensamlingSound");
+  const g = document.getElementById("gardvagtSound");
+  const h = document.getElementById("huskGardvagtSound");
+  m.play().catch(()=>{});
+  g.play().catch(()=>{});
+  h.play().catch(()=>{});
+  setTimeout(() => { m.muted=false; g.muted=false; h.muted=false; }, 1000);
 });
 
 // ===== Morgensamling =====
@@ -489,18 +486,16 @@ function checkMorgensamling() {
   const now = new Date();
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-  const start = 8 * 60 + 20; // 08:20
-  const end = start + 5;     // 5 minutes later → 08:25
+  const start = 8 * 60 + 20; 
+  const end = start + 5;     
 
   const slide = document.getElementById('morgensamlingSlide');
   const sound = document.getElementById("morgensamlingSound");
 
   if (currentMinutes >= start && currentMinutes < end) {
-    // Show slide
     slide.style.display = "flex";
     slide.classList.add('active');
 
-    // Play sound once per minute (max 5 times)
     if (morgensamlingPlayedCount < 5) {
       const currentMinute = now.getMinutes().toString();
       if (sound.dataset.lastPlayed !== currentMinute) {
@@ -511,7 +506,6 @@ function checkMorgensamling() {
       }
     }
   } else {
-    // Hide when time window is over
     if (slide.style.display !== "none") {
       slide.style.display = "none";
       slide.classList.remove('active');
@@ -520,12 +514,10 @@ function checkMorgensamling() {
     }
   }
 }
-
-// Check every 5 seconds
 setInterval(checkMorgensamling, 5000);
 checkMorgensamling();
 
-
+// ===== Gardvagt =====
 const gardvagtTimes = ["09:10","10:50","12:35"];
 let lastGardvagtMinutePlayed = null;
 
@@ -535,7 +527,6 @@ function checkGardvagt() {
   const slide = document.getElementById("gardvagtSlide");
   const sound = document.getElementById("gardvagtSound");
 
-  // Check if current time is within any 5-minute window
   const activeTime = gardvagtTimes.some(time => {
     const [h, m] = time.split(":").map(Number);
     const startMinutes = h*60 + m;
@@ -544,8 +535,6 @@ function checkGardvagt() {
 
   if (activeTime) {
     slide.classList.add("active");
-
-    // Play sound once per minute
     if (lastGardvagtMinutePlayed !== now.getMinutes()) {
       sound.currentTime = 0;
       sound.play().catch(()=>{});
@@ -556,19 +545,28 @@ function checkGardvagt() {
     lastGardvagtMinutePlayed = null;
   }
 }
-
 setInterval(checkGardvagt, 5000);
 checkGardvagt();
 
 // ===== Gårdvagtskema =====
-const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}}; 
-function renderSchedule(){
-  const today=new Date().getDay();
-  const el=document.getElementById("schedule");
-  const sch=schedules[today];if(!sch){el.innerHTML="";return;}
-  let html=`<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
-  sch.rows.forEach(r=>{html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";});
-  html+="</tbody></table>";el.innerHTML=html;
+const schedules = {
+  1:{title:"Gårdvagtskema", rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
+  2:{title:"Gårdvagtskema", rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
+  3:{title:"Gårdvagtskema", rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
+  4:{title:"Gårdvagtskema", rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
+  5:{title:"Gårdvagtskema", rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}
+};
+
+function renderSchedule() {
+  const today = new Date().getDay();
+  const el = document.getElementById("schedule");
+  const sch = schedules[today];
+  if(!sch){ el.innerHTML=""; return; }
+
+  let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
+  sch.rows.forEach(r => { html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>"; });
+  html += "</tbody></table>";
+  el.innerHTML = html;
 }
 renderSchedule();
 
@@ -580,64 +578,53 @@ async function updateVikarskema() {
     const data = await res.json();
     const content = document.getElementById("vikarskemaContent");
 
-    // Build table
     let html = `<table>
-      <thead>
-        <tr>${data.headers.map(h => `<th>${h}</th>`).join("")}</tr>
-      </thead>
-      <tbody>`;
-
+      <thead><tr>${data.headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
     data.rows.forEach(r => {
       html += "<tr>";
       r.forEach(cell => {
-        // If cell looks like an image URL, render an <img>
         if (cell && typeof cell === "string" && cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)) {
           html += `<td><img src="${cell}" style="max-width:120px; max-height:80px; border-radius:8px;"></td>`;
-        } else {
-          html += `<td>${cell}</td>`;
-        }
+        } else html += `<td>${cell}</td>`;
       });
       html += "</tr>";
     });
-
     html += "</tbody></table>";
     content.innerHTML = html;
 
-    highlightCurrentVikarskemaRow(); // keep highlighting current row
+    highlightCurrentVikarskemaRow();
   } catch (e) {
     console.error("Vikarskema update error:", e);
     document.getElementById("vikarskemaContent").innerHTML = "Fejl ved indlæsning af vikarskema.";
   }
 }
 updateVikarskema();
-setInterval(updateVikarskema,60000);
+setInterval(updateVikarskema, 60000);
 
-// ===== Highlight current vikarskema row =====
 function highlightCurrentVikarskemaRow() {
   const now = new Date();
   const hour = now.getHours();
   const minute = now.getMinutes();
   const el = document.getElementById("vikarskemaContent");
   if (!el) return;
+
   el.querySelectorAll("tbody tr").forEach(r => r.classList.remove("current"));
   el.querySelectorAll("tbody tr").forEach(row => {
-    const timeText = row.cells[0].textContent.trim();
+    const timeText = row.cells[0]?.textContent.trim();
+    if (!timeText) return;
     const [start,end] = timeText.split("-");
-    if(!start || !end) return;
     const [startH,startM] = start.split(":").map(Number);
     const [endH,endM] = end.split(":").map(Number);
     const startMinutes = startH*60 + startM;
     const endMinutes = endH*60 + endM;
     const nowMinutes = hour*60 + minute;
-    if(nowMinutes >= startMinutes && nowMinutes < endMinutes){
-      row.classList.add("current");
-    }
+    if(nowMinutes >= startMinutes && nowMinutes < endMinutes) row.classList.add("current");
   });
 }
-setInterval(highlightCurrentVikarskemaRow,60000);
+setInterval(highlightCurrentVikarskemaRow, 60000);
+
 // ===== Weather =====
 let currentWeather = { desc: "-", temp: "-" };
-
 async function fetchWeather() {
   try {
     const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
@@ -649,101 +636,65 @@ async function fetchWeather() {
     currentWeather.desc = "Fejl";
   }
 }
-
 fetchWeather();
 setInterval(fetchWeather, 15*60*1000);
 
 // ===== InfoBox =====
-const infoItems = [
-
-  () => {
-    return `☀️ Vejr i Helsingør: ${currentWeather.desc}, ${currentWeather.temp}`;
-  }
-];
-
+const infoItems = [() => `☀️ Vejr i Helsingør: ${currentWeather.desc}, ${currentWeather.temp}`];
 const infoSheetUrl = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 let sheetRows = [];
 let currentIndex = 0;
+const infoBox = document.getElementById("infoBox");
 
-// Fetch sheet rows
 async function fetchSheetRows() {
   try {
     const res = await fetch(infoSheetUrl);
     const data = await res.json();
     sheetRows = (data.sheets && data.sheets[0]?.rows) || data.rows || [];
-    if (sheetRows.length === 0) sheetRows = [["Ingen data fra sheet"]];
-  } catch (e) {
+    if(sheetRows.length===0) sheetRows=[["Ingen data fra sheet"]];
+  } catch(e) {
     console.error("Error fetching sheet data:", e);
     sheetRows = [["Fejl ved hentning af data"]];
   }
 }
 
-// Show next info item
 async function showInfoBox() {
   infoBox.style.opacity = 0;
-
   setTimeout(() => {
     let text;
-
-    if (currentIndex < infoItems.length) {
-      const item = infoItems[currentIndex];
-      text = typeof item === "function" ? item() : item;
-    } else {
-      const rowIndex = (currentIndex - infoItems.length) % sheetRows.length;
-      text = sheetRows[rowIndex].join(" | ");
-    }
-
+    if (currentIndex < infoItems.length) text = typeof infoItems[currentIndex]==="function"? infoItems[currentIndex](): infoItems[currentIndex];
+    else text = sheetRows[(currentIndex - infoItems.length) % sheetRows.length].join(" | ");
     infoBox.textContent = text;
     infoBox.style.opacity = 1;
-
-    // Increment and wrap around
     currentIndex = (currentIndex + 1) % (infoItems.length + sheetRows.length);
-
   }, 800);
 }
 
-// Initial fetch + set interval
 async function initInfoBox() {
   await fetchSheetRows();
-  fetchWeather(); // ensure latest weather
+  fetchWeather();
   showInfoBox();
-  setInterval(showInfoBox, 10000); // rotate every 10 seconds
-
-  // Refresh sheet data and weather every 1 minute
+  setInterval(showInfoBox, 10000);
   setInterval(fetchSheetRows, 60000);
   setInterval(fetchWeather, 60000);
 }
-
 initInfoBox();
 
-// ===== Velkommen → Images → Vikarskema → loop =====
-const customWebhookUrl =
-  "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
-
+// ===== Custom Welcome → Images → Video → Vikarskema Loop =====
+const customWebhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 let customData = [];
-let currentImageIndex = 0;
-let phase = "welcome"; // current phase
-
 const stage = document.querySelector(".stage");
 const vikarSlide = document.getElementById("vikarSlide");
-const welcomeSlide = document.querySelector(".slide .text").closest(".slide");
+const welcomeSlide = document.querySelector(".slide .text")?.closest(".slide");
 const allSlides = Array.from(document.querySelectorAll(".stage .slide"));
 
 async function fetchCustomData() {
   try {
     const res = await fetch(customWebhookUrl);
     const data = await res.json();
-    customData = Array.isArray(data)
-      ? data
-      : data.rows || data.sheets?.[0]?.rows || [];
-
-    // keep only rows with images
-    customData = customData.filter(r => {
-      if (Array.isArray(r))
-        return r.some(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i));
-      return r.img && typeof r.img === "string";
-    });
-  } catch (e) {
+    customData = Array.isArray(data)? data : data.rows || data.sheets?.[0]?.rows || [];
+    customData = customData.filter(r => Array.isArray(r)? r.some(c => typeof c==="string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img);
+  } catch(e) {
     console.error("Fejl ved hentning af billeder:", e);
     customData = [];
   }
@@ -751,68 +702,40 @@ async function fetchCustomData() {
 
 function setActiveSlide(slide) {
   allSlides.forEach(s => s.classList.remove("active"));
-  if (slide) slide.classList.add("active");
+  if(slide) slide.classList.add("active");
 }
 
 function showBackgroundImage(url) {
   const existingBg = document.getElementById("customBgImage");
-  if (existingBg) existingBg.remove();
-  if (!url) return;
+  if(existingBg) existingBg.remove();
+  if(!url) return;
 
   const img = document.createElement("img");
   img.id = "customBgImage";
   img.src = url;
-
-  // Style
-  img.style.maxWidth = "80%";
-  img.style.maxHeight = "80%";
-  img.style.position = "absolute";
-  img.style.top = "50%";
-  img.style.left = "50%";
-  img.style.transform = "translate(-50%, -50%) scale(0.95)";
-  img.style.transition = "all 1s ease-in-out";
-  img.style.zIndex = "0";
-  img.style.opacity = "0"; // start invisible
-
-  // Effects
-  img.style.filter = "blur(1px) brightness(1.05) drop-shadow(0 0 10px rgba(0,0,0,0.3))";
-  img.style.borderRadius = "16px";
-
+  img.style.cssText = `
+    max-width:80%; max-height:80%; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%) scale(0.95);
+    transition: all 1s ease-in-out; z-index:0; opacity:0;
+    filter: blur(1px) brightness(1.05) drop-shadow(0 0 10px rgba(0,0,0,0.3));
+    border-radius:16px;
+  `;
   stage.appendChild(img);
-
-  // Animate in
-  requestAnimationFrame(() => {
-    img.style.opacity = "1";
-    img.style.transform = "translate(-50%, -50%) scale(1)";
-  });
-
-  // Optional: pulse effect
-  img.animate(
-    [
-      { transform: "translate(-50%, -50%) scale(1.25)" },
-      { transform: "translate(-50%, -50%) scale(1.3)" },
-      { transform: "translate(-50%, -50%) scale(1.25)" }
-    ],
-    {
-      duration: 4000,
-      iterations: Infinity,
-      easing: "ease-in-out"
-    }
-  );
+  requestAnimationFrame(()=>{ img.style.opacity=1; img.style.transform="translate(-50%, -50%) scale(1)"; });
+  img.animate([
+    { transform: "translate(-50%, -50%) scale(1.25)" },
+    { transform: "translate(-50%, -50%) scale(1.3)" },
+    { transform: "translate(-50%, -50%) scale(1.25)" }
+  ], { duration:4000, iterations:Infinity, easing:"ease-in-out" });
 }
 
 async function runCustomCycle() {
   await fetchCustomData();
-  clearInterval(slideInterval); // stop default rotation
+  clearInterval(slideInterval);
 
-  let currentBatchIndex = 0; // index for 3-image batch
-  const batchSize = 3;       // show 3 images per batch
-
- async function runCustomCycle(){
-  await fetchCustomData();
   let currentBatchIndex = 0;
   const batchSize = 3;
-  async function cycle(){
+
+  async function cycle() {
     // Welcome
     setActiveSlide(welcomeSlide); showBackgroundImage(null);
     await new Promise(r=>setTimeout(r,5000));
@@ -820,7 +743,7 @@ async function runCustomCycle() {
     // Image batch
     const batch = customData.slice(currentBatchIndex,currentBatchIndex+batchSize);
     for(let row of batch){
-      const imgUrl = Array.isArray(row)?row.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):row.img;
+      const imgUrl = Array.isArray(row)? row.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):row.img;
       setActiveSlide(null); showBackgroundImage(imgUrl);
       await new Promise(r=>setTimeout(r,5000));
     }
@@ -828,21 +751,26 @@ async function runCustomCycle() {
     if(currentBatchIndex>=customData.length) currentBatchIndex=0;
 
     // Video
-    setActiveSlide(videoSlide); showBackgroundImage(null);
+    const videoSlide = document.getElementById("videoSlide");
     const videoFrame = document.getElementById("videoFrame");
-    videoFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    setActiveSlide(videoSlide); showBackgroundImage(null);
+    if(videoFrame?.contentWindow){
+      videoFrame.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    }
     await new Promise(r=>setTimeout(r,20000));
 
     // Vikarskema
     setActiveSlide(vikarSlide); showBackgroundImage(null);
     await new Promise(r=>setTimeout(r,30000));
 
-    cycle();
+    cycle(); // loop
   }
   cycle();
 }
 
+runCustomCycle();
 </script>
+
 </body>
 </html>
 
