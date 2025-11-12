@@ -30,7 +30,7 @@ html, body {
 .slide {
   position:absolute;
   inset:0;
-  display:flex;
+  display:none;
   justify-content:center;
   align-items:center;
   text-align:center;
@@ -39,7 +39,7 @@ html, body {
   transform:scale(1.02);
   transition:opacity 1s ease,transform 1s ease;
 }
-.slide.active {opacity:1;transform:scale(1);}
+.slide.active {opacity:1;transform:scale(1);display:flex;}
 .slide .text {
   max-width:1400px;
   font-size:clamp(28px,6vw,80px);
@@ -879,4 +879,5 @@ setInterval(async () => {
 </script>
 </body>
 </html>
+
 
