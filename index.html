@@ -336,6 +336,7 @@ html, body {
   box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
 
+/* === Fullscreen YouTube background fix === */
 #youtubeSlide {
   position: fixed;
   inset: 0;
@@ -352,6 +353,21 @@ html, body {
   height: 100%;
   border: none;
 }
+
+/* Make sure your stage and overlays stay above video */
+.stage,
+.logo,
+.datetime,
+.schedule,
+#infoBox,
+#morgensamlingSlide,
+#gardvagtSlide,
+#vikarSlide,
+#customSlide {
+  position: relative;
+  z-index: 2;
+}
+
 
 
 
@@ -751,6 +767,7 @@ setInterval(async()=>{
 
 </body>
 </html>
+
 
 
 
