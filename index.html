@@ -450,14 +450,6 @@ setInterval(updateVikarskemaDateTime, 1000);
 updateVikarskemaDateTime();
 
 
-// ===== Enable Sounds =====
-window.addEventListener("load",()=>{
-  const m=document.getElementById("morgensamlingSound");
-  const g=document.getElementById("gardvagtSound");
-  const h=document.getElementById("huskGardvagtSound");
-  m.play().catch(()=>{}); g.play().catch(()=>{}); h.play().catch(()=>{});
-  setTimeout(()=>{ m.muted=false; g.muted=false; h.muted=false; },1000);
-});
 
 
 // ===== Gårdvagtskema Rendering =====
