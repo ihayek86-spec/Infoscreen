@@ -1,361 +1,756 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="da">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Infoskærm — TV safe</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Infoskærm Al-irchad Skolen</title>
 <style>
-  /* Basic, TV-friendly styling */
-  :root{
-    --overlay: rgba(255,255,255,0.85);
-    --fg:#1e293b;
-    --accent:#007bff;
-  }
-  html,body{height:100%;margin:0;background:linear-gradient(135deg,#e8f0ff,#f9fbff);font-family:system-ui,Segoe UI,Roboto,Arial;}
-  .stage{position:relative;width:100%;height:100%;overflow:hidden;}
-  /* full-screen background image (under everything) */
-  #bgImage{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;filter:brightness(0.95);}
-  .overlay{position:relative;z-index:10;padding:12px;}
-  /* slides (welcome / vikarskema / custom slide) */
-  .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:4%;z-index:11;pointer-events:none;opacity:0;transition:opacity .6s;}
-  .slide.active{opacity:1;pointer-events:auto;}
-  .text{font-weight:700;color:var(--fg);font-size:clamp(28px,5vw,64px);background:var(--overlay);padding:18px;border-radius:12px;box-shadow:0 6px 18px rgba(0,0,0,.12);}
-  /* small UI pieces */
-  .logo{position:fixed;left:12px;top:12px;z-index:15;background:var(--overlay);padding:8px;border-radius:10px;}
-  .datetime{position:fixed;right:12px;top:12px;z-index:15;background:var(--overlay);padding:10px;border-radius:10px;text-align:right;}
-  .schedule{position:fixed;right:12px;bottom:12px;z-index:15;background:var(--overlay);padding:8px;border-radius:10px;max-width:420px;overflow:hidden;}
-  #infoBox{position:fixed;left:12px;bottom:12px;z-index:15;background:var(--overlay);padding:12px;border-radius:10px;min-width:260px;max-width:48vw;}
-  /* banners */
-  #morgensamlingSlide,#gardvagtSlide{position:fixed;left:50%;transform:translateX(-50%);top:20px;z-index:20;display:none;padding:8px;border-radius:12px;}
-  #morgensamlingSlide.active,#gardvagtSlide.active{display:block;}
-  #morgensamlingText,#gardvagtText{background:rgba(255,0,0,.95);color:#fff;padding:18px 28px;border-radius:12px;font-weight:800;box-shadow:0 8px 30px rgba(255,0,0,.15);}
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap');
 
-  /* vikarskema box inside slide */
-  .vikarskema{background:rgba(255,255,255,.9);padding:12px;border-radius:12px;max-width:96vw;max-height:86vh;overflow:auto;box-shadow:0 6px 20px rgba(0,0,0,.12);}
-  .vikarskema table{width:100%;border-collapse:collapse;font-size:clamp(12px,1.6vw,18px);}
-  .vikarskema th{background:var(--accent);color:#fff;padding:6px}
-  .vikarskema td{padding:6px;border:1px solid rgba(0,0,0,.06);text-align:center}
-  .vikarskema tr.current{background:rgba(0,123,255,0.12)}
-  /* responsive safe */
-  @media (max-width:600px){ .text{font-size:20px} .schedule{display:none} }
+:root {
+  --bg: linear-gradient(135deg, #e8f0ff, #f9fbff);
+  --fg: #1e293b;
+  --overlay: rgba(255,255,255,0.85);
+  --accent: #007bff;
+}
+
+html, body {
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Tajawal',system-ui,sans-serif;
+  overflow:hidden;
+}
+.stage {
+  position:relative;
+  width:100%;
+  height:100%;
+}
+.slide {
+  position:absolute;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:4%;
+  opacity:0;
+  transform:scale(1.02);
+  transition:opacity 1s ease,transform 1s ease;
+}
+.slide.active {opacity:1;transform:scale(1);display:flex;}
+.slide .text {
+  max-width:1400px;
+  font-size:clamp(28px,6vw,80px);
+  font-weight:600;
+  color:var(--fg);
+  text-shadow:0 2px 6px rgba(255,255,255,0.9);
+}
+.slide img {
+  max-width:80%;
+  max-height:80%;
+  object-fit:contain;
+  border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);
+  transition:transform 2s ease-in-out;
+}
+.slide.active img {transform:scale(1.02);}
+
+.datetime {
+  position:absolute;
+  top:16px;
+  right:18px;
+  text-align:right;
+  background:var(--overlay);
+  padding:12px 18px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.2);
+  backdrop-filter:blur(6px);
+}
+.datetime #dateText {font-size:20px;font-weight:600;}
+.datetime #timeText {font-size:34px;font-weight:700;}
+
+.logo {
+  position:absolute;
+  top:12px;
+  left:16px;
+  background:var(--overlay);
+  padding:8px 12px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+}
+.logo img {height:60px;width:auto;opacity:0.9;}
+
+.footer {
+  position:absolute;
+  left:16px;
+  bottom:16px;
+  font-size:16px;
+  background:var(--overlay);
+  padding:10px 16px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+}
+
+#dailyTip {
+  background:#e0f7e9;
+  color:#1b5e20;
+  padding:24px 32px;
+  border-radius:18px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.1);
+  display:inline-block;
+  font-size:clamp(28px,4vw,48px);
+}
+
+/* ===== Gårdvagt Banner - glowing background ===== */
+/* ===== Gårdvagt Banner (same design as Morgensamling) ===== */
+#gardvagtSlide {
+  position: fixed;
+  top: 20px; /* same position as morgensamling */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  pointer-events: none;
+}
+
+#gardvagtSlide.active {
+  display: flex;
+}
+
+#gardvagtText {
+  background: rgba(255, 0, 0, 0.95);
+  color: white;
+  padding: 20px 50px;
+  border-radius: 18px;
+  font-size: clamp(30px, 3vw, 48px);
+  font-weight: 800;
+  text-align: center;
+  box-shadow:
+    0 0 15px rgba(255, 0, 0, 0.8),
+    0 0 30px rgba(255, 0, 0, 0.6),
+    0 0 60px rgba(255, 0, 0, 0.4);
+  animation: glowPulse 1.5s ease-in-out infinite alternate;
+}
+
+/* Pulsing red background of the banner */
+@keyframes pulseRedBanner {
+  0% { background-color: rgba(255, 0, 0, 0.85); }
+  50% { background-color: rgba(255, 80, 80, 0.95); }
+  100% { background-color: rgba(255, 0, 0, 0.85); }
+}
+
+
+/* ===== Vikarskema Styling ===== */
+#vikarSlide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  transition: opacity 0.5s ease;
+}
+#vikarSlide.active {
+  z-index: 15000;
+  background: Transparent;
+}
+
+.vikarskema {
+  background: rgba(255, 255, 255, 0.5); /* شفافية أكبر */
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1); /* تخفيف الظل */
+  width: 90%;
+  max-width: 1400px;
+  max-height: 90vh;
+  overflow: auto;
+  backdrop-filter: blur(3px); /* ضبابية أقل لزيادة وضوح الخلفية */
+}
+
+
+.vikarskema table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(14px, 2vw, 22px);
+}
+.vikarskema th, .vikarskema td {
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 6px 10px;
+  text-align: center;
+}
+.vikarskema th {
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+}
+.vikarskema tbody tr:nth-child(even) { background: rgba(0,0,0,0.04); }
+.vikarskema tbody tr.current { background: rgba(0, 123, 255, 0.2) !important; }
+
+/* إزالة أي bold افتراضي */
+.vikarskema tbody tr {
+  font-weight: normal !important;
+}
+
+/* العمود السادس أبيض */
+.vikarskema td:nth-child(6), .vikarskema th:nth-child(6) { 
+  background-color: white; 
+  color: var(--fg);
+}
+
+/* Schedule table */
+.schedule {
+  position:absolute;
+  bottom:16px;
+  right:18px;
+  background:var(--overlay);
+  backdrop-filter:blur(6px);
+  padding:8px 10px;              /* smaller padding */
+  border-radius:12px;            /* slightly smaller corners */
+  font-size:15px;                /* smaller text */
+  line-height:1.2;               /* tighter spacing */
+  color:var(--fg);
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  max-height:none;               /* no scrollbars */
+  overflow:hidden;               /* ensures no scrollbars appear */
+}
+.schedule table {border-collapse:collapse;width:100%;border-radius:12px;overflow:hidden;}
+.schedule th, .schedule td {
+  border: 1px solid rgba(0,0,0,0.08);
+  padding: 3px 6px;       /* smaller padding inside cells */
+  text-align: center;
+}
+
+.schedule th {background:var(--accent);color:white;font-weight:700;}
+.schedule td {background:rgba(255,255,255,0.7);}
+
+
+/* ===== Morgensamling Banner (Centered Glowing Box) ===== */
+#morgensamlingSlide {
+  position: fixed;
+  top: 20px; /* small gap from top edge */
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  pointer-events: none; /* ✅ doesn’t block the clock */
+}
+
+#morgensamlingSlide.active {
+  display: flex;
+}
+#infoBox {
+  position: fixed;
+  bottom: 25px;
+  left: 16px;
+  background: var(--overlay); /* same translucent background as others */
+  backdrop-filter: blur(6px); /* frosted glass effect */
+  color: var(--fg); /* main text color */
+  padding: 14px 20px;
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  font-size: clamp(18px, 1.8vw, 24px);
+  font-weight: 600;
+  text-align: left;
+  z-index: 10000;
+  transition: opacity 0.8s ease, transform 0.5s ease;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+#infoBox.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+
+#morgensamlingText {
+  background: rgba(255, 0, 0, 0.95);
+  color: white;
+  padding: 20px 50px;
+  border-radius: 18px;
+  font-size: clamp(30px, 3vw, 48px);
+  font-weight: 800;
+  text-align: center;
+  box-shadow:
+    0 0 15px rgba(255, 0, 0, 0.8),
+    0 0 30px rgba(255, 0, 0, 0.6),
+    0 0 60px rgba(255, 0, 0, 0.4);
+  animation: glowPulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes glowPulse {
+  0% {
+    box-shadow:
+      0 0 15px rgba(255, 0, 0, 0.8),
+      0 0 30px rgba(255, 0, 0, 0.6),
+      0 0 60px rgba(255, 0, 0, 0.4);
+    transform: scale(1);
+  }
+  100% {
+    box-shadow:
+      0 0 25px rgba(255, 0, 0, 1),
+      0 0 50px rgba(255, 0, 0, 0.8),
+      0 0 80px rgba(255, 0, 0, 0.6);
+    transform: scale(1.03);
+  }
+}
+#customSlide {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 20000; /* أعلى من كل شيء */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  background: rgba(0,0,0,0.2); /* نصف شفاف */
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+#customSlide.active {
+  opacity: 1;
+}
+
+#customContent {
+  text-align: center;
+  color: white;
+  font-size: clamp(28px, 5vw, 64px);
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.7);
+}
+
+#customContent img {
+  max-width: 100%;
+  max-height: 100%;
+  margin-top: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* === Fullscreen YouTube background fix === */
+#youtubeSlide {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0; /* behind everything */
+  background: black;
+  pointer-events: none; /* prevents blocking clicks */
+}
+
+#youtubeContainer, 
+#youtubeContainer iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+
+
+
 </style>
 </head>
 <body>
 
-<div class="stage">
-
-  <!-- Background image (single element) -->
-  <img id="bgImage" src="" alt="" aria-hidden="true">
-
-  <!-- Slides -->
-  <div class="slide active" id="welcomeSlide"><div class="text">👋 Velkommen til Al Irchad skolen</div></div>
-
-  <div class="slide" id="customSlide"><div class="text" id="customContent">Indlæser billeder…</div></div>
-
-  <div class="slide" id="vikarSlide" aria-hidden="true">
-    <div class="vikarskema">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;font-weight:700;">
-        <div>Vikarskema</div>
-        <div>📅 <span id="vikarskemaDate">–</span></div>
-        <div>⏰ <span id="vikarskemaClock">–:–:–</span></div>
-      </div>
-      <div id="vikarskemaContent">Indlæser vikarskema…</div>
-    </div>
+<div class="stage" id="stage">
+  
+<div class="slide active"><div class="text">👋 Velkommen til Al Irchad skolen</div></div>
+<!-- Custom Slide for text + images from Google Sheet -->
+<div class="slide" id="customSlide">
+  <div id="customContent"></div>
+</div>
+<!-- YouTube Slide -->
+<div class="slide" id="youtubeSlide">
+  <div id="youtubeContainer">
+    <iframe id="youtubeIframe" width="100%" height="100%" 
+      src="https://www.youtube.com/embed/51Nq8LWFtUk?enablejsapi=1&rel=0&autoplay=1&mute=1" 
+      frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen></iframe>
   </div>
-
 </div>
 
-<!-- Overlays -->
-<div class="logo overlay"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo" style="height:56px"></div>
-<div class="datetime overlay"><div id="dateText">–</div><div id="timeText" style="font-weight:700">–</div></div>
-<div id="infoBox" class="overlay">Henter info…</div>
-<div class="schedule overlay" id="schedule">Indlæser skema…</div>
+  <!-- Vikarskema Slide -->
+  <div class="slide" id="vikarSlide">
+    <div class="vikarskema">
+     <div id="vikarskemaHeader" style="
+  display:flex;
+  justify-content:Left;
+  align-items:center;
+  gap:20px; /* زيادة التباعد بين العناصر */
+  font-size:clamp(24px,1vw,30px); /* تخفيف حجم الخط قليلاً */
+  font-weight:700;
+  margin-bottom:20px;
+  flex-wrap:wrap;
+">
+  <span id="vikarskemaTitle">Vikarskema</span>
+  <span>📅 <span id="vikarskemaDate">–</span></span>
+  <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
+</div>
 
-<!-- Banners -->
-<div id="morgensamlingSlide"><div id="morgensamlingText">⏰ Det er tid til morgensamling!</div></div>
-<div id="gardvagtSlide"><div id="gardvagtText">🔔 Gårdvagt!</div></div>
+      <div id="vikarskemaContent">Indlæser vikarskema...</div>
+    </div>
+  </div>
+</div>
 
-<!-- Audio elements — use raw.githubusercontent URLs (see notes below) -->
-<audio id="morgensamlingSound" preload="auto" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3"></audio>
-<audio id="huskGardvagtSound" preload="auto" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3"></audio>
+
+<div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="Al‑Irchad Skolen Logo"></div>
+
+<div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
+<div class="schedule" id="schedule"></div>
+
+<div id="morgensamlingSlide">
+  <div id="morgensamlingText">⏰ Det er tid til morgensamling!</div>
+</div>
+
+<div id="gardvagtSlide">
+  <div id="gardvagtText">🔔 Gårdvagt!</div>
+</div>
+<div id="infoBox"></div>
+
+
+<audio id="morgensamlingSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3" muted></audio>
+<audio id="huskGardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
+
+
 
 <script>
-/* ========== CONFIG ========== */
-/* Keep fetch intervals conservative for TV (seconds) */
-const FETCH_IMAGES_INTERVAL = 30000;   // 30s fetch google sheet images
-const FETCH_VIKAR_INTERVAL  = 60000;   // 60s vikarskema
-const FETCH_INFO_INTERVAL   = 60000;   // 60s info/weather
-const SLIDE_WELCOME_MS      = 5000;
-const SLIDE_IMAGE_MS        = 5000;
-const SLIDE_VIKAR_MS        = 30000;
-
-/* Replace these URLs with your own scripts if needed */
-const customWebhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
-const vikarUrl = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
-const infoSheetUrl = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
-
-/* ========== DOM ========== */
-const bgImage = document.getElementById('bgImage');
-const slides = {
-  welcome: document.getElementById('welcomeSlide'),
-  custom: document.getElementById('customSlide'),
-  vikar: document.getElementById('vikarSlide')
-};
-const customContent = document.getElementById('customContent');
-const infoBox = document.getElementById('infoBox');
-const scheduleEl = document.getElementById('schedule');
-const vikarContent = document.getElementById('vikarskemaContent');
-const vikarDateEl = document.getElementById('vikarskemaDate');
-const vikarClockEl = document.getElementById('vikarskemaClock');
-const dateText = document.getElementById('dateText');
-const timeText = document.getElementById('timeText');
-const morgensamlingSound = document.getElementById('morgensamlingSound');
-const huskGardvagtSound = document.getElementById('huskGardvagtSound');
-const morgensamlingBanner = document.getElementById('morgensamlingSlide');
-const gardvagtBanner = document.getElementById('gardvagtSlide');
-
-/* ========== Date & Time ========== */
+// ===== Date & Time =====
+const dateEl=document.getElementById('dateText');
+const timeEl=document.getElementById('timeText');
+const dateOptions={weekday:'long',year:'numeric',month:'long',day:'numeric'};
+const timeOptions={hour:'2-digit',minute:'2-digit',second:'2-digit'};
 function updateDateTime(){
+  const now=new Date();
+  dateEl.textContent=now.toLocaleDateString('da-DK',dateOptions);
+  timeEl.textContent=now.toLocaleTimeString('da-DK',timeOptions);
+}
+setInterval(updateDateTime,1000);updateDateTime();
+
+// ===== Vikarskema Clock & Date =====
+const vikarDateEl = document.getElementById("vikarskemaDate");
+const vikarClock = document.getElementById("vikarskemaClock");
+
+function updateVikarskemaClock(){
   const now = new Date();
-  dateText.textContent = now.toLocaleDateString('da-DK', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  timeText.textContent = now.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  vikarDateEl.textContent = now.toLocaleDateString('da-DK', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-  vikarClockEl.textContent = now.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-}
-setInterval(updateDateTime,1000);
-updateDateTime();
-
-/* ========== Simple safe fetch wrapper ========== */
-async function safeJsonFetch(url, timeout = 15000){
-  try{
-    const controller = new AbortController();
-    const id = setTimeout(()=>controller.abort(), timeout);
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(id);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    return await res.json();
-  }catch(e){
-    console.warn('fetch failed', url, e);
-    return null;
-  }
+  const h = String(now.getHours()).padStart(2,"0");
+  const m = String(now.getMinutes()).padStart(2,"0");
+  const s = String(now.getSeconds()).padStart(2,"0");
+  vikarClock.textContent = ${h}:${m}:${s};
 }
 
-/* ========== InfoBox (weather + sheet rows) ========== */
-let sheetRows = [];
-let infoIndex = 0;
-async function fetchInfoAndWeather(){
-  // weather from open-meteo (low network)
-  try{
-    const w = await safeJsonFetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius", 12000);
-    const weatherText = w && w.current_weather ? `Vind ${w.current_weather.windspeed} km/t, ${Math.round(w.current_weather.temperature)}°C` : "Vejr: -";
-    // sheet text rows
-    const sheet = await safeJsonFetch(infoSheetUrl, 12000);
-    sheetRows = (sheet && (sheet.sheets?.[0]?.rows || sheet.rows)) || [["Ingen info"]];
-    // set info items array
-    infoItems = [ () => `☀️ Vejr i Helsingør: ${weatherText}` , ...sheetRows.map(r=>() => r.join(' | ')) ];
-  }catch(e){
-    infoItems = [ () => "Fejl ved hentning af info" ];
-  }
-}
-let infoItems = [ () => "Henter..." ];
-async function rotateInfoBox(){
-  if(!infoItems || infoItems.length === 0) return;
-  infoBox.style.opacity = 0;
-  setTimeout(()=>{
-    const fn = infoItems[infoIndex % infoItems.length];
-    infoBox.textContent = typeof fn === 'function' ? fn() : String(fn);
-    infoBox.style.opacity = 1;
-    infoIndex++;
-  }, 600);
-}
-fetchInfoAndWeather().then(()=>rotateInfoBox());
-setInterval(fetchInfoAndWeather, FETCH_INFO_INTERVAL);
-setInterval(rotateInfoBox, 10000);
-
-/* ========== Vikarskema ========== */
-async function updateVikarskema(){
-  const data = await safeJsonFetch(vikarUrl, 15000);
-  if(!data){ vikarContent.innerHTML = "<em>Fejl ved indlæsning</em>"; return; }
-  // Build table (defensive)
-  const headers = data.headers || [];
-  const rows = data.rows || [];
-  let html = '<table><thead><tr>'+headers.map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>';
-  rows.forEach(r=>{
-    html += '<tr>'+r.map(c=> (typeof c === 'string' && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? `<td><img src="${c}" style="max-width:120px;max-height:80px;border-radius:6px"></td>` : `<td>${c}</td>` ).join('') +'</tr>';
-  });
-  html += '</tbody></table>';
-  vikarContent.innerHTML = html;
-  highlightCurrentVikarskemaRow();
-}
-async function highlightCurrentVikarskemaRow(){
-  try{
-    const now = new Date();
-    const nowMin = now.getHours()*60 + now.getMinutes();
-    vikarContent.querySelectorAll('tbody tr').forEach(tr => tr.classList.remove('current'));
-    vikarContent.querySelectorAll('tbody tr').forEach(tr=>{
-      const t = (tr.cells[0] && tr.cells[0].textContent) ? tr.cells[0].textContent.trim() : '';
-      if(!t || t.indexOf('-')<0) return;
-      const [s,e] = t.split('-').map(s=>s.trim());
-      const [sh,sm] = s.split(':').map(Number);
-      const [eh,em] = e.split(':').map(Number);
-      if(isNaN(sh)) return;
-      const start = sh*60 + (isNaN(sm) ? 0 : sm);
-      const end = eh*60 + (isNaN(em) ? 0 : em);
-      if(nowMin >= start && nowMin < end) tr.classList.add('current');
-    });
-  }catch(e){}
-}
-updateVikarskema();
-setInterval(updateVikarskema, FETCH_VIKAR_INTERVAL);
-
-/* ========== Schedule (static local) ========== */
-const schedules={1:{title:"Gårdvagtskema", rows:[["9:10-09:20","PP","EY","JL","TN","MA"],["10:50-11:15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema", rows:[["9:10-09:20","NC","EY","EK","TN","IR"],["10:50-11:15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema", rows:[["9:10-09:20","NC","AD","SJ","LL","JL"],["10:50-11:15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema", rows:[["9:10-09:20","NC","EY","MB","AFH","MT"],["10:50-11:15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09:20","AD","MB","KP","MT","MA"],["10:50-11:15","MA","MB","MP","AFH","MT"]]}};
-function renderStaticSchedule(){
-  const d = new Date().getDay();
-  const sch = schedules[d] || null;
-  if(!sch){ scheduleEl.innerHTML = ''; return; }
-  let html = '<table style="border-collapse:collapse;width:100%"><thead><tr><th colspan="6">'+sch.title+'</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>';
-  sch.rows.forEach(r => html += '<tr>' + r.map(c => `<td style="border:1px solid rgba(0,0,0,.06);padding:4px">${c}</td>`).join('') + '</tr>');
-  html += '</tbody></table>';
-  scheduleEl.innerHTML = html;
-}
-renderStaticSchedule();
-
-/* ========== Gårdvagt and Morgensamling (play sounds + banner) ========== */
-const gardvagtTimes = ["09:10","10:50","12:35"];
-let lastMorgensamlingMinute = null;
-let lastGardvagtMinute = null;
-
-function checkTimeEvents(){
+function updateVikarskemaDateTime(){
   const now = new Date();
-  const minute = now.getMinutes();
-  const currentMin = now.getHours()*60 + now.getMinutes();
-
-  // Morgensamling: 08:20 - 08:25 (example)
-  const mStart = 8*60 + 20, mEnd = mStart + 5;
-  if(currentMin >= mStart && currentMin < mEnd){
-    morgensamlingBanner.classList.add('active');
-    // play once per minute
-    if(lastMorgensamlingMinute !== minute){
-      try{ morgensamlingSound.currentTime = 0; morgensamlingSound.play().catch(()=>{}); }catch(e){}
-      lastMorgensamlingMinute = minute;
-    }
-  } else {
-    morgensamlingBanner.classList.remove('active');
-    lastMorgensamlingMinute = null;
-  }
-
-  // Gårdvagt times (each 5 minute window)
-  const active = gardvagtTimes.some(t=>{
-    const [h,m] = t.split(':').map(Number);
-    const s = h*60 + m;
-    return currentMin >= s && currentMin < s + 5;
-  });
-  if(active){
-    gardvagtBanner.classList.add('active');
-    if(lastGardvagtMinute !== minute){
-      try{ huskGardvagtSound.currentTime = 0; huskGardvagtSound.play().catch(()=>{}); }catch(e){}
-      lastGardvagtMinute = minute;
-    }
-  } else {
-    gardvagtBanner.classList.remove('active');
-    lastGardvagtMinute = null;
-  }
+  const options = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+  vikarDateEl.textContent = now.toLocaleDateString('da-DK', options);
+  updateVikarskemaClock();
 }
-setInterval(checkTimeEvents,5000);
-checkTimeEvents();
+setInterval(updateVikarskemaDateTime, 1000);
+updateVikarskemaDateTime();
 
-/* ========== Image slideshow (from Google Sheet webhook) ========== */
-let customData = []; // array of rows (each row may be array or object)
-let currentBatchIndex = 0;
-const batchSize = 3;
 
-async function fetchCustomData(){
-  const data = await safeJsonFetch(customWebhookUrl, 15000);
-  if(!data) return;
-  customData = Array.isArray(data) ? data : (data.rows || data.sheets?.[0]?.rows || []);
-  // normalize to array-of-urls: keep only rows with at least one image url
-  customData = customData.filter(r => {
-    if(Array.isArray(r)) return r.some(c => typeof c==='string' && c.match(/\.(jpg|jpeg|png|gif|webp)$/i));
-    if(typeof r === 'object' && r !== null) return Object.values(r).some(v => typeof v==='string' && v.match(/\.(jpg|jpeg|png|gif|webp)$/i));
-    return false;
-  });
-}
+// ===== Enable Sounds =====
+window.addEventListener("load",()=>{
+  const m=document.getElementById("morgensamlingSound");
+  const g=document.getElementById("gardvagtSound");
+  const h=document.getElementById("huskGardvagtSound");
+  m.play().catch(()=>{}); g.play().catch(()=>{}); h.play().catch(()=>{});
+  setTimeout(()=>{ m.muted=false; g.muted=false; h.muted=false; },1000);
+});
 
-async function showImage(url){
-  if(!url){ bgImage.src = ''; return; }
-  // set bg image (single element) to reduce DOM churn
-  bgImage.src = url;
-}
+// ===== Morgensamling Check =====
+let morgensamlingPlayedCount = 0;
+function checkMorgensamling() {
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const start = 8 * 60 + 20; // 08:20
+  const end = start + 5;     // until 08:25
+  const slide = document.getElementById('morgensamlingSlide');
+  const sound = document.getElementById("morgensamlingSound");
 
-async function slideshowCycle(){
-  // welcome
-  setActive('welcome');
-  await wait(SLIDE_WELCOME_MS);
-
-  // images if any
-  if(customData.length > 0){
-    const batch = customData.slice(currentBatchIndex, currentBatchIndex + batchSize);
-    for(const row of batch){
-      let url = null;
-      if(Array.isArray(row)) url = row.find(c => typeof c==='string' && c.match(/\.(jpg|jpeg|png|gif|webp)$/i));
-      else if(typeof row === 'object') url = Object.values(row).find(v => typeof v==='string' && v.match(/\.(jpg|jpeg|png|gif|webp)$/i));
-      if(url){
-        setActive(null); // hide slides so overlays show over bg image
-        await showImage(url);
-        await wait(SLIDE_IMAGE_MS);
+  if (currentMinutes >= start && currentMinutes < end) {
+    slide.style.display = "flex";
+    slide.classList.add('active');
+    if (morgensamlingPlayedCount < 5) {
+      const currentMinute = now.getMinutes().toString();
+      if (sound.dataset.lastPlayed !== currentMinute) {
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+        sound.dataset.lastPlayed = currentMinute;
+        morgensamlingPlayedCount++;
       }
     }
-    currentBatchIndex += batchSize;
-    if(currentBatchIndex >= customData.length) currentBatchIndex = 0;
   } else {
-    // no images: show custom slide text
-    setActive('custom');
-    customContent.textContent = 'Ingen billeder i sheet';
-    await wait(SLIDE_IMAGE_MS);
+    slide.style.display = "none";
+    slide.classList.remove('active');
+    morgensamlingPlayedCount = 0;
+    delete sound.dataset.lastPlayed;
   }
-
-  // vikarskema
-  setActive('vikar');
-  await wait(SLIDE_VIKAR_MS);
-
-  // loop
-  slideshowCycle();
 }
+setInterval(checkMorgensamling, 5000);
+checkMorgensamling();
 
-/* helpers */
-function wait(ms){ return new Promise(res => setTimeout(res, ms)); }
-function setActive(name){
-  Object.values(slides).forEach(el => el.classList.remove('active'));
-  if(name && slides[name]) slides[name].classList.add('active');
-}
+// ===== Gårdvagt Check =====
+const gardvagtTimes = ["09:10","10:50","12:50"];
+let lastGardvagtMinutePlayed = null;
 
-/* initial load + intervals */
-(async function init(){
-  await fetchCustomData();
-  slideshowCycle().catch(()=>{});
-  setInterval(fetchCustomData, FETCH_IMAGES_INTERVAL);
-})();
+function checkGardvagt() {
+  const now = new Date();
+  const currentMinutes = now.getHours()*60 + now.getMinutes();
+  const slide = document.getElementById("gardvagtSlide");
+  const sound = document.getElementById("gardvagtSound");
 
-/* conservative auto-refresh of customData array for new rows */
-setInterval(async ()=>{
-  await fetchCustomData();
-}, FETCH_IMAGES_INTERVAL);
-
-/* allow audio to play on TV — attempt to unmute after a user interaction (some TVs require it) */
-function tryUnlockAudio(){
-  [morgensamlingSound, huskGardvagtSound].forEach(a => {
-    if(!a) return;
-    a.muted = false;
-    a.play()?.catch(()=>{ /* ignore */ });
-    a.pause?.();
+  const activeTime = gardvagtTimes.some(time => {
+    const [h, m] = time.split(":").map(Number);
+    const startMinutes = h*60 + m;
+    return currentMinutes >= startMinutes && currentMinutes < startMinutes + 5;
   });
-  window.removeEventListener('click', tryUnlockAudio);
-  window.removeEventListener('touchstart', tryUnlockAudio);
-}
-window.addEventListener('click', tryUnlockAudio, {passive:true});
-window.addEventListener('touchstart', tryUnlockAudio, {passive:true});
 
+  if (activeTime) {
+    slide.classList.add("active");
+    if (lastGardvagtMinutePlayed !== now.getMinutes()) {
+      sound.currentTime = 0;
+      sound.play().catch(()=>{});
+      lastGardvagtMinutePlayed = now.getMinutes();
+    }
+  } else {
+    slide.classList.remove("active");
+    lastGardvagtMinutePlayed = null;
+  }
+}
+setInterval(checkGardvagt, 5000);
+checkGardvagt();
+
+// ===== Gårdvagtskema Rendering =====
+const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}};
+function renderSchedule(){
+  const today=new Date().getDay();
+  const el=document.getElementById("schedule");
+  const sch=schedules[today];if(!sch){el.innerHTML="";return;}
+  let html=<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>;
+  sch.rows.forEach(r=>{html+="<tr>"+r.map(c=><td>${c}</td>).join("")+"</tr>";});
+  html+="</tbody></table>";el.innerHTML=html;
+}
+renderSchedule();
+
+// ===== Vikarskema Auto Update =====
+const vikarUrl="https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
+async function updateVikarskema() {
+  try {
+    const res = await fetch(vikarUrl);
+    const data = await res.json();
+    const content = document.getElementById("vikarskemaContent");
+    let html = <table>
+      <thead><tr>${data.headers.map(h => <th>${h}</th>).join("")}</tr></thead>
+      <tbody>;
+    data.rows.forEach(r => {
+      html += "<tr>";
+      r.forEach(cell => {
+        if (cell && typeof cell === "string" && cell.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+          html += <td><img src="${cell}" style="max-width:120px; max-height:80px; border-radius:8px;"></td>;
+        else html += <td>${cell}</td>;
+      });
+      html += "</tr>";
+    });
+    html += "</tbody></table>";
+    content.innerHTML = html;
+    highlightCurrentVikarskemaRow();
+  } catch (e) {
+    document.getElementById("vikarskemaContent").innerHTML = "Fejl ved indlæsning af vikarskema.";
+  }
+}
+updateVikarskema();
+setInterval(updateVikarskema,60000);
+
+function highlightCurrentVikarskemaRow() {
+  const now = new Date();
+  const hour = now.getHours(), minute = now.getMinutes();
+  const el = document.getElementById("vikarskemaContent");
+  if (!el) return;
+  el.querySelectorAll("tbody tr").forEach(r => r.classList.remove("current"));
+  el.querySelectorAll("tbody tr").forEach(row => {
+    const timeText = row.cells[0].textContent.trim();
+    const [start,end] = timeText.split("-");
+    if(!start||!end)return;
+    const [sh,sm]=start.split(":").map(Number),[eh,em]=end.split(":").map(Number);
+    const nowMin=hour*60+minute;
+    if(nowMin>=sh*60+sm && nowMin<eh*60+em) row.classList.add("current");
+  });
+}
+setInterval(highlightCurrentVikarskemaRow,60000);
+
+// ===== Weather & Info Box =====
+let currentWeather = { desc: "-", temp: "-" };
+async function fetchWeather(){
+  try{
+    const res=await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
+    const data=await res.json();
+    currentWeather.temp=Math.round(data.current_weather.temperature)+"°C";
+    currentWeather.desc=Vind ${data.current_weather.windspeed} km/t;
+  }catch(e){currentWeather.temp="-";currentWeather.desc="Fejl";}
+}
+fetchWeather();setInterval(fetchWeather,15*60*1000);
+
+const infoBox=document.getElementById("infoBox");
+const infoItems=[()=>☀️ Vejr i Helsingør: ${currentWeather.desc}, ${currentWeather.temp}];
+const infoSheetUrl="https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
+let sheetRows=[],currentIndex=0;
+
+async function fetchSheetRows(){
+  try{
+    const res=await fetch(infoSheetUrl);
+    const data=await res.json();
+    sheetRows=(data.sheets&&data.sheets[0]?.rows)||data.rows||[];
+    if(sheetRows.length===0)sheetRows=[["Ingen data fra sheet"]];
+  }catch(e){sheetRows=[["Fejl ved hentning af data"]];}
+}
+
+async function showInfoBox(){
+  infoBox.style.opacity=0;
+  setTimeout(()=>{
+    let text;
+    if(currentIndex<infoItems.length){
+      const item=infoItems[currentIndex];
+      text=typeof item==="function"?item():item;
+    }else{
+      const rowIndex=(currentIndex-infoItems.length)%sheetRows.length;
+      text=sheetRows[rowIndex].join(" | ");
+    }
+    infoBox.textContent=text;
+    infoBox.style.opacity=1;
+    currentIndex=(currentIndex+1)%(infoItems.length+sheetRows.length);
+  },800);
+}
+
+async function initInfoBox(){
+  await fetchSheetRows();
+  fetchWeather();
+  showInfoBox();
+  setInterval(showInfoBox,10000);
+  setInterval(fetchSheetRows,60000);
+  setInterval(fetchWeather,60000);
+}
+initInfoBox();
+
+// ===== YouTube IFrame API setup =====
+let ytPlayer;
+function onYouTubeIframeAPIReady(){
+  ytPlayer = new YT.Player('youtubeIframe', {
+    events: { onReady: e => e.target.mute() }
+  });
+}
+const tag=document.createElement('script');
+tag.src="https://www.youtube.com/iframe_api";
+document.body.appendChild(tag);
+
+// ===== Custom Slideshow Sequence =====
+const customWebhookUrl="https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
+let customData=[],currentImageIndex=0;
+const stage=document.querySelector(".stage");
+const vikarSlide=document.getElementById("vikarSlide");
+const welcomeSlide=document.querySelector(".slide .text").closest(".slide");
+const youtubeSlide=document.getElementById("youtubeSlide");
+const allSlides=Array.from(document.querySelectorAll(".stage .slide"));
+
+async function fetchCustomData(){
+  try{
+    const res=await fetch(customWebhookUrl);
+    const data=await res.json();
+    customData=Array.isArray(data)?data:data.rows||data.sheets?.[0]?.rows||[];
+    customData=customData.filter(r=>{
+      if(Array.isArray(r))
+        return r.some(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i));
+      return r.img&&typeof r.img==="string";
+    });
+  }catch(e){customData=[];}
+}
+
+function setActiveSlide(slide){
+  allSlides.forEach(s=>s.classList.remove("active"));
+  if(slide) slide.classList.add("active");
+}
+function showBackgroundImage(url){
+  const existing=document.getElementById("customBgImage");
+  if(existing) existing.remove();
+  if(!url) return;
+  const img=document.createElement("img");
+  img.id="customBgImage";
+  img.src=url;
+  img.style.maxWidth="80%";
+  img.style.maxHeight="80%";
+  img.style.position="absolute";
+  img.style.top="50%";
+  img.style.left="50%";
+  img.style.transform="translate(-50%,-50%) scale(0.95)";
+  img.style.transition="all 1s ease-in-out";
+  img.style.opacity="0";
+  img.style.borderRadius="16px";
+  img.style.filter="blur(1px) brightness(1.05)";
+  stage.appendChild(img);
+  requestAnimationFrame(()=>{
+    img.style.opacity="1";
+    img.style.transform="translate(-50%,-50%) scale(1)";
+  });
+}
+
+async function runCustomCycle(){
+  await fetchCustomData();
+  let currentBatchIndex=0;
+  const batchSize=3;
+
+  async function cycle(){
+    // --- Velkommen (5s)
+    setActiveSlide(welcomeSlide);
+    showBackgroundImage(null);
+    await new Promise(res=>setTimeout(res,5000));
+
+    // --- YouTube (15s)
+    setActiveSlide(youtubeSlide);
+    showBackgroundImage(null);
+    if(ytPlayer) ytPlayer.playVideo();
+    await new Promise(res=>setTimeout(res,15000));
+    if(ytPlayer) ytPlayer.pauseVideo();
+
+    // --- Images (3 x 5s)
+    const batch=customData.slice(currentBatchIndex,currentBatchIndex+batchSize);
+    for(let row of batch){
+      let imgUrl=Array.isArray(row)
+        ?row.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i))
+        :row.img;
+      setActiveSlide(null);
+      showBackgroundImage(imgUrl);
+      await new Promise(res=>setTimeout(res,5000));
+    }
+    currentBatchIndex+=batchSize;
+    if(currentBatchIndex>=customData.length) currentBatchIndex=0;
+
+    // --- Vikarskema (30s)
+    setActiveSlide(vikarSlide);
+    showBackgroundImage(null);
+    setTimeout(cycle,30000);
+  }
+  cycle();
+}
+runCustomCycle();
+
+// Auto refresh customData every 10s
+setInterval(async()=>{
+  const oldList=customData.map(r=>Array.isArray(r)?r.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):r.img);
+  await fetchCustomData();
+  const newList=customData.map(r=>Array.isArray(r)?r.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):r.img);
+  const changed=oldList.length!==newList.length||oldList.some((u,i)=>u!==newList[i]);
+  if(changed){currentImageIndex=0;}
+},10000);
 </script>
+
 </body>
 </html>
