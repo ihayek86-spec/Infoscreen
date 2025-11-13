@@ -407,18 +407,11 @@ html, body {
 <div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
 <div class="schedule" id="schedule"></div>
 
-<div id="morgensamlingSlide">
-  <div id="morgensamlingText">⏰ Det er tid til morgensamling!</div>
-</div>
 
-<div id="gardvagtSlide">
-  <div id="gardvagtText">🔔 Gårdvagt!</div>
-</div>
 <div id="infoBox"></div>
 
 
-<audio id="morgensamlingSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3" muted></audio>
-<audio id="huskGardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
+
 
 
 
@@ -466,68 +459,6 @@ window.addEventListener("load",()=>{
   setTimeout(()=>{ m.muted=false; g.muted=false; h.muted=false; },1000);
 });
 
-// ===== Morgensamling Check =====
-let morgensamlingPlayedCount = 0;
-function checkMorgensamling() {
-  const now = new Date();
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
-  const start = 8 * 60 + 20; // 08:20
-  const end = start + 5;     // until 08:25
-  const slide = document.getElementById('morgensamlingSlide');
-  const sound = document.getElementById("morgensamlingSound");
-
-  if (currentMinutes >= start && currentMinutes < end) {
-    slide.style.display = "flex";
-    slide.classList.add('active');
-    if (morgensamlingPlayedCount < 5) {
-      const currentMinute = now.getMinutes().toString();
-      if (sound.dataset.lastPlayed !== currentMinute) {
-        sound.currentTime = 0;
-        sound.play().catch(() => {});
-        sound.dataset.lastPlayed = currentMinute;
-        morgensamlingPlayedCount++;
-      }
-    }
-  } else {
-    slide.style.display = "none";
-    slide.classList.remove('active');
-    morgensamlingPlayedCount = 0;
-    delete sound.dataset.lastPlayed;
-  }
-}
-setInterval(checkMorgensamling, 5000);
-checkMorgensamling();
-
-// ===== Gårdvagt Check =====
-const gardvagtTimes = ["09:10","10:50","12:50"];
-let lastGardvagtMinutePlayed = null;
-
-function checkGardvagt() {
-  const now = new Date();
-  const currentMinutes = now.getHours()*60 + now.getMinutes();
-  const slide = document.getElementById("gardvagtSlide");
-  const sound = document.getElementById("gardvagtSound");
-
-  const activeTime = gardvagtTimes.some(time => {
-    const [h, m] = time.split(":").map(Number);
-    const startMinutes = h*60 + m;
-    return currentMinutes >= startMinutes && currentMinutes < startMinutes + 5;
-  });
-
-  if (activeTime) {
-    slide.classList.add("active");
-    if (lastGardvagtMinutePlayed !== now.getMinutes()) {
-      sound.currentTime = 0;
-      sound.play().catch(()=>{});
-      lastGardvagtMinutePlayed = now.getMinutes();
-    }
-  } else {
-    slide.classList.remove("active");
-    lastGardvagtMinutePlayed = null;
-  }
-}
-setInterval(checkGardvagt, 5000);
-checkGardvagt();
 
 // ===== Gårdvagtskema Rendering =====
 const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}};
