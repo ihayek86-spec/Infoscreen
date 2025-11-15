@@ -273,7 +273,7 @@ function highlightCurrentVikarskemaRow() {
       const lastTime = matches[matches.length - 1];
       const [h, m] = lastTime.split(":").map(Number);
 
-      const startMin = h * 60 + m - 5;  // 5 min before
+      const startMin = h * 60 + m;  // 5 min before
       const endMin = h * 60 + m + 40;   // 40 min lesson
 
       if (nowMinutes >= startMin && nowMinutes < endMin) {
