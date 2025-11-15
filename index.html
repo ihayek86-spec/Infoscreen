@@ -113,9 +113,33 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 #infoBox.show{opacity:1;transform:translateY(0)}
 
 /* datetime & logo */
-.datetime{position:fixed;top:16px;right:18px;text-align:right;background:var(--overlay);padding:12px 18px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,0.2);backdrop-filter:blur(6px);z-index:12000}
-.datetime #dateText{font-size:16px;font-weight:600}
-.datetime #timeText{font-size:22px;font-weight:700}
+.datetime {
+  position: fixed;
+  top: 16px;
+  right: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--overlay);
+  padding: 12px 18px;
+  border-radius: 14px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+  backdrop-filter: blur(6px);
+  z-index: 12000;
+}
+
+.datetime #dateText {
+  font-size: 16px;
+  font-weight: 600;
+  min-width: 220px; /* fix width so box doesn’t jump */
+}
+
+.datetime #timeText {
+  font-size: 22px;
+  font-weight: 700;
+  min-width: 90px;  /* fix width so box doesn’t jump */
+}
+
 .logo{position:fixed;top:12px;left:16px;background:var(--overlay);padding:8px 12px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.15);backdrop-filter:blur(6px);z-index:12000}
 .logo img{height:48px;width:auto;opacity:0.95}
 </style>
