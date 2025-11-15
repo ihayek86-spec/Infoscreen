@@ -62,18 +62,21 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 .schedule td{background:rgba(255,255,255,0.7)}
 
 /* vikarskema */
-.vikarskema{
-  background:rgba(255,255,255,0.5);
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.1);
-  width:100%;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  backdrop-filter:blur(3px);
+.vikarskema {
+  background: rgba(255,255,255,0.5);
+  padding: 16px;        /* existing padding */
+  padding-right: 24px;  /* extra padding on the right for border visibility */
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  backdrop-filter: blur(3px);
+  box-sizing: border-box; /* ensure padding doesn’t break width */
 }
+
 .vikarskema table {
   width: 100%;
   border-collapse: collapse;
@@ -243,7 +246,25 @@ initInfoBox();
 
 // ===== YouTube IFrame =====
 let ytPlayer;
-function onYouTubeIframeAPIReady(){if(typeof YT!=="undefined"&&document.getElementById('youtubeIframe')){ytPlayer=new YT.Player('youtubeIframe',{events:{onReady:e=>e.target.mute()}});}}
+function onYouTubeIframeAPIReady() {
+  if(typeof YT !== "undefined" && document.getElementById('youtubeIframe')){
+    ytPlayer = new YT.Player('youtubeIframe', {
+      events: {
+        onReady: e => e.target.mute(),
+        onStateChange: onPlayerStateChange
+      }
+    });
+  }
+}
+
+// Function to reload video when it ends
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    event.target.seekTo(0);   // rewind to start
+    event.target.playVideo();  // play again
+  }
+}
+
 const tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; document.body.appendChild(tag);
 </script>
 </body>
