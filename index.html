@@ -184,7 +184,9 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 <audio id="gardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
 <audio id="huskGardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
 
-
+<div id="morgensamlingReminder" style="position:fixed;bottom:50px;left:50%;transform:translateX(-50%);background:red;color:white;padding:12px 20px;border-radius:8px;font-size:20px;font-weight:700;display:none;z-index:15000">
+  Det er tid til morgensamling!
+</div>
 <script>
 // ===== Date & Time =====
 const dateEl=document.getElementById('dateText'),timeEl=document.getElementById('timeText');
@@ -242,19 +244,61 @@ async function updateVikarskema(){
 updateVikarskema(); setInterval(updateVikarskema,60000);
 
 // ===== Highlight current row =====
-function highlightCurrentVikarskemaRow(){
-  const content=document.getElementById("vikarskemaContent"); if(!content) return;
-  const now=new Date(); const nowMinutes=now.getHours()*60+now.getMinutes();
-  const rows=content.querySelectorAll("tbody tr"); rows.forEach(r=>r.classList.remove("current"));
-  rows.forEach(row=>{
-    const firstCell=row.cells[0]; if(!firstCell) return;
-    let timeText=firstCell.textContent.trim().replace(/\./g,":"); if(!timeText.includes("-")) return;
-    const [start,end]=timeText.split("-").map(s=>s.trim());
-    const [sh,sm]=start.split(":").map(Number); const [eh,em]=end.split(":").map(Number);
-    if(Number.isFinite(sh) && Number.isFinite(eh)){const startMin=sh*60+(sm||0),endMin=eh*60+(em||0); if(nowMinutes>=startMin && nowMinutes<endMin){row.classList.add("current");}}
+function highlightCurrentVikarskemaRow() {
+  const content = document.getElementById("vikarskemaContent");
+  if (!content) return;
+
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const rows = content.querySelectorAll("tbody tr");
+
+  rows.forEach(row => {
+    // Reset all cells to default first
+    Array.from(row.cells).forEach(c => {
+      c.classList.remove("current");
+      c.style.backgroundColor = "";
+      c.style.color = "";
+    });
+
+    // Function to highlight a range of columns
+    function checkAndHighlight(cellIndexStart, cellIndexEnd) {
+      const cell = row.cells[cellIndexStart];
+      if (!cell) return;
+
+      // Find the last time in the cell text (HH:MM)
+      const matches = cell.textContent.match(/(\d{1,2}):(\d{2})/g);
+      if (!matches || matches.length === 0) return;
+
+      const lastTime = matches[matches.length - 1];
+      const [h, m] = lastTime.split(":").map(Number);
+
+      const startMin = h * 60 + m - 5;  // 5 min before
+      const endMin = h * 60 + m + 40;   // 40 min lesson
+
+      if (nowMinutes >= startMin && nowMinutes < endMin) {
+        for (let i = cellIndexStart; i <= cellIndexEnd; i++) {
+          if (row.cells[i]) {
+            row.cells[i].classList.add("current");
+            row.cells[i].style.backgroundColor = "#ff4d4d"; // red
+            row.cells[i].style.color = "#fff";
+          }
+        }
+      }
+    }
+
+    // Highlight columns 1-5 based on first cell
+    checkAndHighlight(0, 4);
+
+    // Highlight columns 7-11 based on 7th cell
+    checkAndHighlight(6, 10);
   });
 }
-setInterval(highlightCurrentVikarskemaRow,60000);
+
+// Run every 30 seconds (or 10 sec for faster updates)
+setInterval(highlightCurrentVikarskemaRow, 10000);
+highlightCurrentVikarskemaRow(); // run immediately
+
 
 // ===== InfoBox =====
 let currentWeather={desc:"-",temp:"-"};
@@ -290,6 +334,24 @@ function onPlayerStateChange(event) {
 }
 
 const tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; document.body.appendChild(tag);
+
+function checkMorgensamlingReminder() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const reminder = document.getElementById("morgensamlingReminder");
+
+  // Show between 08:20 and 08:30
+  if (hours === 8 && minutes >= 20 && minutes < 30) {
+    reminder.style.display = "block";
+  } else {
+    reminder.style.display = "none";
+  }
+}
+
+// Check every 10 seconds
+setInterval(checkMorgensamlingReminder, 10000);
+checkMorgensamlingReminder();
 </script>
 </body>
 </html>
