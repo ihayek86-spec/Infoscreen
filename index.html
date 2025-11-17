@@ -6,197 +6,193 @@
 <title>Infoskærm Al Irchad skolen</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
+:root{
   --bg: linear-gradient(135deg,#e8f0ff,#f9fbff);
-  --fg: #1e293b;
+  --fg:#1e293b;
   --overlay: rgba(255,255,255,0.85);
-  --accent: #007bff;
-  --gap: 12px;
+  --accent:#007bff;
+  --gap:12px;
 }
 
 html, body {
-  height: 100%;
-  margin: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-family: 'Tajawal', system-ui, sans-serif;
-  overflow: hidden;
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Tajawal',system-ui,sans-serif;
+  overflow:hidden;
 }
 
-.wrapper {
-  display: grid;
-  grid-template-columns: 60% 40%;
-  height: 100vh;
-  gap: var(--gap);
-  padding: var(--gap);
-  box-sizing: border-box;
+/* Wrapper grid: left = 60%, right = 40% */
+.wrapper{
+  display:grid;
+  grid-template-columns:60% 40%;
+  height:100vh;
+  gap:var(--gap);
+  padding:var(--gap);
+  box-sizing:border-box;
 }
 
-/* Left Panel */
+/* Left panel: vikarskema */
 .left-panel .panel {
-  flex: 1;
-  max-height: 100%;
+  flex:1;
+  max-height:100%;
   background: rgba(255,255,255,0.35);
   border-radius: 12px;
   padding: 12px;
-  display: flex;
+  display:flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: hidden;
+  overflow:hidden;
   backdrop-filter: blur(6px);
 }
 
-/* Vikarskema */
 .vikarskema {
-  flex: 1;
-  overflow: auto;
-  display: flex;
+  flex:1;
+  overflow:auto;
+  display:flex;
   flex-direction: column;
-  gap: 12px;
+  gap:12px;
 }
 
 #vikarskemaHeader {
   display: flex;
   align-items: center;
-  gap: 12px;             /* space between title and date/clock */
-  margin-left: 80px;     /* move entire header to the right to avoid logo */
+  gap: 8px;
 }
 
-  #vikarskemaHeader #vikarskemaTitle {
-  padding-right: 12px; /* right padding */
-  font-weight: 700;
-  font-size: clamp(16px, 1.6vw, 22px);
+#vikarskemaHeader #vikarskemaTitle {
+  padding-left: 60px; /* move it right to avoid logo overlap */
+  font-weight:700;
+  font-size: clamp(16px,1.6vw,22px);
 }
 
 .vikarskema table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: clamp(14px, 2vw, 22px);
+  width:100%;
+  border-collapse:collapse;
+  font-size:clamp(14px,2vw,22px);
 }
-
 .vikarskema th, .vikarskema td {
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 6px 10px;
-  text-align: center;
-  white-space: nowrap;
+  border:1px solid rgba(0,0,0,0.12);
+  padding:6px 10px;
+  text-align:center;
+  white-space:nowrap;
 }
-
 .vikarskema th {
-  background: var(--accent);
-  color: white;
-  font-weight: 700;
+  background:var(--accent);
+  color:white;
+  font-weight:700;
 }
-
-.vikarskema tbody tr:nth-child(even) {
-  background: rgba(0,0,0,0.04);
-}
-
-.vikarskema tbody tr.current {
-  background: rgba(0,123,255,0.2) !important;
-}
+.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
+.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
 
 /* Right Panel */
 .right-panel {
-  display: grid;
-  grid-template-rows: 1fr 1fr; /* top = slideshow, bottom = gårdvagtskema */
+  display:grid;
+  grid-template-rows: 1fr auto; /* top flexible, bottom fixed */
   gap: var(--gap);
-  height: 100%;
+  height:100%;
 }
 
-/* Panels */
-.right-panel .panel {
+/* Top right panel: slideshow */
+.right-panel .panel:first-child {
   background: rgba(255,255,255,0.35);
-  border-radius: 12px;
-  padding: 12px;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border-radius:12px;
+  padding:12px;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
 /* Slideshow image */
 #slideshowImage {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+  width:100%;
+  height:100%;
+  object-fit: cover;  /* fill the panel, don't shrink bottom */
   border-radius: 18px;
-  display: block;
+  display:block;
 }
 
-/* Gårdvagtskema table */
+/* Bottom right panel: gårdvagtskema table */
+.right-panel .panel:last-child {
+  background: rgba(255,255,255,0.35);
+  border-radius:12px;
+  padding:12px;
+  overflow:auto;       /* allow scrolling if table is tall */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:200px;    /* fixed minimum height for table */
+}
+
 .schedule {
-  width: 100%;
-  height: 100%;
-  overflow: auto;
+  width:100%;
+  height:100%;
+  overflow:auto;
 }
-
-.schedule table {
-  border-collapse: collapse;
-  width: 100%;
-  table-layout: auto;
+.schedule table{
+  border-collapse:collapse;
+  width:100%;
+  table-layout:auto;
 }
-
-.schedule th, .schedule td {
-  border: 1px solid rgba(0,0,0,0.08);
-  padding: 6px;
-  text-align: center;
-  white-space: nowrap;
+.schedule th, .schedule td{
+  border:1px solid rgba(0,0,0,0.08);
+  padding:6px;
+  text-align:center;
+  white-space:nowrap;
 }
-
 .schedule th {
-  background: var(--accent);
-  color: white;
-  font-weight: 700;
+  background:var(--accent);
+  color:white;
+  font-weight:700;
+}
+.schedule td{
+  background:rgba(255,255,255,0.7);
 }
 
-.schedule td {
-  background: rgba(255,255,255,0.7);
-}
-
-/* InfoBox floating (left bottom inside left panel) */
-#infoBox {
-  position: absolute; /* relative to left panel */
-  bottom: 16px;
-  left: 16px;
-  z-index: 20000;
+/* InfoBox floating bottom left */
+#infoBox{
+  position:fixed;
+  bottom:25px;
+  left:16px;  /* left instead of right */
+  z-index:20000;
   background: var(--overlay);
-  padding: 14px 20px;
-  border-radius: 14px;
-  backdrop-filter: blur(6px);
-  font-size: clamp(16px,1.6vw,22px);
-  font-weight: 600;
-  text-align: left;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity .6s ease, transform .4s ease;
+  padding:14px 20px;
+  border-radius:14px;
+  backdrop-filter:blur(6px);
+  font-size:clamp(16px,1.6vw,22px);
+  font-weight:600;
+  text-align:left;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .6s ease,transform .4s ease;
 }
-
-#infoBox.show {
-  opacity: 1;
-  transform: translateY(0);
+#infoBox.show{
+  opacity:1;
+  transform:translateY(0);
 }
 
 /* Logo */
-.logo {
-  position: fixed;
-  top: 12px;
-  left: 16px;
-  background: var(--overlay);
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  backdrop-filter: blur(6px);
-  z-index: 12000;
+.logo{
+  position:fixed;
+  top:12px;
+  left:16px;
+  background:var(--overlay);
+  padding:8px 12px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+  z-index:12000;
 }
-
-.logo img {
-  height: 48px;
-  width: auto;
-  opacity: 0.95;
+.logo img{
+  height:48px;
+  width:auto;
+  opacity:0.95;
 }
 
 /* Hide datetime */
-.datetime { display: none !important; }
+.datetime { display:none !important; }
 
 </style>
 </head>
@@ -396,6 +392,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
