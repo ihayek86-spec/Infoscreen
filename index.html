@@ -62,7 +62,7 @@ html, body {
 }
 
 #vikarskemaHeader #vikarskemaTitle {
-  padding-left: 0; 
+  padding-left: 0;
   font-weight:700;
   font-size: clamp(26px,1.6vw,22px);
 }
@@ -87,69 +87,93 @@ html, body {
 .vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
 .vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
 
-/* Right Panel: use grid to pin bottom table */
-.right-panel {
-  display: grid;
-  grid-template-rows: 1fr auto; /* top image flexible, bottom schedule fixed */
-  gap: var(--gap);
-  height: 100%;
+/* Logo inside left panel */
+.left-panel .logo {
+  position: static;
+  margin-bottom: 8px;
+  background: var(--overlay);
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+  z-index: auto;
+}
+.left-panel .logo img {
+  height: 48px;
+  width: auto;
+  opacity: 0.95;
 }
 
-/* Top right panel: slideshow */
-.right-panel .panel:first-child {
+/* Right Panel fixed layout */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: var(--gap);
+}
+
+/* Top right panel: slideshow fills remaining space */
+.right-panel .panel.top {
+  flex: 1 1 auto;
   background: rgba(255,255,255,0.35);
   border-radius: 12px;
   padding: 12px;
-  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow: hidden;
 }
 
-/* Make the image fill the top panel completely */
+/* Slideshow image */
 #slideshowImage {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border-radius: 18px;
   display: block;
 }
 
-/* Bottom right panel: schedule table */
-.right-panel .panel:last-child {
+/* Bottom right panel: schedule stays fixed height */
+.right-panel .panel.bottom {
+  flex: 0 0 250px; /* fixed height */
+  min-height: 250px;
   background: rgba(255,255,255,0.35);
   border-radius: 12px;
   padding: 12px;
-  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;    /* fixed minimum height */
+  overflow: auto;
 }
 
 /* Schedule table styling */
 .schedule {
-  width:100%;
-  height:100%;
-  overflow:auto;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
 }
-.schedule table{
-  border-collapse:collapse;
-  width:100%;
-  table-layout:auto;
+
+.schedule table {
+  border-collapse: collapse;
+  width: 100%;
+  table-layout: auto;
 }
-.schedule th, .schedule td{
-  border:1px solid rgba(0,0,0,0.08);
-  padding:6px;
-  text-align:center;
-  white-space:nowrap;
+
+.schedule th, .schedule td {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 6px;
+  text-align: center;
+  white-space: nowrap;
 }
+
 .schedule th {
-  background:var(--accent);
-  color:white;
-  font-weight:700;
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
 }
-.schedule td{
-  background:rgba(255,255,255,0.7);
+
+.schedule td {
+  background: rgba(255, 255, 255, 0.7);
 }
 
 /* InfoBox floating bottom left */
@@ -174,68 +198,44 @@ html, body {
   transform:translateY(0);
 }
 
-/* Logo inside left panel */
-.left-panel .logo {
-  position: static;
-  margin-bottom: 8px;
-  background: var(--overlay);
-  padding: 8px 12px;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-  backdrop-filter: blur(6px);
-}
-.left-panel .logo img {
-  height: 48px;
-  width: auto;
-  opacity: 0.95;
-}
-
 /* Hide datetime */
 .datetime { display:none !important; }
+
 </style>
 </head>
 <body>
 <div class="wrapper">
-<!-- Left: vikarskema -->
-<div class="left-panel">
-  <div class="panel">
-    <div class="vikarskema">
-      <!-- Move logo above header -->
 
-      <div id="vikarskemaHeader"> 
-              <div class="logo">
-        <img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo">
+  <!-- Left panel -->
+  <div class="left-panel">
+    <div class="panel">
+      <div class="vikarskema">
+        <div id="vikarskemaHeader"> 
+          <div class="logo">
+            <img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo">
+          </div>
+          <span id="vikarskemaTitle">Vikarskema</span>
+          <span>📅 <span id="vikarskemaDate">–</span></span>
+          <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
+        </div>
+        <div id="vikarskemaContent">Indlæser vikarskema...</div>
       </div>
-        <span id="vikarskemaTitle">Vikarskema</span>
-        <span>📅 <span id="vikarskemaDate">–</span></span>
-        <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
-      </div>
-
-      <div id="vikarskemaContent">Indlæser vikarskema...</div>
     </div>
+    <div id="infoBox" aria-live="polite">Indlæser information...</div>
   </div>
 
-  <div id="infoBox" aria-live="polite">Indlæser information...</div>
-</div>
-
-  <!-- Right: slideshow top + gårdvagtskema bottom -->
+  <!-- Right panel -->
   <div class="right-panel">
-    <div class="panel">
-      <div class="slide" id="imageSlide">
-        <img id="slideshowImage" src="" alt="slideshow">
-      </div>
+    <div class="panel top">
+      <img id="slideshowImage" src="" alt="slideshow">
     </div>
-    <div class="panel">
+    <div class="panel bottom">
       <div class="schedule" id="schedule"></div>
     </div>
   </div>
 </div>
 
-<!-- Floating elements -->
-<div id="infoBox" aria-live="polite">Indlæser information...</div>
-
 <div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
-
 
 <script>
 // ===== Date & Time =====
@@ -393,6 +393,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
