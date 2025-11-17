@@ -13,17 +13,8 @@
   --accent:#007bff;
   --gap:12px;
 }
+html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
 
-html,body{
-  height:100%;
-  margin:0;
-  background:var(--bg);
-  color:var(--fg);
-  font-family:'Tajawal',system-ui,sans-serif;
-  overflow:hidden;
-}
-
-/* Wrapper */
 .wrapper{
   display:grid;
   grid-template-columns:60% 40%;
@@ -33,13 +24,7 @@ html,body{
   box-sizing:border-box;
 }
 
-/* Left panel: Vikarskema */
-.left-panel{
-  display:flex;
-  flex-direction:column;
-  gap:var(--gap);
-}
-
+.left-panel{display:flex;flex-direction:column;gap:var(--gap);}
 .left-panel .panel{
   flex:1;
   background:rgba(255,255,255,0.35);
@@ -49,16 +34,11 @@ html,body{
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
+  height:100%;
   backdrop-filter:blur(6px);
 }
 
-/* Right panel: slideshow + gårdvagtskema */
-.right-panel{
-  display:grid;
-  grid-template-rows:1fr 1fr;
-  gap:var(--gap);
-}
-
+.right-panel{display:grid;grid-template-rows:1fr 1fr;gap:var(--gap);}
 .right-panel .panel{
   background:rgba(255,255,255,0.35);
   border-radius:12px;
@@ -66,24 +46,13 @@ html,body{
   overflow:hidden;
   backdrop-filter:blur(6px);
   position:relative;
-}
-
-/* Center slideshow image inside its panel */
-.right-panel .panel:first-child{
   display:flex;
   justify-content:center;
-  align-items:center;
-}
-
-.right-panel .panel:first-child img{
-  max-width:90%;
-  max-height:90%;
-  border-radius:18px;
-  object-fit:contain;
+  align-items:center; /* center content in panel */
 }
 
 /* Vikarskema */
-.vikarskema{
+.vikarskema {
   background: rgba(255,255,255,0.5);
   padding:16px;
   border-radius:16px;
@@ -93,12 +62,12 @@ html,body{
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  overflow:hidden;
+  overflow:hidden; /* ensures content stays inside */
   backdrop-filter: blur(3px);
   box-sizing:border-box;
 }
 
-.vikarskema table{
+.vikarskema table {
   width:100%;
   border-collapse:collapse;
   font-size:clamp(14px,2vw,22px);
@@ -108,50 +77,36 @@ html,body{
   border:1px solid rgba(0,0,0,0.12);
   padding:6px 10px;
   text-align:center;
-  white-space:nowrap;
+  white-space:nowrap; /* single line text */
 }
 
-.vikarskema th{
-  background:var(--accent);
-  color:white;
-  font-weight:700;
-}
-
-.vikarskema tbody tr:nth-child(even){
-  background:rgba(0,0,0,0.04);
-}
-
-.vikarskema tbody tr.current{
-  background:rgba(0,123,255,0.2) !important;
-}
+.vikarskema th{background:var(--accent);color:white;font-weight:700}
+.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
+.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
 
 /* Gårdvagtskema */
-.schedule{
-  height:100%;
-  overflow:auto;
-}
-
+.schedule{height:100%;overflow:auto}
 .schedule table{
   border-collapse:collapse;
   width:100%;
   table-layout:auto; /* auto-fit columns individually */
 }
-
 .schedule th,.schedule td{
   border:1px solid rgba(0,0,0,0.08);
   padding:6px;
   text-align:center;
-  white-space:nowrap; /* text stays on one line */
+  white-space:nowrap; /* text stays in one line */
 }
+.schedule th{background:var(--accent);color:white;font-weight:700}
+.schedule td{background:rgba(255,255,255,0.7)}
 
-.schedule th{
-  background:var(--accent);
-  color:white;
-  font-weight:700;
-}
-
-.schedule td{
-  background:rgba(255,255,255,0.7);
+/* Slideshow image */
+#slideshowImage{
+  width:100%;
+  height:100%;
+  object-fit:contain; /* scale to fit panel, keep aspect ratio */
+  display:block;
+  border-radius:18px;
 }
 
 /* InfoBox */
@@ -168,16 +123,12 @@ html,body{
   font-size:clamp(16px,1.6vw,22px);
   font-weight:600;
   text-align:left;
-  z-index:10000;
+  z-index:20000; /* ensure it's above everything */
   opacity:0;
   transform:translateY(8px);
-  transition:opacity .6s ease,transform .4s ease;
+  transition:opacity .6s ease,transform .4s ease
 }
-
-#infoBox.show{
-  opacity:1;
-  transform:translateY(0);
-}
+#infoBox.show{opacity:1;transform:translateY(0)}
 
 /* Logo */
 .logo{
@@ -189,19 +140,12 @@ html,body{
   border-radius:12px;
   box-shadow:0 3px 10px rgba(0,0,0,0.15);
   backdrop-filter:blur(6px);
-  z-index:12000;
+  z-index:12000
 }
+.logo img{height:48px;width:auto;opacity:0.95}
 
-.logo img{
-  height:48px;
-  width:auto;
-  opacity:0.95;
-}
-
-/* Hide datetime completely */
-.datetime{
-  display:none !important;
-}
+/* Hide datetime */
+.datetime { display:none !important; }
 </style>
 </head>
 <body>
@@ -223,19 +167,19 @@ html,body{
   <div class="right-panel">
     <div class="panel">
       <div class="slide" id="imageSlide">
-        <img id="slideshowImage" src="" alt="slideshow" style="max-width:90%; max-height:90%; border-radius:18px;">
+        <img id="slideshowImage" src="" alt="slideshow">
       </div>
     </div>
     <div class="panel">
       <div class="schedule" id="schedule"></div>
+      <div id="infoBox" aria-live="polite">Indlæser information...</div>
     </div>
   </div>
 </div>
 
-        <div id="infoBox" aria-live="polite">Indlæser information...</div>
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 <div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
-  
+
 <script>
 // ===== Date & Time =====
 const dateEl=document.getElementById('dateText'),timeEl=document.getElementById('timeText');
@@ -392,6 +336,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
