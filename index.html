@@ -423,6 +423,13 @@ function checkMorgensamlingReminder() {
 // Check every 10 seconds
 setInterval(checkMorgensamlingReminder, 10000);
 checkMorgensamlingReminder();
+
+// Reload the page every 10 minutes to prevent freezing
+setInterval(() => {
+    location.reload();
+}, 600000); // 600,000 ms = 10 minutes
+
+
 </script>
 </body>
 </html>
