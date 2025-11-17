@@ -23,35 +23,27 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   padding:var(--gap);
   box-sizing:border-box;
 }
-
-/* Left Panel - Vikarskema */
-.left-panel{display:flex;flex-direction:column;gap:var(--gap);}
-.left-panel .panel{
-  flex:1;
-  background:rgba(255,255,255,0.35);
-  border-radius:12px;
-  padding:12px;
-  overflow:auto; /* scroll inside if content too large */
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  backdrop-filter:blur(6px);
+.left-panel .panel {
+  flex: 1;
+  max-height: 100%;          /* panel cannot exceed screen height */
+  background: rgba(255,255,255,0.35);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  overflow: hidden;          /* hide overflow outside panel */
+  backdrop-filter: blur(6px);
 }
 
 .vikarskema {
-  background: rgba(255,255,255,0.5);
-  padding:16px;
-  border-radius:16px;
-  box-shadow:0 4px 14px rgba(0,0,0,0.1);
-  width:100%;
-  height:100%;
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-  overflow:auto;
-  backdrop-filter: blur(3px);
-  box-sizing:border-box;
+  flex: 1;                   /* fills the panel */
+  overflow: auto;            /* scroll if content too big */
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
+
 
 .vikarskema table {
   width:100%;
@@ -345,6 +337,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
