@@ -55,7 +55,14 @@ html, body {
   gap: 12px;
 }
 
-#vikarskemaHeader #vikarskemaTitle {
+#vikarskemaHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;             /* space between title and date/clock */
+  margin-left: 80px;     /* move entire header to the right to avoid logo */
+}
+
+  #vikarskemaHeader #vikarskemaTitle {
   padding-right: 12px; /* right padding */
   font-weight: 700;
   font-size: clamp(16px, 1.6vw, 22px);
@@ -389,6 +396,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
