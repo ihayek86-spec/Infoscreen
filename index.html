@@ -120,19 +120,9 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 
 /* Datetime & Logo */
 .datetime {
-  position: fixed;
-  top:16px;
-  right:18px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background: var(--overlay);
-  padding:12px 18px;
-  border-radius:14px;
-  box-shadow:0 3px 12px rgba(0,0,0,0.2);
-  backdrop-filter:blur(6px);
-  z-index:12000
+  display: none !important;
 }
+
 .datetime #dateText{font-size:16px;font-weight:600;min-width:220px;}
 .datetime #timeText{font-size:22px;font-weight:700;min-width:90px;}
 .logo{
@@ -180,7 +170,8 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 </div>
 
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
-
+<div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
+  
 <script>
 // ===== Date & Time =====
 const dateEl=document.getElementById('dateText'),timeEl=document.getElementById('timeText');
@@ -274,5 +265,6 @@ initSlideshow();
 </script>
 </body>
 </html>
+
 
 
