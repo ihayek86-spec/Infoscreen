@@ -89,21 +89,35 @@ html, body {
 
 /* Right Panel */
 .right-panel {
-  display:grid;
-  grid-template-rows: 1fr auto; /* top flexible, bottom fixed */
+  display: flex;
+  flex-direction: column;
   gap: var(--gap);
-  height:100%;
+  height: 100%;
 }
 
 /* Top right panel: slideshow */
 .right-panel .panel:first-child {
   background: rgba(255,255,255,0.35);
-  border-radius:12px;
-  padding:12px;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  border-radius: 12px;
+  padding: 12px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1 1 auto; /* fill remaining space */
+}
+
+/* Bottom right panel: gårdvagtskema table */
+.right-panel .panel:last-child {
+  background: rgba(255,255,255,0.35);
+  border-radius: 12px;
+  padding: 12px;
+  overflow: auto;       /* allow scrolling if table is tall */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 0 0 40%;        /* fix bottom table height to 40% of right panel */
+  min-height: 200px;    /* safety minimum height */
 }
 
 /* Slideshow image */
@@ -395,6 +409,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
