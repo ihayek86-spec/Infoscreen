@@ -83,6 +83,13 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   justify-content:center;
   align-items:center;
 }
+  .right-panel .panel:last-child {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; /* pushes content to bottom */
+  overflow: auto;
+}
+
 
 /* Slideshow image */
 #slideshowImage {
@@ -115,22 +122,22 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 
 /* InfoBox floating */
 #infoBox{
-  position:fixed;
-  bottom:25px;
-  right:16px;
-  z-index:20000;
+  position: fixed;
+  bottom: 25px;
+  left: 16px;  /* move to left */
+  z-index: 20000;
   background: var(--overlay);
-  padding:14px 20px;
-  border-radius:14px;
-  backdrop-filter:blur(6px);
-  font-size:clamp(16px,1.6vw,22px);
-  font-weight:600;
-  text-align:left;
-  opacity:0;
-  transform:translateY(8px);
-  transition:opacity .6s ease,transform .4s ease;
+  padding: 14px 20px;
+  border-radius: 14px;
+  backdrop-filter: blur(6px);
+  font-size: clamp(16px,1.6vw,22px);
+  font-weight: 600;
+  text-align: left;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity .6s ease, transform .4s ease;
 }
-#infoBox.show{opacity:1;transform:translateY(0);}
+#infoBox.show { opacity:1; transform: translateY(0); }
 
 /* Logo */
 .logo{
@@ -345,6 +352,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
