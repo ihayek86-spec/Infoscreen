@@ -14,6 +14,7 @@
   --gap:12px;
 }
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
+
 .wrapper{
   display:grid;
   grid-template-columns:60% 40%;
@@ -22,6 +23,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   padding:var(--gap);
   box-sizing:border-box;
 }
+
 .left-panel{display:flex;flex-direction:column;gap:var(--gap);}
 .left-panel .panel{
   flex:1;
@@ -35,6 +37,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   height:100%;
   backdrop-filter:blur(6px);
 }
+
 .right-panel{display:grid;grid-template-rows:1fr 1fr;gap:var(--gap);}
 .right-panel .panel{
   background:rgba(255,255,255,0.35);
@@ -44,6 +47,8 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   backdrop-filter:blur(6px);
   position:relative;
 }
+
+/* Vikarskema */
 .vikarskema {
   background: rgba(255,255,255,0.5);
   padding:16px;
@@ -54,35 +59,95 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
+  overflow:hidden; /* ensures content stays inside */
   backdrop-filter: blur(3px);
   box-sizing:border-box;
 }
+
 .vikarskema table {
   width:100%;
   border-collapse:collapse;
   font-size:clamp(14px,2vw,22px);
 }
+
 .vikarskema th,.vikarskema td{
   border:1px solid rgba(0,0,0,0.12);
   padding:6px 10px;
   text-align:center;
-  white-space:nowrap;
+  white-space:nowrap; /* single line text */
 }
+
 .vikarskema th{background:var(--accent);color:white;font-weight:700}
 .vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
 .vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
+
+/* Gårdvagtskema */
 .schedule{height:100%;overflow:auto}
-.schedule table{border-collapse:collapse;width:100%;table-layout:fixed}
-.schedule th,.schedule td{border:1px solid rgba(0,0,0,0.08);padding:6px;text-align:center}
+.schedule table{
+  border-collapse:collapse;
+  width:100%;
+  table-layout:auto; /* auto-fit columns individually */
+}
+.schedule th,.schedule td{
+  border:1px solid rgba(0,0,0,0.08);
+  padding:6px;
+  text-align:center;
+  white-space:nowrap; /* text stays in one line */
+}
 .schedule th{background:var(--accent);color:white;font-weight:700}
 .schedule td{background:rgba(255,255,255,0.7)}
-#infoBox{position:fixed;bottom:25px;right:16px;background:var(--overlay);backdrop-filter:blur(6px);color:var(--fg);padding:14px 20px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:clamp(16px,1.6vw,22px);font-weight:600;text-align:left;z-index:10000;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .4s ease}
+
+/* InfoBox */
+#infoBox{
+  position:fixed;
+  bottom:25px;
+  right:16px;
+  background:var(--overlay);
+  backdrop-filter:blur(6px);
+  color:var(--fg);
+  padding:14px 20px;
+  border-radius:14px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  font-size:clamp(16px,1.6vw,22px);
+  font-weight:600;
+  text-align:left;
+  z-index:10000;
+  opacity:0;
+  transform:translateY(8px);
+  transition:opacity .6s ease,transform .4s ease
+}
 #infoBox.show{opacity:1;transform:translateY(0)}
-.datetime {position: fixed;top:16px;right:18px;display:flex;align-items:center;gap:12px;background: var(--overlay);padding:12px 18px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,0.2);backdrop-filter:blur(6px);z-index:12000}
+
+/* Datetime & Logo */
+.datetime {
+  position: fixed;
+  top:16px;
+  right:18px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background: var(--overlay);
+  padding:12px 18px;
+  border-radius:14px;
+  box-shadow:0 3px 12px rgba(0,0,0,0.2);
+  backdrop-filter:blur(6px);
+  z-index:12000
+}
 .datetime #dateText{font-size:16px;font-weight:600;min-width:220px;}
 .datetime #timeText{font-size:22px;font-weight:700;min-width:90px;}
-.logo{position:fixed;top:12px;left:16px;background:var(--overlay);padding:8px 12px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.15);backdrop-filter:blur(6px);z-index:12000}
+.logo{
+  position:fixed;
+  top:12px;
+  left:16px;
+  background:var(--overlay);
+  padding:8px 12px;
+  border-radius:12px;
+  box-shadow:0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter:blur(6px);
+  z-index:12000
+}
 .logo img{height:48px;width:auto;opacity:0.95}
+
 </style>
 </head>
 <body>
@@ -210,3 +275,4 @@ initSlideshow();
 </script>
 </body>
 </html>
+
