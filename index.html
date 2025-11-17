@@ -96,10 +96,10 @@ html, body {
   background: rgba(0,123,255,0.2) !important;
 }
 
-/* Right panel layout */
+/* Right panel layout using grid */
 .right-panel {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: 1fr auto; /* top flexible, bottom fixed */
   gap: var(--gap);
   height: 100%;
 }
@@ -113,16 +113,6 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 1 1 auto; /* fills remaining space */
-}
-
-/* Slideshow image */
-#slideshowImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 18px;
-  display: block;
 }
 
 /* Bottom right panel: schedule table */
@@ -134,9 +124,19 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: center;
-  flex: 0 0 40%; /* fix bottom height */
-  min-height: 200px;
+  min-height: 200px;    /* fixed minimum height */
 }
+
+/* Slideshow image */
+#slideshowImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+  display: block;
+}
+
+
 
 /* Schedule table */
 .schedule {
@@ -413,6 +413,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
