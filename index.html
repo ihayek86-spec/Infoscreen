@@ -25,7 +25,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   box-sizing:border-box;
 }
 
-/* Left: vikarskema */
+/* Left panel */
 .left-panel{display:flex;flex-direction:column;gap:var(--gap);}
 .left-panel .panel{
   flex:1;
@@ -36,11 +36,10 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  height:100%;
   backdrop-filter:blur(6px);
 }
 
-/* Right: video top + schedule bottom */
+/* Right panel */
 .right-panel{display:grid;grid-template-rows:1fr 1fr;gap:var(--gap);}
 .right-panel .panel{
   background:rgba(255,255,255,0.35);
@@ -54,7 +53,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 /* iframe style */
 iframe{width:100%;height:100%;border:0;border-radius:10px}
 
-/* schedule table */
+/* schedule table (gårdvagtskema) */
 .schedule{height:100%;overflow:auto}
 .schedule table{border-collapse:collapse;width:100%;table-layout:fixed}
 .schedule th,.schedule td{border:1px solid rgba(0,0,0,0.08);padding:6px;text-align:center}
@@ -76,14 +75,12 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
   backdrop-filter: blur(3px);
   box-sizing: border-box;
 }
-
 .vikarskema table {
   width: 100%;
   border-collapse: collapse;
   font-size: clamp(14px, 2vw, 22px);
   table-layout: auto;
 }
-
 .vikarskema th,
 .vikarskema td {
   border: 1px solid rgba(0,0,0,0.12);
@@ -112,24 +109,9 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 #infoBox.show{opacity:1;transform:translateY(0)}
 
 /* datetime & logo */
-.datetime {
-  position: fixed;
-  top: 16px;
-  right: 18px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--overlay);
-  padding: 12px 18px;
-  border-radius: 14px;
-  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
-  backdrop-filter: blur(6px);
-  z-index: 12000;
-}
-
-.datetime #dateText { font-size:16px; font-weight:600; min-width:220px; }
-.datetime #timeText { font-size:22px; font-weight:700; min-width:90px; }
-
+.datetime {position: fixed;top: 16px;right: 18px;display: flex;align-items: center;gap: 12px;background: var(--overlay);padding: 12px 18px;border-radius: 14px;box-shadow: 0 3px 12px rgba(0,0,0,0.2);backdrop-filter: blur(6px);z-index: 12000;}
+.datetime #dateText {font-size: 16px;font-weight: 600;min-width: 220px;}
+.datetime #timeText {font-size: 22px;font-weight: 700;min-width: 90px;}
 .logo{position:fixed;top:12px;left:16px;background:var(--overlay);padding:8px 12px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.15);backdrop-filter:blur(6px);z-index:12000}
 .logo img{height:48px;width:auto;opacity:0.95}
 </style>
@@ -137,8 +119,7 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 <body>
 
 <div class="wrapper">
-
-  <!-- Left: vikarskema 60% -->
+  <!-- Left: vikarskema -->
   <div class="left-panel">
     <div class="panel">
       <div class="vikarskema">
@@ -152,33 +133,27 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
     </div>
   </div>
 
-  <!-- Right: slideshow top + schedule bottom -->
+  <!-- Right panel -->
   <div class="right-panel">
+    <!-- Top: slideshow -->
     <div class="panel">
       <div class="slide" id="imageSlide">
         <img id="slideshowImage" src="" alt="slideshow" style="max-width:90%; max-height:90%; border-radius:18px;">
       </div>
     </div>
+
+    <!-- Bottom: gårdvagtskema -->
     <div class="panel">
       <div class="schedule" id="schedule"></div>
-      <div id="infoBox" aria-live="polite">تحميل المعلومات...</div>
+      <div id="infoBox" aria-live="polite">Indlæser information...</div>
     </div>
   </div>
-
 </div>
 
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 <div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
 
-<!-- Audio elements -->
-<audio id="morgensamlingSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3" muted></audio>
-<audio id="gardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
-<audio id="huskGardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
-
-<div id="morgensamlingReminder" style="position:fixed;bottom:50px;left:50%;transform:translateX(-50%);background:red;color:white;padding:12px 20px;border-radius:8px;font-size:20px;font-weight:700;display:none;z-index:15000">
-  Det er tid til morgensamling!
-</div>
-
+<!-- JS for clocks, schedules, vikarskema, slideshow, infobox -->
 <script>
 // ===== Date & Time =====
 const dateEl=document.getElementById('dateText'),timeEl=document.getElementById('timeText');
@@ -187,40 +162,41 @@ const timeOptions={hour:'2-digit',minute:'2-digit',second:'2-digit'};
 function updateDateTime(){const now=new Date();dateEl.textContent=now.toLocaleDateString('da-DK',dateOptions);timeEl.textContent=now.toLocaleTimeString('da-DK',timeOptions);}
 setInterval(updateDateTime,1000); updateDateTime();
 
-// ===== Vikarskema update & highlight =====
-// ... Your existing scripts for vikarskema, schedule, infoBox remain unchanged
-// ===== Image Slideshow from Webhook =====
+// ===== Vikarskema clock & date =====
+const vikarDateEl=document.getElementById("vikarskemaDate"),vikarClock=document.getElementById("vikarskemaClock");
+function updateVikarskemaClock(){const now=new Date();vikarClock.textContent=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0");}
+function updateVikarskemaDateTime(){const now=new Date();vikarDateEl.textContent=now.toLocaleDateString('da-DK', {weekday:'long',year:'numeric',month:'long',day:'numeric'});updateVikarskemaClock();}
+setInterval(updateVikarskemaDateTime,1000); updateVikarskemaDateTime();
+
+// ===== Local schedules fallback =====
+
+// ===== Gårdvagtskema Rendering =====
+const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}};
+function renderSchedule(){
+  const today=new Date().getDay();
+  const el=document.getElementById("schedule");
+  const sch=schedules[today];if(!sch){el.innerHTML="";return;}
+  let html=`<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
+  sch.rows.forEach(r=>{html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";});
+  html+="</tbody></table>";el.innerHTML=html;
+}
+renderSchedule();
+
+
+// ===== Slideshow from webhook =====
 const webhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 let imageData = [], currentImageIndex = 0;
 const slideshowImg = document.getElementById("slideshowImage");
-
 async function fetchImages() {
   try {
-    const res = await fetch(webhookUrl, {cache: "no-store"});
+    const res = await fetch(webhookUrl, {cache:"no-store"});
     const data = await res.json();
     imageData = Array.isArray(data) ? data : data.rows || data.sheets?.[0]?.rows || [];
-    imageData = imageData.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-  } catch (e) {
-    console.error("Failed to fetch images:", e);
-    imageData = [];
-  }
+    imageData = imageData.map(r => Array.isArray(r)? r.find(c=>typeof c==="string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
+  } catch(e){console.error("Failed to fetch images:",e); imageData=[];}
 }
-
-async function cycleImages() {
-  if (imageData.length === 0) return;
-  slideshowImg.src = imageData[currentImageIndex];
-  currentImageIndex = (currentImageIndex + 1) % imageData.length;
-}
-
-async function initSlideshow() {
-  await fetchImages();
-  cycleImages();
-  setInterval(() => {
-    if (imageData.length === 0) fetchImages();
-    cycleImages();
-  }, 5000);
-}
-
+async function cycleImages() {if(imageData.length===0) return; slideshowImg.src=imageData[currentImageIndex]; currentImageIndex=(currentImageIndex+1)%imageData.length;}
+async function initSlideshow(){await fetchImages(); cycleImages(); setInterval(()=>{if(imageData.length===0) fetchImages(); cycleImages();},5000);}
 initSlideshow();
 </script>
 </body>
