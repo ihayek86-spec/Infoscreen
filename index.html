@@ -62,11 +62,12 @@ html, body {
 }
 
 #vikarskemaHeader #vikarskemaTitle {
-  padding-left: 60px; /* move it right to avoid logo overlap */
+  padding-left: 0; /* no overlap since logo is above */
   font-weight:700;
   font-size: clamp(16px,1.6vw,22px);
 }
 
+/* Vikarskema table */
 .vikarskema table {
   width:100%;
   border-collapse:collapse;
@@ -109,7 +110,7 @@ html, body {
 #slideshowImage {
   width:100%;
   height:100%;
-  object-fit: cover;  /* fill the panel, don't shrink bottom */
+  object-fit: cover;  /* fill the panel */
   border-radius: 18px;
   display:block;
 }
@@ -173,22 +174,21 @@ html, body {
   transform:translateY(0);
 }
 
-/* Logo */
-.logo{
-  position:fixed;
-  top:12px;
-  left:16px;
-  background:var(--overlay);
-  padding:8px 12px;
-  border-radius:12px;
-  box-shadow:0 3px 10px rgba(0,0,0,0.15);
-  backdrop-filter:blur(6px);
-  z-index:12000;
+/* Logo inside left panel */
+.left-panel .logo {
+  position: static;   /* in flow, above header */
+  margin-bottom: 8px; /* spacing before header */
+  background: var(--overlay);
+  padding: 8px 12px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+  backdrop-filter: blur(6px);
+  z-index: auto;
 }
-.logo img{
-  height:48px;
-  width:auto;
-  opacity:0.95;
+.left-panel .logo img {
+  height: 48px;
+  width: auto;
+  opacity: 0.95;
 }
 
 /* Hide datetime */
@@ -395,6 +395,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
