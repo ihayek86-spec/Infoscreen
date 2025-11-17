@@ -13,7 +13,15 @@
   --accent:#007bff;
   --gap:12px;
 }
-html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
+
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Tajawal',system-ui,sans-serif;
+  overflow:hidden;
+}
 
 .wrapper{
   display:grid;
@@ -23,32 +31,34 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   padding:var(--gap);
   box-sizing:border-box;
 }
+
 .left-panel .panel {
   flex: 1;
-  max-height: 100%;          /* panel cannot exceed screen height */
+  max-height: 100%;
   background: rgba(255,255,255,0.35);
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  overflow: hidden;          /* hide overflow outside panel */
+  overflow: hidden;
   backdrop-filter: blur(6px);
 }
 
 .vikarskema {
-  flex: 1;                   /* fills the panel */
-  overflow: auto;            /* scroll if content too big */
+  flex: 1;
+  overflow: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-#vikarskemaHeader #vikarskemaTitle {
-  padding-right: 12px; /* adjust value as needed */
-  font-weight: 700;    /* optional: make it bold */
-  font-size: clamp(16px, 1.6vw, 22px); /* optional: responsive size */
-}
 
+/* Vikarskema title padding */
+#vikarskemaHeader #vikarskemaTitle {
+  padding-right: 12px;
+  font-weight: 700;
+  font-size: clamp(16px, 1.6vw, 22px);
+}
 
 .vikarskema table {
   width:100%;
@@ -68,7 +78,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 /* Right Panel */
 .right-panel {
   display:grid;
-  grid-template-rows: 1fr 1fr; /* top = slideshow, bottom = gårdvagtskema */
+  grid-template-rows: 1fr 1fr;
   gap: var(--gap);
   height: 100%;
 }
@@ -83,29 +93,34 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   justify-content:center;
   align-items:center;
 }
-  .right-panel .panel:last-child {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end; /* pushes content to bottom */
-  overflow: auto;
-}
-
 
 /* Slideshow image */
 #slideshowImage {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* scale to fit panel */
+  object-fit: contain;
   border-radius: 18px;
   display: block;
 }
 
-/* Gårdvagtskema table */
-.schedule {
-  width:100%;
-  height:100%;
-  overflow:auto;
+/* Gårdvagtskema fixed at right bottom */
+.right-panel .panel:last-child {
+  position: fixed;
+  bottom: 25px;
+  right: 16px;
+  width: 40%;
+  max-height: 40%;
+  background: rgba(255,255,255,0.35);
+  border-radius: 12px;
+  padding: 12px;
+  overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  z-index: 1000;
 }
+
 .schedule table{
   border-collapse:collapse;
   width:100%;
@@ -120,24 +135,27 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 .schedule th{background:var(--accent);color:white;font-weight:700}
 .schedule td{background:rgba(255,255,255,0.7)}
 
-/* InfoBox floating */
-#infoBox{
+/* InfoBox fixed at left bottom */
+#infoBox {
   position: fixed;
   bottom: 25px;
-  left: 16px;  /* move to left */
+  left: 16px;
   z-index: 20000;
   background: var(--overlay);
   padding: 14px 20px;
   border-radius: 14px;
   backdrop-filter: blur(6px);
-  font-size: clamp(16px,1.6vw,22px);
+  font-size: clamp(16px, 1.6vw, 22px);
   font-weight: 600;
   text-align: left;
   opacity: 0;
   transform: translateY(8px);
-  transition: opacity .6s ease, transform .4s ease;
+  transition: opacity 0.6s ease, transform 0.4s ease;
 }
-#infoBox.show { opacity:1; transform: translateY(0); }
+#infoBox.show {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 /* Logo */
 .logo{
@@ -149,7 +167,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   border-radius:12px;
   box-shadow:0 3px 10px rgba(0,0,0,0.15);
   backdrop-filter:blur(6px);
-  z-index:12000
+  z-index:12000;
 }
 .logo img{height:48px;width:auto;opacity:0.95}
 
@@ -171,9 +189,10 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
         <div id="vikarskemaContent">Indlæser vikarskema...</div>
 
       </div>
-              <div id="infoBox" aria-live="polite">Indlæser information...</div>
+           
 
     </div>
+       <div id="infoBox" aria-live="polite">Indlæser information...</div>
   </div>
 
   <!-- Right: slideshow top + gårdvagtskema bottom -->
@@ -352,6 +371,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
