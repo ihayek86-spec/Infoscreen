@@ -100,13 +100,22 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 .schedule th{background:var(--accent);color:white;font-weight:700}
 .schedule td{background:rgba(255,255,255,0.7)}
 
-/* Slideshow image */
-#slideshowImage{
-  width:100%;
-  height:100%;
-  object-fit:contain; /* scale to fit panel, keep aspect ratio */
-  display:block;
-  border-radius:18px;
+
+
+#slideshowImage {
+  width: 100%;
+  height: 100%;       /* fills the panel height */
+  object-fit: contain; /* keeps aspect ratio inside fixed panel */
+  display: block;
+  border-radius: 18px;
+  max-width: 100%;
+  max-height: 100%;
+}
+.right-panel .panel:first-child { 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;        /* ensures it takes the full panel height */
 }
 
 /* InfoBox */
@@ -336,6 +345,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
