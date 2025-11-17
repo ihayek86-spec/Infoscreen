@@ -13,8 +13,17 @@
   --accent:#007bff;
   --gap:12px;
 }
-html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
 
+html,body{
+  height:100%;
+  margin:0;
+  background:var(--bg);
+  color:var(--fg);
+  font-family:'Tajawal',system-ui,sans-serif;
+  overflow:hidden;
+}
+
+/* Wrapper */
 .wrapper{
   display:grid;
   grid-template-columns:60% 40%;
@@ -24,7 +33,13 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   box-sizing:border-box;
 }
 
-.left-panel{display:flex;flex-direction:column;gap:var(--gap);}
+/* Left panel: Vikarskema */
+.left-panel{
+  display:flex;
+  flex-direction:column;
+  gap:var(--gap);
+}
+
 .left-panel .panel{
   flex:1;
   background:rgba(255,255,255,0.35);
@@ -34,11 +49,16 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  height:100%;
   backdrop-filter:blur(6px);
 }
 
-.right-panel{display:grid;grid-template-rows:1fr 1fr;gap:var(--gap);}
+/* Right panel: slideshow + gårdvagtskema */
+.right-panel{
+  display:grid;
+  grid-template-rows:1fr 1fr;
+  gap:var(--gap);
+}
+
 .right-panel .panel{
   background:rgba(255,255,255,0.35);
   border-radius:12px;
@@ -48,8 +68,22 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   position:relative;
 }
 
+/* Center slideshow image inside its panel */
+.right-panel .panel:first-child{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.right-panel .panel:first-child img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:18px;
+  object-fit:contain;
+}
+
 /* Vikarskema */
-.vikarskema {
+.vikarskema{
   background: rgba(255,255,255,0.5);
   padding:16px;
   border-radius:16px;
@@ -59,12 +93,12 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
-  overflow:hidden; /* ensures content stays inside */
+  overflow:hidden;
   backdrop-filter: blur(3px);
   box-sizing:border-box;
 }
 
-.vikarskema table {
+.vikarskema table{
   width:100%;
   border-collapse:collapse;
   font-size:clamp(14px,2vw,22px);
@@ -74,28 +108,51 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   border:1px solid rgba(0,0,0,0.12);
   padding:6px 10px;
   text-align:center;
-  white-space:nowrap; /* single line text */
+  white-space:nowrap;
 }
 
-.vikarskema th{background:var(--accent);color:white;font-weight:700}
-.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
-.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
+.vikarskema th{
+  background:var(--accent);
+  color:white;
+  font-weight:700;
+}
+
+.vikarskema tbody tr:nth-child(even){
+  background:rgba(0,0,0,0.04);
+}
+
+.vikarskema tbody tr.current{
+  background:rgba(0,123,255,0.2) !important;
+}
 
 /* Gårdvagtskema */
-.schedule{height:100%;overflow:auto}
+.schedule{
+  height:100%;
+  overflow:auto;
+}
+
 .schedule table{
   border-collapse:collapse;
   width:100%;
   table-layout:auto; /* auto-fit columns individually */
 }
+
 .schedule th,.schedule td{
   border:1px solid rgba(0,0,0,0.08);
   padding:6px;
   text-align:center;
-  white-space:nowrap; /* text stays in one line */
+  white-space:nowrap; /* text stays on one line */
 }
-.schedule th{background:var(--accent);color:white;font-weight:700}
-.schedule td{background:rgba(255,255,255,0.7)}
+
+.schedule th{
+  background:var(--accent);
+  color:white;
+  font-weight:700;
+}
+
+.schedule td{
+  background:rgba(255,255,255,0.7);
+}
 
 /* InfoBox */
 #infoBox{
@@ -114,17 +171,15 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   z-index:10000;
   opacity:0;
   transform:translateY(8px);
-  transition:opacity .6s ease,transform .4s ease
-}
-#infoBox.show{opacity:1;transform:translateY(0)}
-
-/* Datetime & Logo */
-.datetime {
-  display: none !important;
+  transition:opacity .6s ease,transform .4s ease;
 }
 
-.datetime #dateText{font-size:16px;font-weight:600;min-width:220px;}
-.datetime #timeText{font-size:22px;font-weight:700;min-width:90px;}
+#infoBox.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+/* Logo */
 .logo{
   position:fixed;
   top:12px;
@@ -134,10 +189,19 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   border-radius:12px;
   box-shadow:0 3px 10px rgba(0,0,0,0.15);
   backdrop-filter:blur(6px);
-  z-index:12000
+  z-index:12000;
 }
-.logo img{height:48px;width:auto;opacity:0.95}
 
+.logo img{
+  height:48px;
+  width:auto;
+  opacity:0.95;
+}
+
+/* Hide datetime completely */
+.datetime{
+  display:none !important;
+}
 </style>
 </head>
 <body>
@@ -263,7 +327,6 @@ async function cycleImages(){if(imageData.length===0) return; slideshowImg.src=i
 async function initSlideshow(){await fetchImages(); cycleImages(); setInterval(()=>{if(imageData.length===0) fetchImages(); cycleImages();},5000);}
 initSlideshow();
 
-<script>
 // ===== InfoBox =====
 let currentWeather = {desc: "-", temp: "-"};
 const infoBoxEl = document.getElementById("infoBox");
@@ -327,10 +390,9 @@ async function initInfoBox(){
 }
 initInfoBox();
 </script>
-
-</script>
 </body>
 </html>
+
 
 
 
