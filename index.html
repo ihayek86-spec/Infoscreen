@@ -198,24 +198,27 @@ html, body {
 </head>
 <body>
 <div class="wrapper">
-  <!-- Left: vikarskema -->
-  <div class="left-panel">
-    <div class="panel">
-      <div class="vikarskema">
-         <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
-        <div id="vikarskemaHeader"> 
-          <span id="vikarskemaTitle">Vikarskema</span>
-          <span>📅 <span id="vikarskemaDate">–</span></span>
-          <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
-        </div>
-        <div id="vikarskemaContent">Indlæser vikarskema...</div>
-
+<!-- Left: vikarskema -->
+<div class="left-panel">
+  <div class="panel">
+    <div class="vikarskema">
+      <!-- Move logo above header -->
+      <div class="logo">
+        <img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo">
       </div>
-           
 
+      <div id="vikarskemaHeader"> 
+        <span id="vikarskemaTitle">Vikarskema</span>
+        <span>📅 <span id="vikarskemaDate">–</span></span>
+        <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
+      </div>
+
+      <div id="vikarskemaContent">Indlæser vikarskema...</div>
     </div>
-       <div id="infoBox" aria-live="polite">Indlæser information...</div>
   </div>
+
+  <div id="infoBox" aria-live="polite">Indlæser information...</div>
+</div>
 
   <!-- Right: slideshow top + gårdvagtskema bottom -->
   <div class="right-panel">
@@ -392,6 +395,7 @@ initInfoBox();
 </script>
 </body>
 </html>
+
 
 
 
