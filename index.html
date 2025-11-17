@@ -161,11 +161,13 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
       </div>
     </div>
   </div>
+  <!-- Right-panel top: Image Slideshow -->
+<div class="panel">
+  <div class="slide" id="imageSlide">
+    <img id="slideshowImage" src="" alt="slideshow" style="max-width:90%; max-height:90%; border-radius:18px;">
+  </div>
+</div>
 
-  <!-- Right: video top + gårdvagtskema bottom -->
-  <div class="right-panel">
-    <div class="panel">
-    </div>
     <div class="panel">
       <div class="schedule" id="schedule"></div>
 <div id="infoBox" aria-live="polite">تحميل المعلومات...</div>
@@ -311,18 +313,7 @@ async function showInfoBox(){infoBoxEl.classList.remove("show"); setTimeout(()=>
 async function initInfoBox(){await fetchSheetRows(); await fetchWeather(); showInfoBox(); setInterval(showInfoBox,10000); setInterval(fetchSheetRows,60000); setInterval(fetchWeather,60000);}
 initInfoBox();
 
-// ===== YouTube IFrame =====
-let ytPlayer;
-function onYouTubeIframeAPIReady() {
-  if(typeof YT !== "undefined" && document.getElementById('youtubeIframe')){
-    ytPlayer = new YT.Player('youtubeIframe', {
-      events: {
-        onReady: e => e.target.mute(),
-        onStateChange: onPlayerStateChange
-      }
-    });
-  }
-}
+
 
 // Function to reload video when it ends
 function onPlayerStateChange(event) {
@@ -351,7 +342,45 @@ function checkMorgensamlingReminder() {
 // Check every 10 seconds
 setInterval(checkMorgensamlingReminder, 10000);
 checkMorgensamlingReminder();
+
+
+// ===== Image Slideshow from Webhook =====
+const webhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
+let imageData = [], currentImageIndex = 0;
+const slideshowImg = document.getElementById("slideshowImage");
+
+async function fetchImages() {
+  try {
+    const res = await fetch(webhookUrl, {cache: "no-store"});
+    const data = await res.json();
+    imageData = Array.isArray(data) ? data : data.rows || data.sheets?.[0]?.rows || [];
+    // Filter only valid image URLs
+    imageData = imageData.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
+  } catch (e) {
+    console.error("Failed to fetch images:", e);
+    imageData = [];
+  }
+}
+
+async function cycleImages() {
+  if (imageData.length === 0) return;
+  slideshowImg.src = imageData[currentImageIndex];
+  currentImageIndex = (currentImageIndex + 1) % imageData.length;
+}
+
+// Fetch and start cycling
+async function initSlideshow() {
+  await fetchImages();
+  cycleImages();
+  setInterval(() => {
+    if (imageData.length === 0) fetchImages(); // refresh if empty
+    cycleImages();
+  }, 5000); // change every 5 seconds
+}
+
+initSlideshow();
 </script>
 </body>
 </html>
+
 
