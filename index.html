@@ -262,9 +262,76 @@ async function fetchImages(){
 async function cycleImages(){if(imageData.length===0) return; slideshowImg.src=imageData[currentImageIndex]; currentImageIndex=(currentImageIndex+1)%imageData.length;}
 async function initSlideshow(){await fetchImages(); cycleImages(); setInterval(()=>{if(imageData.length===0) fetchImages(); cycleImages();},5000);}
 initSlideshow();
+
+<script>
+// ===== InfoBox =====
+let currentWeather = {desc: "-", temp: "-"};
+const infoBoxEl = document.getElementById("infoBox");
+const infoItems = [
+  () => `☀️ Vejr i Helsingør: ${currentWeather.desc}, ${currentWeather.temp}`
+];
+const infoSheetUrl = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
+
+let sheetRows = [], currentInfoIndex = 0;
+
+// Fetch weather
+async function fetchWeather(){
+  try{
+    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
+    const data = await res.json();
+    currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
+    currentWeather.desc = `Vind ${data.current_weather.windspeed} km/t`;
+  } catch(e) {
+    currentWeather.temp = "-"; currentWeather.desc = "Fejl";
+  }
+}
+
+// Fetch info sheet rows
+async function fetchSheetRows(){
+  try{
+    const res = await fetch(infoSheetUrl, {cache:"no-store"});
+    const data = await res.json();
+    sheetRows = (data.sheets && data.sheets[0]?.rows) || data.rows || [];
+    if(sheetRows.length === 0) sheetRows = [["Ingen data fra sheet"]];
+  } catch(e) {
+    sheetRows = [["Fejl ved hentning af data"]];
+  }
+}
+
+// Show InfoBox message
+async function showInfoBox(){
+  infoBoxEl.classList.remove("show");
+  setTimeout(()=>{
+    let text;
+    if(currentInfoIndex < infoItems.length){
+      const it = infoItems[currentInfoIndex];
+      text = (typeof it === "function") ? it() : it;
+    } else {
+      const idx = (currentInfoIndex - infoItems.length) % sheetRows.length;
+      text = (sheetRows[idx] || [""]).join(" | ");
+    }
+    infoBoxEl.textContent = text;
+    infoBoxEl.classList.add("show");
+    currentInfoIndex = (currentInfoIndex + 1) % (infoItems.length + Math.max(1,sheetRows.length));
+  }, 400);
+}
+
+// Initialize InfoBox
+async function initInfoBox(){
+  await fetchSheetRows();
+  await fetchWeather();
+  showInfoBox();
+  setInterval(showInfoBox, 10000);
+  setInterval(fetchSheetRows, 60000);
+  setInterval(fetchWeather, 60000);
+}
+initInfoBox();
+</script>
+
 </script>
 </body>
 </html>
+
 
 
 
