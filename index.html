@@ -14,8 +14,6 @@
   --gap:12px;
 }
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
-
-/* Main wrapper grid: left 60%, right 40% */
 .wrapper{
   display:grid;
   grid-template-columns:60% 40%;
@@ -24,8 +22,6 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   padding:var(--gap);
   box-sizing:border-box;
 }
-
-/* Left panel */
 .left-panel{display:flex;flex-direction:column;gap:var(--gap);}
 .left-panel .panel{
   flex:1;
@@ -36,10 +32,9 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
+  height:100%;
   backdrop-filter:blur(6px);
 }
-
-/* Right panel */
 .right-panel{display:grid;grid-template-rows:1fr 1fr;gap:var(--gap);}
 .right-panel .panel{
   background:rgba(255,255,255,0.35);
@@ -49,75 +44,48 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   backdrop-filter:blur(6px);
   position:relative;
 }
-
-/* iframe style */
-iframe{width:100%;height:100%;border:0;border-radius:10px}
-
-/* schedule table (gårdvagtskema) */
+.vikarskema {
+  background: rgba(255,255,255,0.5);
+  padding:16px;
+  border-radius:16px;
+  box-shadow:0 4px 14px rgba(0,0,0,0.1);
+  width:100%;
+  height:100%;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  backdrop-filter: blur(3px);
+  box-sizing:border-box;
+}
+.vikarskema table {
+  width:100%;
+  border-collapse:collapse;
+  font-size:clamp(14px,2vw,22px);
+}
+.vikarskema th,.vikarskema td{
+  border:1px solid rgba(0,0,0,0.12);
+  padding:6px 10px;
+  text-align:center;
+  white-space:nowrap;
+}
+.vikarskema th{background:var(--accent);color:white;font-weight:700}
+.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
+.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
 .schedule{height:100%;overflow:auto}
 .schedule table{border-collapse:collapse;width:100%;table-layout:fixed}
 .schedule th,.schedule td{border:1px solid rgba(0,0,0,0.08);padding:6px;text-align:center}
 .schedule th{background:var(--accent);color:white;font-weight:700}
 .schedule td{background:rgba(255,255,255,0.7)}
-
-/* vikarskema */
-.vikarskema {
-  background: rgba(255,255,255,0.5);
-  padding: 16px;
-  padding-right: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  backdrop-filter: blur(3px);
-  box-sizing: border-box;
-}
-.vikarskema table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: clamp(14px, 2vw, 22px);
-  table-layout: auto;
-}
-.vikarskema th,
-.vikarskema td {
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 6px 10px;
-  text-align: center;
-  white-space: nowrap;
-}
-.vikarskema th{background:var(--accent);color:white;font-weight:700}
-.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
-.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
-.vikarskema td:nth-child(6),.vikarskema th:nth-child(6){background:white;color:var(--fg)}
-#vikarskemaHeader {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 20px;
-  font-size: clamp(18px, 1.4vw, 26px);
-  font-weight: 700;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-  padding-left: 60px;
-}
-
-/* floating infoBox */
 #infoBox{position:fixed;bottom:25px;right:16px;background:var(--overlay);backdrop-filter:blur(6px);color:var(--fg);padding:14px 20px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:clamp(16px,1.6vw,22px);font-weight:600;text-align:left;z-index:10000;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .4s ease}
 #infoBox.show{opacity:1;transform:translateY(0)}
-
-/* datetime & logo */
-.datetime {position: fixed;top: 16px;right: 18px;display: flex;align-items: center;gap: 12px;background: var(--overlay);padding: 12px 18px;border-radius: 14px;box-shadow: 0 3px 12px rgba(0,0,0,0.2);backdrop-filter: blur(6px);z-index: 12000;}
-.datetime #dateText {font-size: 16px;font-weight: 600;min-width: 220px;}
-.datetime #timeText {font-size: 22px;font-weight: 700;min-width: 90px;}
+.datetime {position: fixed;top:16px;right:18px;display:flex;align-items:center;gap:12px;background: var(--overlay);padding:12px 18px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,0.2);backdrop-filter:blur(6px);z-index:12000}
+.datetime #dateText{font-size:16px;font-weight:600;min-width:220px;}
+.datetime #timeText{font-size:22px;font-weight:700;min-width:90px;}
 .logo{position:fixed;top:12px;left:16px;background:var(--overlay);padding:8px 12px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.15);backdrop-filter:blur(6px);z-index:12000}
 .logo img{height:48px;width:auto;opacity:0.95}
 </style>
 </head>
 <body>
-
 <div class="wrapper">
   <!-- Left: vikarskema -->
   <div class="left-panel">
@@ -132,17 +100,13 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
       </div>
     </div>
   </div>
-
-  <!-- Right panel -->
+  <!-- Right: slideshow top + gårdvagtskema bottom -->
   <div class="right-panel">
-    <!-- Top: slideshow -->
     <div class="panel">
       <div class="slide" id="imageSlide">
         <img id="slideshowImage" src="" alt="slideshow" style="max-width:90%; max-height:90%; border-radius:18px;">
       </div>
     </div>
-
-    <!-- Bottom: gårdvagtskema -->
     <div class="panel">
       <div class="schedule" id="schedule"></div>
       <div id="infoBox" aria-live="polite">Indlæser information...</div>
@@ -153,49 +117,94 @@ iframe{width:100%;height:100%;border:0;border-radius:10px}
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 <div class="datetime"><div id="dateText">–</div><div id="timeText">–</div></div>
 
-<!-- JS for clocks, schedules, vikarskema, slideshow, infobox -->
 <script>
 // ===== Date & Time =====
 const dateEl=document.getElementById('dateText'),timeEl=document.getElementById('timeText');
-const dateOptions={weekday:'long',year:'numeric',month:'long',day:'numeric'};
-const timeOptions={hour:'2-digit',minute:'2-digit',second:'2-digit'};
-function updateDateTime(){const now=new Date();dateEl.textContent=now.toLocaleDateString('da-DK',dateOptions);timeEl.textContent=now.toLocaleTimeString('da-DK',timeOptions);}
+function updateDateTime(){const now=new Date();dateEl.textContent=now.toLocaleDateString('da-DK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});timeEl.textContent=now.toLocaleTimeString('da-DK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 setInterval(updateDateTime,1000); updateDateTime();
 
-// ===== Vikarskema clock & date =====
+// ===== Vikarskema =====
 const vikarDateEl=document.getElementById("vikarskemaDate"),vikarClock=document.getElementById("vikarskemaClock");
 function updateVikarskemaClock(){const now=new Date();vikarClock.textContent=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0")+":"+String(now.getSeconds()).padStart(2,"0");}
-function updateVikarskemaDateTime(){const now=new Date();vikarDateEl.textContent=now.toLocaleDateString('da-DK', {weekday:'long',year:'numeric',month:'long',day:'numeric'});updateVikarskemaClock();}
+function updateVikarskemaDateTime(){const now=new Date();vikarDateEl.textContent=now.toLocaleDateString('da-DK',{weekday:'long',year:'numeric',month:'long',day:'numeric'});updateVikarskemaClock();}
 setInterval(updateVikarskemaDateTime,1000); updateVikarskemaDateTime();
 
-// ===== Local schedules fallback =====
-
-// ===== Gårdvagtskema Rendering =====
-const schedules={1:{title:"Gårdvagtskema ",rows:[["9:10-09.20","PP","EY","JL","TN","MA"],["10:50-11.15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},2:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","EK","TN","IR"],["10:50-11.15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},3:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","AD","SJ","LL","JL"],["10:50-11.15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},4:{title:"Gårdvagtskema ",rows:[["9:10-09.20","NC","EY","MB","AFH","MT"],["10:50-11.15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},5:{title:"Gårdvagtskema",rows:[["9:10-09.20","AD","MB","KP","MT","MA"],["10:50-11.15","MA","MB","MP","AFH","MT"]]}};
+// ===== Local schedule fallback =====
+const localSchedules={
+  1:{title:"Gårdvagtskema",rows:[["9:10-09:20","PP","EY","JL","TN","MA"],["10:50-11:15","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
+  2:{title:"Gårdvagtskema",rows:[["9:10-09:20","NC","EY","EK","TN","IR"],["10:50-11:15","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
+  3:{title:"Gårdvagtskema",rows:[["9:10-09:20","NC","AD","SJ","LL","JL"],["10:50-11:15","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
+  4:{title:"Gårdvagtskema",rows:[["9:10-09:20","NC","EY","MB","AFH","MT"],["10:50-11:15","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
+  5:{title:"Gårdvagtskema",rows:[["9:10-09:20","AD","MB","KP","MT","MA"],["10:50-11:15","MA","MB","MP","AFH","MT"]]}
+};
 function renderSchedule(){
   const today=new Date().getDay();
   const el=document.getElementById("schedule");
-  const sch=schedules[today];if(!sch){el.innerHTML="";return;}
-  let html=`<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
+  const sch=localSchedules[today]||{title:"Ingen skema i dag",rows:[["-","-","-","-","-","-"]]};
+  let html=`<table><thead><tr><th colspan="${Math.max(6,sch.rows[0].length)}">${sch.title}</th></tr><tr><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
   sch.rows.forEach(r=>{html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";});
-  html+="</tbody></table>";el.innerHTML=html;
+  html+="</tbody></table>"; el.innerHTML=html;
 }
 renderSchedule();
 
-
-// ===== Slideshow from webhook =====
-const webhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
-let imageData = [], currentImageIndex = 0;
-const slideshowImg = document.getElementById("slideshowImage");
-async function fetchImages() {
-  try {
-    const res = await fetch(webhookUrl, {cache:"no-store"});
-    const data = await res.json();
-    imageData = Array.isArray(data) ? data : data.rows || data.sheets?.[0]?.rows || [];
-    imageData = imageData.map(r => Array.isArray(r)? r.find(c=>typeof c==="string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-  } catch(e){console.error("Failed to fetch images:",e); imageData=[];}
+// ===== Vikarskema fetch =====
+async function updateVikarskema(){
+  const content=document.getElementById("vikarskemaContent");
+  const vikarUrl="https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
+  try{
+    const res=await fetch(vikarUrl,{cache:"no-store"}); if(!res.ok) throw new Error(res.status);
+    const data=await res.json();
+    if(!data || !Array.isArray(data.rows)||!Array.isArray(data.headers)) throw new Error("Invalid JSON");
+    let html="<table><thead><tr>"+data.headers.map(h=>`<th>${h}</th>`).join("")+"</tr></thead><tbody>";
+    data.rows.forEach(r=>{
+      html+="<tr>"+r.map(cell=>cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)?`<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>`:`<td>${cell}</td>`).join("")+"</tr>";
+    });
+    html+="</tbody></table>"; content.innerHTML=html; highlightCurrentVikarskemaRow();
+  }catch(e){
+    const today=new Date().getDay();
+    const sch=localSchedules[today]||{title:"Vikarskema",rows:[["Ingen data"]]};
+    let html=`<table><thead><tr><th colspan="${Math.max(1,(sch.rows[0]||[]).length)}">${sch.title}</th></tr></thead><tbody>`;
+    sch.rows.forEach(r=>{html+="<tr>"+r.map(c=>`<td>${c}</td>`).join("")+"</tr>";});
+    html+="</tbody></table>"; content.innerHTML=html;
+  }
 }
-async function cycleImages() {if(imageData.length===0) return; slideshowImg.src=imageData[currentImageIndex]; currentImageIndex=(currentImageIndex+1)%imageData.length;}
+updateVikarskema(); setInterval(updateVikarskema,60000);
+
+// ===== Highlight current row =====
+function highlightCurrentVikarskemaRow(){
+  const content=document.getElementById("vikarskemaContent");
+  if(!content) return;
+  const now=new Date();
+  const nowMinutes=now.getHours()*60+now.getMinutes();
+  const rows=content.querySelectorAll("tbody tr");
+  rows.forEach(row=>{
+    Array.from(row.cells).forEach(c=>{c.classList.remove("current");c.style.backgroundColor="";c.style.color="";});
+    const matches=row.cells[0]?.textContent.match(/(\d{1,2}):(\d{2})/g);
+    if(matches){
+      const [h,m]=matches[matches.length-1].split(":").map(Number);
+      const startMin=h*60+m, endMin=startMin+40;
+      if(nowMinutes>=startMin && nowMinutes<endMin){
+        Array.from(row.cells).forEach(c=>{c.classList.add("current");c.style.backgroundColor="#ff4d4d";c.style.color="#fff";});
+      }
+    }
+  });
+}
+setInterval(highlightCurrentVikarskemaRow,10000);
+highlightCurrentVikarskemaRow();
+
+// ===== Image Slideshow =====
+const webhookUrl="https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
+let imageData=[],currentImageIndex=0;
+const slideshowImg=document.getElementById("slideshowImage");
+async function fetchImages(){
+  try{
+    const res=await fetch(webhookUrl,{cache:"no-store"});
+    const data=await res.json();
+    imageData=Array.isArray(data)?data:data.rows||data.sheets?.[0]?.rows||[];
+    imageData=imageData.map(r=>Array.isArray(r)?r.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)):r.img).filter(Boolean);
+  }catch(e){console.error("Failed to fetch images:",e); imageData=[];}
+}
+async function cycleImages(){if(imageData.length===0) return; slideshowImg.src=imageData[currentImageIndex]; currentImageIndex=(currentImageIndex+1)%imageData.length;}
 async function initSlideshow(){await fetchImages(); cycleImages(); setInterval(()=>{if(imageData.length===0) fetchImages(); cycleImages();},5000);}
 initSlideshow();
 </script>
