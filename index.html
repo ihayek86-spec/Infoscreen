@@ -178,9 +178,11 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 
   <!-- Right: slideshow top + schedule bottom -->
   <div class="right-panel">
-    <div class="panel top">
-      <img id="slideshowImage" src="" alt="slideshow">
-    </div>
+<div class="panel top">
+  <img id="slideshowImage" style="display:none;" alt="slideshow">
+  <video id="slideshowVideo" style="display:none; max-height:100%; border-radius:18px;" muted autoplay playsinline></video>
+</div>
+
     <div class="panel bottom">
       <div class="schedule" id="schedule"></div>
     </div>
@@ -345,29 +347,72 @@ setInterval(highlightCurrentVikarskemaRow, 10000);
 highlightCurrentVikarskemaRow(); // run immediately
 // ===== Image slideshow from Google Sheet =====
 const webhookUrl="https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
-let imageData=[], currentImageIndex=0;
+let imageData = [];
+let currentImageIndex = 0;
+
 const slideshowImg = document.getElementById("slideshowImage");
+const slideshowVideo = document.getElementById("slideshowVideo");
+
+function isVideo(url) {
+  return url.match(/\.(mp4|webm|ogg)$/i);
+}
 
 async function fetchImages(){
   try{
     const res = await fetch(webhookUrl,{cache:"no-store"});
     const data = await res.json();
-    imageData = Array.isArray(data)?data:data.rows||data.sheets?.[0]?.rows||[];
-    imageData = imageData.map(r => Array.isArray(r)? r.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-  }catch(e){console.error("Failed to fetch images:", e); imageData=[];}
+    imageData = Array.isArray(data) ? data : data.rows || [];
+    imageData = imageData
+      .map(r => Array.isArray(r) ? r.find(c => typeof c === "string") : r.img)
+      .filter(Boolean);
+  }catch(e){
+    console.error("Failed to fetch slideshow items:", e);
+    imageData = [];
+  }
 }
 
-async function cycleImages(){ 
-  if(imageData.length===0) return; 
-  slideshowImg.src = imageData[currentImageIndex]; 
-  currentImageIndex = (currentImageIndex+1)%imageData.length;
+function showSlide() {
+  const url = imageData[currentImageIndex];
+
+  // Image
+  if (!isVideo(url)) {
+    slideshowVideo.style.display = "none";
+    slideshowVideo.pause();
+
+    slideshowImg.style.display = "block";
+    slideshowImg.src = url;
+
+    // Move on after 5 seconds
+    setTimeout(nextSlide, 5000);
+  } 
+  // Video
+  else {
+    slideshowImg.style.display = "none";
+    slideshowImg.src = "";
+
+    slideshowVideo.style.display = "block";
+    slideshowVideo.src = url;
+    slideshowVideo.load();
+    slideshowVideo.play();
+
+    // When video ends → go to next slide
+    slideshowVideo.onended = nextSlide;
+  }
+}
+
+function nextSlide() {
+  currentImageIndex = (currentImageIndex + 1) % imageData.length;
+  showSlide();
 }
 
 async function initSlideshow(){
   await fetchImages();
-  cycleImages();
-  setInterval(()=>{ if(imageData.length===0) fetchImages(); cycleImages(); }, 5000);
+  if (imageData.length > 0) showSlide();
+
+  // Refresh data every minute
+  setInterval(fetchImages, 60000);
 }
+
 initSlideshow();
 
 // ===== InfoBox =====
