@@ -215,6 +215,7 @@ renderSchedule();
 async function updateVikarskema(){
   const content = document.getElementById("vikarskemaContent");
   const vikarUrl = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
+
   try {
     const res = await fetch(vikarUrl, {cache:"no-store"});
     if(!res.ok) throw new Error(res.status);
@@ -224,23 +225,31 @@ async function updateVikarskema(){
     let html = "<table><thead><tr>" + data.headers.map(h=>`<th>${h}</th>`).join("") + "</tr></thead><tbody>";
     data.rows.forEach(r => {
       html += "<tr>" + r.map(cell =>
-        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? 
-        `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>` :
-        `<td>${cell}</td>`
+        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)
+          ? `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>`
+          : `<td>${cell}</td>`
       ).join("") + "</tr>";
     });
     html += "</tbody></table>";
+
     content.innerHTML = html;
     highlightCurrentVikarskemaRow();
+
   } catch(e){
-    const today = new Date().getDay();
-    const sch = localSchedules[today] || {title:"Vikarskema", rows:[["Ingen data"]]};
-    let html = `<table><thead><tr><th colspan="${Math.max(1,(sch.rows[0]||[]).length)}">${sch.title}</th></tr></thead><tbody>`;
-    sch.rows.forEach(r => { html += "<tr>" + r.map(c=>`<td>${c}</td>`).join("") + "</tr>"; });
-    html += "</tbody></table>";
-    content.innerHTML = html;
+    content.innerHTML = `
+      <div style="
+        padding:20px;
+        font-size:20px;
+        text-align:center;
+        font-weight:600;
+      ">
+        ❗ Kan ikke hente vikarskema...  
+        <br>Prøver igen om lidt.
+      </div>
+    `;
   }
 }
+
 updateVikarskema();
 setInterval(updateVikarskema, 60000);
 
@@ -365,7 +374,7 @@ function showSlide() {
     slideshowImg.src = item.url;
     slideshowImg.style.zIndex = 1;
 
-    setTimeout(nextSlide, 5000); // next slide in 5 sec
+setTimeout(nextSlide, 10000); // next slide in 10 sec
   } else {
     // Reset video to release memory
     slideshowVideo.pause();
@@ -404,7 +413,7 @@ function nextSlide() {
 async function initSlideshow() {
   await fetchImages();
   if (imageData.length > 0) showSlide();
-  setInterval(fetchImages, 900000); // refresh data every minute
+  setInterval(fetchImages, 90000); // refresh data every minute
 }
 
 // Start
@@ -485,5 +494,3 @@ setInterval(() => {
 </script>
 </body>
 </html>
-
-
