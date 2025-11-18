@@ -404,7 +404,7 @@ function nextSlide() {
 async function initSlideshow() {
   await fetchImages();
   if (imageData.length > 0) showSlide();
-  setInterval(fetchImages, 60000); // refresh data every minute
+  setInterval(fetchImages, 900000); // refresh data every minute
 }
 
 // Start
@@ -485,4 +485,5 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
 
