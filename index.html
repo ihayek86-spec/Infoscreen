@@ -2,7 +2,8 @@
 <html lang="da" dir="ltr">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 <title>Al Irchad skolen - Infoskærm</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -19,7 +20,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 .wrapper {
   display: grid;
   grid-template-columns: 60% 40%; /* left 60%, right 40% */
-  height: 100vh;
+  height: calc(100% - 20px);
   gap: var(--gap);
   padding: var(--gap);
   box-sizing: border-box;
@@ -201,6 +202,17 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 
 
 <script>
+// TV browser zoom reset
+document.body.style.zoom = "1.0";
+setInterval(() => {
+    document.body.style.zoom = "1.0";
+}, 30000); // reset every 30 sec (very light)
+// Reset scroll position (TV auto-scroll bug)
+setInterval(() => {
+    window.scrollTo(0, 0);
+}, 5000);
+
+
 // ===== Date & Time for vikarskema =====
 const vikarDateEl = document.getElementById("vikarskemaDate");
 const vikarClock = document.getElementById("vikarskemaClock");
