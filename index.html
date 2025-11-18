@@ -180,7 +180,15 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   <div class="right-panel">
 <div class="panel top">
   <img id="slideshowImage" style="display:none;" alt="slideshow">
-  <video id="slideshowVideo" style="display:none; max-height:100%; border-radius:18px;" muted autoplay playsinline></video>
+ <video 
+    id="slideshowVideo" 
+    style="display:none; max-height:100%; border-radius:18px;" 
+    muted 
+    autoplay 
+    playsinline
+    controlslist="nodownload nofullscreen noremoteplayback"
+></video>
+
 </div>
 
     <div class="panel bottom">
@@ -490,3 +498,4 @@ setInterval(() => {
 </script>
 </body>
 </html>
+
