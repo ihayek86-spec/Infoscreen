@@ -17,27 +17,73 @@
 html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
 
 /* Main wrapper grid: left 60%, right 40% */
-.wrapper { display: grid; grid-template-columns: 60% 40%; height: calc(100% - 20px); gap: var(--gap); padding: var(--gap); box-sizing: border-box; }
+.wrapper {
+  display: grid;
+  grid-template-columns: 60% 40%; /* left 60%, right 40% */
+  height: calc(100% - 20px);
+  gap: var(--gap);
+  padding: var(--gap);
+  box-sizing: border-box;
+}
 
-/* Left panel */
+/* Left panel: vikarskema */
 .left-panel{display:flex;flex-direction:column;gap:var(--gap);}
-.left-panel .panel{ flex:1; background:rgba(255,255,255,0.35); border-radius:12px; padding:12px; overflow:hidden; display:flex; flex-direction:column; justify-content:flex-start; height:100%; backdrop-filter:blur(6px); }
+.left-panel .panel{
+  flex:1;
+  background:rgba(255,255,255,0.35);
+  border-radius:12px;
+  padding:12px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  height:100%;
+  backdrop-filter:blur(6px);
+}
 
 /* vikarskema table */
-.vikarskema { background: rgba(255,255,255,0.5); padding: 16px 24px; border-radius: 16px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; backdrop-filter: blur(3px); box-sizing: border-box; }
-.vikarskema table { width: 100%; border-collapse: collapse; font-size: clamp(14px, 2vw, 22px); table-layout: auto; }
-.vikarskema th,.vikarskema td { border: 1px solid rgba(0,0,0,0.12); padding: 6px 10px; text-align: center; white-space: nowrap; }
+.vikarskema {
+  background: rgba(255,255,255,0.5);
+  padding: 16px;
+  padding-right: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  backdrop-filter: blur(3px);
+  box-sizing: border-box;
+}
+.vikarskema table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: clamp(14px, 2vw, 22px);
+  table-layout: auto;
+}
+.vikarskema th,.vikarskema td {
+  border: 1px solid rgba(0,0,0,0.12);
+  padding: 6px 10px;
+  text-align: center;
+  white-space: nowrap;
+}
 .vikarskema th{background:var(--accent);color:white;font-weight:700}
 .vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
 .vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
 .vikarskema td:nth-child(6),.vikarskema th:nth-child(6){background:white;color:var(--fg)}
 #vikarskemaHeader { display:flex;justify-content:flex-start;align-items:center;gap:20px;font-size:clamp(18px,1.4vw,26px);font-weight:700;margin-bottom:12px;flex-wrap:wrap;padding-left:60px; }
-
 /* Right panel */
-.right-panel { display: flex; flex-direction: column; gap: var(--gap); height: 100%; }
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: 100%;
+}
+
+/* Top panel (slideshow) */
 .right-panel .panel.top {
-  position: relative; /* important for absolute caption */
-  flex: 1 1 0;
+  flex: 1 1 0;      /* fill remaining space */
   background: rgba(255,255,255,0.35);
   border-radius: 12px;
   padding: 12px;
@@ -48,40 +94,14 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
   backdrop-filter: blur(6px);
 }
 
-/* slideshow elements */
-#slideshowImage, #slideshowVideo {
-  max-height: 100%;
-  width: auto;
-  object-fit: contain;
+/* Image inside top panel */
+#slideshowImage {
+  max-height: 100%;  /* fit parent height */
+  width: auto;       /* scale width automatically */
+  object-fit: contain; /* maintain aspect ratio */
   display: block;
   border-radius: 18px;
-  position: relative; /* needed for z-index */
-  z-index: 1;
 }
-
-#slideshowCaption {
-  position: absolute;
-  top: 20px;
-  left: 0;                    /* align to left */
-  right: 0;                   /* stretch to right */
-  margin: 0 12px;             /* optional padding from edges */
-  color: #000;
-  background: rgba(255,255,255,0.7);
-  padding: 12px 20px;
-  border-radius: 12px;
-  text-align: center;         /* keeps text centered */
-  font-size: clamp(16px,2vw,24px);
-  pointer-events: none;
-  z-index: 99999;
-  box-sizing: border-box;
-  white-space: normal;        /* allow wrapping */
-  word-wrap: break-word;      /* break long words */
-}
-
-
-
-
-
 .right-panel .panel.bottom{
   flex:0 0 250px;
   min-height:250px;
@@ -96,18 +116,43 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 }
 
 /* Schedule table */
-.schedule table { width: 100%; border-collapse: collapse; table-layout: auto; }
-.schedule th, .schedule td { border: 1px solid rgba(0,0,0,0.2); padding: 6px 10px; text-align: center; white-space: nowrap; }
-.schedule th { background: var(--accent); color: white; font-weight: 700; }
-.schedule td { background: rgba(255,255,255,0.8); }
+.schedule table {
+  width: 100%;             /* fill the panel width */
+  border-collapse: collapse; 
+  table-layout: auto;      /* columns can have different widths */
+}
+
+.schedule th, .schedule td {
+  border: 1px solid rgba(0,0,0,0.2); /* cell borders */
+  padding: 6px 10px;
+  text-align: center;
+  white-space: nowrap;    /* text stays on one line */
+}
+
+.schedule th {
+  background: var(--accent);
+  color: white;
+  font-weight: 700;
+}
+
+.schedule td {
+  background: rgba(255,255,255,0.8);
+}
 
 /* InfoBox */
 #infoBox{position:fixed;bottom:25px;right:16px;background:var(--overlay);backdrop-filter:blur(6px);color:var(--fg);padding:14px 20px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:clamp(16px,1.6vw,22px);font-weight:600;text-align:left;z-index:10000;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .4s ease}
 #infoBox.show{opacity:1;transform:translateY(0)}
+
+/* datetime & logo */
 .datetime { display:none; }
 .logo{position:fixed;top:12px;left:16px;background:var(--overlay);padding:8px 12px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,0.15);backdrop-filter:blur(6px);z-index:12000}
 .logo img{height:48px;width:auto;opacity:0.95}
-.panel { border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+
+.panel {
+  border-radius: 16px;               /* Rounded corners */
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1); /* Subtle shadow */
+}
 
 </style>
 </head>
@@ -125,19 +170,17 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
           <span>⏰ <span id="vikarskemaClock">–:–:–</span></span>
         </div>
         <div id="vikarskemaContent">Indlæser vikarskema...</div>
-        <div id="infoBox" aria-live="polite">Indlæser information...</div>
+      <div id="infoBox" aria-live="polite">Indlæser information...</div>
+
       </div>
     </div>
   </div>
 
   <!-- Right: slideshow top + schedule bottom -->
   <div class="right-panel">
-<div class="panel top" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
-  <div id="slideshowCaption" style="font-weight:700;font-size:clamp(16px,2vw,24px);text-align:center;margin-bottom:8px;"></div>
-  <img id="slideshowImage" style="display:none; width:auto; max-height:100%; border-radius:18px;" alt="slideshow">
-  <video id="slideshowVideo" style="display:none; max-height:100%; border-radius:18px;" muted autoplay playsinline></video>
-</div>
-
+    <div class="panel top">
+      <img id="slideshowImage" src="" alt="slideshow">
+    </div>
     <div class="panel bottom">
       <div class="schedule" id="schedule"></div>
     </div>
@@ -147,10 +190,11 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 
-<!-- Audio elements -->
+
+<!-- Include audio elements -->
 <audio id="morgensamlingSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3" muted></audio>
 <audio id="gardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
-
+<audio id="huskGardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
 
 <div id="morgensamlingReminder" style="position:fixed;bottom:50px;left:50%;transform:translateX(-50%);background:red;color:white;padding:12px 20px;border-radius:8px;font-size:20px;font-weight:700;display:none;z-index:15000">
   Det er tid til morgensamling!
@@ -215,7 +259,6 @@ renderSchedule();
 async function updateVikarskema(){
   const content = document.getElementById("vikarskemaContent");
   const vikarUrl = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
-
   try {
     const res = await fetch(vikarUrl, {cache:"no-store"});
     if(!res.ok) throw new Error(res.status);
@@ -225,31 +268,23 @@ async function updateVikarskema(){
     let html = "<table><thead><tr>" + data.headers.map(h=>`<th>${h}</th>`).join("") + "</tr></thead><tbody>";
     data.rows.forEach(r => {
       html += "<tr>" + r.map(cell =>
-        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)
-          ? `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>`
-          : `<td>${cell}</td>`
+        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? 
+        `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>` :
+        `<td>${cell}</td>`
       ).join("") + "</tr>";
     });
     html += "</tbody></table>";
-
     content.innerHTML = html;
     highlightCurrentVikarskemaRow();
-
   } catch(e){
-    content.innerHTML = `
-      <div style="
-        padding:20px;
-        font-size:20px;
-        text-align:center;
-        font-weight:600;
-      ">
-        ❗ Kan ikke hente vikarskema...  
-        <br>Prøver igen om lidt.
-      </div>
-    `;
+    const today = new Date().getDay();
+    const sch = localSchedules[today] || {title:"Vikarskema", rows:[["Ingen data"]]};
+    let html = `<table><thead><tr><th colspan="${Math.max(1,(sch.rows[0]||[]).length)}">${sch.title}</th></tr></thead><tbody>`;
+    sch.rows.forEach(r => { html += "<tr>" + r.map(c=>`<td>${c}</td>`).join("") + "</tr>"; });
+    html += "</tbody></table>";
+    content.innerHTML = html;
   }
 }
-
 updateVikarskema();
 setInterval(updateVikarskema, 60000);
 
@@ -308,115 +343,31 @@ function highlightCurrentVikarskemaRow() {
 // Run every 30 seconds (or 10 sec for faster updates)
 setInterval(highlightCurrentVikarskemaRow, 10000);
 highlightCurrentVikarskemaRow(); // run immediately
-
-
-// ===== Slideshow =====
-const webhookUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
-let imageData = [];
-let currentImageIndex = 0;
-
+// ===== Image slideshow from Google Sheet =====
+const webhookUrl="https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
+let imageData=[], currentImageIndex=0;
 const slideshowImg = document.getElementById("slideshowImage");
-const slideshowVideo = document.getElementById("slideshowVideo");
-const captionEl = document.getElementById("slideshowCaption");
 
-// Detect if the URL is a video
-function isVideo(url) {
-  return url.match(/\.(mp4|webm|ogg)$/i);
-}
-
-async function fetchImages() {
-  try {
-    const res = await fetch(webhookUrl, { cache: "no-store" });
+async function fetchImages(){
+  try{
+    const res = await fetch(webhookUrl,{cache:"no-store"});
     const data = await res.json();
-
-    console.log("RAW data from webhook:", data); // Debug: check structure
-
-    // Normalize data to always have caption and URL
-    imageData = (Array.isArray(data.rows) ? data.rows : (Array.isArray(data) ? data : [])).map(r => {
-      if (Array.isArray(r)) {
-        // Array of arrays: first column = caption, second = URL
-        return { caption: r[0] || "( )", url: r[1] || "" };
-      } else if (typeof r === "object" && r !== null) {
-        // Object: try first two keys (or use Column1, Column2 if known)
-        const keys = Object.keys(r);
-        return { caption: r[keys[0]] || "(no caption)", url: r[keys[1]] || "" };
-      } else {
-        return { caption: "(no caption)", url: "" };
-      }
-    }).filter(item => item.url); // remove items with no URL
-
-    console.log("Normalized slideshow data:", imageData);
-  } catch (e) {
-    console.error("Failed to fetch slideshow items:", e);
-    imageData = [];
-  }
+    imageData = Array.isArray(data)?data:data.rows||data.sheets?.[0]?.rows||[];
+    imageData = imageData.map(r => Array.isArray(r)? r.find(c=>typeof c==="string"&&c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
+  }catch(e){console.error("Failed to fetch images:", e); imageData=[];}
 }
 
-// ===== Slideshow: Robust Video Handling =====
-function showSlide() {
-  if (imageData.length === 0) return;
-
-  const item = imageData[currentImageIndex];
-
-  // Fade in caption
-  captionEl.style.opacity = 0;
-  captionEl.textContent = item.caption || "";
-  setTimeout(() => captionEl.style.opacity = 1, 50);
-
-  if (!isVideo(item.url)) {
-    // Show image
-    slideshowVideo.pause();
-    slideshowVideo.removeAttribute('src');
-    slideshowVideo.load();
-    slideshowVideo.style.display = "none";
-
-    slideshowImg.style.display = "block";
-    slideshowImg.src = item.url;
-    slideshowImg.style.zIndex = 1;
-
-setTimeout(nextSlide, 10000); // next slide in 10 sec
-  } else {
-    // Reset video to release memory
-    slideshowVideo.pause();
-    slideshowVideo.removeAttribute('src');
-    slideshowVideo.load();
-
-    // Small timeout to reduce freezing
-    setTimeout(() => {
-      slideshowVideo.src = item.url;
-      slideshowVideo.load();
-      slideshowVideo.style.display = "block";
-      slideshowVideo.style.zIndex = 1;
-      slideshowImg.style.display = "none";
-
-      slideshowVideo.play().catch(err => {
-        console.warn("Video play failed:", err);
-        // fallback to image if video fails
-        slideshowVideo.style.display = "none";
-        slideshowImg.style.display = "block";
-        slideshowImg.src = "fallback.jpg"; // optional fallback
-        setTimeout(nextSlide, 5000);
-      });
-
-      // When video ends, go to next slide
-      slideshowVideo.onended = nextSlide;
-    }, 100); // 100ms delay
-  }
+async function cycleImages(){ 
+  if(imageData.length===0) return; 
+  slideshowImg.src = imageData[currentImageIndex]; 
+  currentImageIndex = (currentImageIndex+1)%imageData.length;
 }
 
-function nextSlide() {
-  currentImageIndex = (currentImageIndex + 1) % imageData.length;
-  showSlide();
-}
-
-// Initialize slideshow
-async function initSlideshow() {
+async function initSlideshow(){
   await fetchImages();
-  if (imageData.length > 0) showSlide();
-  setInterval(fetchImages, 90000); // refresh data every minute
+  cycleImages();
+  setInterval(()=>{ if(imageData.length===0) fetchImages(); cycleImages(); }, 5000);
 }
-
-// Start
 initSlideshow();
 
 // ===== InfoBox =====
