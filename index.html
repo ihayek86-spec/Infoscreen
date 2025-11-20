@@ -140,7 +140,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
 }
 
 /* InfoBox */
-#infoBox{position:fixed;bottom:25px;right:16px;background:var(--overlay);backdrop-filter:blur(6px);color:var(--fg);padding:14px 20px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:clamp(16px,1.6vw,22px);font-weight:600;text-align:left;z-index:10000;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .4s ease}
+#infoBox{position:fixed;bottom:25px;right:16px;background:var(--overlay);backdrop-filter:blur(6px);color:var(--fg);padding:14px 20px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,0.15);font-size:clamp(28px,1.6vw,22px);font-weight:600;text-align:left;z-index:10000;opacity:0;transform:translateY(8px);transition:opacity .6s ease,transform .4s ease}
 #infoBox.show{opacity:1;transform:translateY(0)}
 
 /* datetime & logo */
@@ -173,6 +173,20 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
       <div id="infoBox" aria-live="polite">Indlæser information...</div>
 
       </div>
+<div id="staticMessageBox" style="
+  margin-top:10px;
+  width:100%;
+  padding:14px 18px;         /* top/right/bottom/left padding */
+  background:#ff3b30;
+  border-radius:12px;
+  font-size:clamp(30px,1.4vw,28px);
+  font-weight:700;
+  text-align:center;
+  color:#ffffff;
+  box-sizing:border-box;     /* make padding count inside width */
+"></div>
+
+
     </div>
   </div>
 
@@ -183,6 +197,7 @@ html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:
     </div>
     <div class="panel bottom">
       <div class="schedule" id="schedule"></div>
+
     </div>
   </div>
 
@@ -255,36 +270,54 @@ function renderSchedule(){
 }
 renderSchedule();
 
-// ===== Vikarskema fetch with fallback =====
-async function updateVikarskema(){
+async function updateVikarskema() {
   const content = document.getElementById("vikarskemaContent");
   const vikarUrl = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
-  try {
-    const res = await fetch(vikarUrl, {cache:"no-store"});
-    if(!res.ok) throw new Error(res.status);
-    const data = await res.json();
-    if(!data || !Array.isArray(data.rows) || !Array.isArray(data.headers)) throw new Error("Invalid JSON");
 
-    let html = "<table><thead><tr>" + data.headers.map(h=>`<th>${h}</th>`).join("") + "</tr></thead><tbody>";
+  try {
+    const res = await fetch(vikarUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error(res.status);
+
+    const data = await res.json();
+    if (!data || !Array.isArray(data.rows) || !Array.isArray(data.headers)) {
+      throw new Error("Invalid data format");
+    }
+
+    // Build normal vikarskema table
+    let html = "<table><thead><tr>" +
+      data.headers.map(h => `<th>${h}</th>`).join("") +
+      "</tr></thead><tbody>";
+
     data.rows.forEach(r => {
       html += "<tr>" + r.map(cell =>
-        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? 
-        `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>` :
-        `<td>${cell}</td>`
+        cell.match(/\.(jpg|jpeg|png|gif|webp)$/i)
+          ? `<td><img src="${cell}" style="max-width:120px;max-height:80px;border-radius:8px"></td>`
+          : `<td>${cell}</td>`
       ).join("") + "</tr>";
     });
+
     html += "</tbody></table>";
     content.innerHTML = html;
+
     highlightCurrentVikarskemaRow();
-  } catch(e){
-    const today = new Date().getDay();
-    const sch = localSchedules[today] || {title:"Vikarskema", rows:[["Ingen data"]]};
-    let html = `<table><thead><tr><th colspan="${Math.max(1,(sch.rows[0]||[]).length)}">${sch.title}</th></tr></thead><tbody>`;
-    sch.rows.forEach(r => { html += "<tr>" + r.map(c=>`<td>${c}</td>`).join("") + "</tr>"; });
-    html += "</tbody></table>";
-    content.innerHTML = html;
+
+  } catch (e) {
+    // Clear fallback — no gårdvagtskema, only message
+    content.innerHTML = `
+      <div style="
+        padding: 40px;
+        font-size: 26px;
+        font-weight: 700;
+        text-align: center;
+        color: #b00020;
+      ">
+        ❗ Kunne ikke hente vikarskema<br>
+        Systemet prøver igen...
+      </div>
+    `;
   }
 }
+
 updateVikarskema();
 setInterval(updateVikarskema, 60000);
 
@@ -390,21 +423,47 @@ async function fetchSheetRows(){
   try{
     const res = await fetch(infoSheetUrl,{cache:"no-store"});
     const data = await res.json();
+
     sheetRows = (data.sheets && data.sheets[0]?.rows) || data.rows || [];
-    if(sheetRows.length===0) sheetRows=[["Ingen data fra sheet"]];
-  }catch(e){sheetRows=[["Fejl ved hentning af data"]];}
+
+    if (sheetRows.length === 0) {
+      sheetRows = [["", "Ingen besked"]];
+    }
+
+    // Only show B1 (row 0, column 1) permanently
+    const box = document.getElementById("staticMessageBox");
+    if (box) {
+      box.textContent = (sheetRows[0] && sheetRows[0][1]) || "Ingen besked";
+    }
+
+  } catch(e) {
+    sheetRows=[["","Fejl ved hentning"]];
+    const box = document.getElementById("staticMessageBox");
+    if (box) box.textContent = "Fejl ved hentning";
+  }
 }
+
 
 async function showInfoBox(){
   infoBoxEl.classList.remove("show");
   setTimeout(()=>{
     let text;
-    if(currentInfoIndex<infoItems.length){ text = (typeof infoItems[currentInfoIndex]==="function")?infoItems[currentInfoIndex]():infoItems[currentInfoIndex]; }
-    else{ const idx = (currentInfoIndex-infoItems.length)%sheetRows.length; text = (sheetRows[idx]||[""]).join(" | "); }
-    infoBoxEl.textContent=text;
+
+    if(currentInfoIndex < infoItems.length){
+      // Weather or other special items
+      text = (typeof infoItems[currentInfoIndex] === "function") 
+               ? infoItems[currentInfoIndex]() 
+               : infoItems[currentInfoIndex];
+    } else {
+      // Only use column A (index 0) from sheetRows
+      const idx = (currentInfoIndex - infoItems.length) % sheetRows.length;
+      text = (sheetRows[idx] && sheetRows[idx][0]) || ""; // <-- A column only
+    }
+
+    infoBoxEl.textContent = text;
     infoBoxEl.classList.add("show");
-    currentInfoIndex = (currentInfoIndex+1) % (infoItems.length + Math.max(1,sheetRows.length));
-  },400);
+    currentInfoIndex = (currentInfoIndex + 1) % (infoItems.length + Math.max(1, sheetRows.length));
+  }, 400);
 }
 
 async function initInfoBox(){
