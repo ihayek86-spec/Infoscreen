@@ -28,13 +28,52 @@ body {
   font-family: 'Tajawal', sans-serif;
 }
 /* Main wrapper grid: left 60%, right 40% */
+/* 1. قفل الحاوية الكبرى ومنع التمرير نهائياً */
 .wrapper {
   display: grid;
-  grid-template-columns: 60% 40%; /* left 60%, right 40% */
-  height: calc(100% - 20px);
+  grid-template-columns: 60% 40%;
+  height: 100vh; /* الارتفاع هو كامل طول الشاشة بالضبط */
   gap: var(--gap);
   padding: var(--gap);
   box-sizing: border-box;
+  overflow: hidden; /* يمنع أي عنصر من دفع الصفحة لأسفل */
+}
+
+/* 2. ضبط الحاوية اليمنى لتكون موزعة بدقة */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: calc(100vh - (var(--gap) * 2)); /* الارتفاع المتبقي بعد طرح الحواف */
+  overflow: hidden;
+}
+
+/* 3. قفل قسم الصور ومنع تمدده */
+.right-panel .panel.top {
+  flex: 1; /* يأخذ المساحة المتاحة */
+  height: 0; /* خدعة CSS: تجبر الحاوية على عدم التمدد خلف محتواها */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  overflow: hidden; /* أي صورة أكبر من الحاوية سيتم إخفاؤها بدل تمديد الصفحة */
+}
+
+/* 4. الصورة: تملأ الفراغ دون تجاوزه */
+#slideshowImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* تظهر الصورة كاملة */
+  display: block;
+}
+
+/* 5. القسم السفلي (الجدول الصغير) */
+.right-panel .panel.bottom {
+  height: 250px; /* تحديد ارتفاع ثابت للجزء السفلي لضمان ثبات قسم الصور */
+  min-height: 250px;
+  overflow-y: auto; /* إذا كان الجدول كبيراً، السكرول يكون داخل هذه البطاقة فقط وليس الشاشة كاملة */
 }
 
 /* Left panel: vikarskema */
@@ -85,51 +124,6 @@ body {
 .vikarskema td:nth-child(6),.vikarskema th:nth-child(6){background:white;color:var(--fg)}
 #vikarskemaHeader { display:flex;justify-content:flex-start;align-items:center;gap:20px;font-size:clamp(18px,1.4vw,26px);font-weight:700;margin-bottom:12px;flex-wrap:wrap;padding-left:60px; }
 /* Right panel */
-.right-panel {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  height: 100%;
-}
-
-/* Top panel (slideshow) */
-/* الحاوية اليمنى: نمنعها تماماً من التمدد الطولي */
-.right-panel .panel.top {
-  flex: 1;             /* تأخذ المساحة المتاحة فقط */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: #f8f9fa; /* لون خلفية خفيف للفراغات إذا كانت الصورة أصغر من الإطار */
-  overflow: hidden;    /* منع أي تمرير نهائياً */
-  padding: 10px;       /* مسافة بسيطة للحماية */
-  border: 1px solid rgba(0,0,0,0.05);
-}
-
-/* الصورة: تكييف ذكي */
-#slideshowImage {
-  max-width: 100%;     /* لا تتجاوز العرض المتاح */
-  max-height: 100%;    /* لا تتجاوز الارتفاع المتاح نهائياً (يمنع السكرول) */
-  width: auto;         /* تحافظ على أبعادها الأصلية */
-  height: auto;        /* تحافظ على أبعادها الأصلية */
-  object-fit: contain; /* تعرض الصورة كاملة بدون قص، وتترك فراغاً (Letterbox) إذا لزم الأمر */
-  border-radius: 12px; 
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* ظل يعطي عمق للصورة */
-}
-/* إذا كنت تفضل أن تظهر الصورة كاملة دون قص الأطراف، استخدم:
-   object-fit: contain; 
-   بدلاً من cover */
-  .right-panel .panel.bottom{
-  flex:0 0 250px;
-  min-height:250px;
-  background:rgba(255,255,255,0.35);
-  border-radius:12px;
-  padding:12px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  overflow:auto;
-  backdrop-filter:blur(6px);
-}
 
 /* Schedule table */
 .schedule table {
