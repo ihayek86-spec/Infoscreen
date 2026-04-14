@@ -92,37 +92,40 @@ body {
 }
 
 /* vikarskema table */
-.vikarskema {
-  background: rgba(255,255,255,0.5);
-  padding: 16px;
-  padding-right: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.1);
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  backdrop-filter: blur(3px);
-  box-sizing: border-box;
-}
+/* تحسين الجدول الرئيسي */
 .vikarskema table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: clamp(14px, 2vw, 22px);
-  table-layout: auto;
+    width: 100%;
+    border-collapse: separate; /* لتسمح بعمل زوايا دائرية للصفوف */
+    border-spacing: 0 8px;    /* مسافة بين الصفوف تعطي راحة للعين */
+    font-size: clamp(18px, 1.8vw, 24px); /* تكبير الخط */
 }
-.vikarskema th,.vikarskema td {
-  border: 1px solid rgba(0,0,0,0.12);
-  padding: 6px 10px;
-  text-align: center;
-  white-space: nowrap;
+
+.vikarskema th {
+    background: var(--accent) !important;
+    color: white !important;
+    padding: 15px;
+    border-radius: 8px; /* عناوين دائرية */
+    font-weight: 700;
+    border: none !important;
 }
-.vikarskema th{background:var(--accent);color:white;font-weight:700}
-.vikarskema tbody tr:nth-child(even){background:rgba(0,0,0,0.04)}
-.vikarskema tbody tr.current{background:rgba(0,123,255,0.2) !important}
-.vikarskema td:nth-child(6),.vikarskema th:nth-child(6){background:white;color:var(--fg)}
-#vikarskemaHeader { display:flex;justify-content:flex-start;align-items:center;gap:20px;font-size:clamp(18px,1.4vw,26px);font-weight:700;margin-bottom:12px;flex-wrap:wrap;padding-left:60px; }
+
+.vikarskema td {
+    background: white;
+    padding: 12px 15px;
+    border: none !important;
+    color: #333;
+    font-weight: 500;
+}
+
+/* تأثير الصف الحالي - ليكون واضحاً جداً */
+.vikarskema tbody tr.current td {
+    background: #ff4d4d !important; /* أحمر لفت انتباه */
+    color: white !important;
+    font-weight: 800;
+    box-shadow: 0 4px 12px rgba(255, 77, 77, 0.4);
+    transform: scale(1.01); /* تكبير بسيط جداً للصف الحالي */
+}
+  #vikarskemaHeader { display:flex;justify-content:flex-start;align-items:center;gap:20px;font-size:clamp(18px,1.4vw,26px);font-weight:700;margin-bottom:12px;flex-wrap:wrap;padding-left:60px; }
 /* Right panel */
 
 /* Schedule table */
