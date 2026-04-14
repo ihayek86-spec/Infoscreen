@@ -70,12 +70,61 @@ body {
 }
 
 /* تحسين حاوية الجدول السفلي */
+/* تنسيق حاوية الوقت الجديدة */
+#bigDateTime {
+  margin-top: auto; /* يدفع الساعة لأسفل الحاوية */
+  padding: 20px;
+  background: var(--accent); /* خلفية زرقاء ملفتة */
+  color: white;
+  text-align: center;
+  border-radius: 0 0 16px 16px; /* تتناسب مع زوايا اللوحة */
+}
+
+#bigClock {
+  font-size: 70px; /* خط كبير جداً للساعة */
+  font-weight: 800;
+  font-family: 'monospace', sans-serif;
+  line-height: 1;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+#bigDate {
+  font-size: 24px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+
+  /* تنسيق حاوية الوقت الجديدة */
+#bigDateTime {
+  margin-top: auto; /* يدفع الساعة لأسفل الحاوية */
+  padding: 20px;
+  background: var(--accent); /* خلفية زرقاء ملفتة */
+  color: white;
+  text-align: center;
+  border-radius: 0 0 16px 16px; /* تتناسب مع زوايا اللوحة */
+}
+
+#bigClock {
+  font-size: 70px; /* خط كبير جداً للساعة */
+  font-weight: 800;
+  font-family: 'monospace', sans-serif;
+  line-height: 1;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
+}
+
+#bigDate {
+  font-size: 24px;
+  font-weight: 400;
+  opacity: 0.9;
+}
+/* تعديل بسيط لضمان توزيع العناصر داخل اللوحة اليمنى السفلى */
 .right-panel .panel.bottom {
-    background: white !important; /* خلفية بيضاء ناصعة */
-    padding: 0; /* إزالة الحواف الداخلية للوحة ليعمل الهيدر بشكل كامل */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 !important; /* لكي تلتصق الساعة بالحواف */
 }
 
 .schedule {
