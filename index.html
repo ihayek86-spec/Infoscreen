@@ -93,28 +93,28 @@ body {
 }
 
 /* Top panel (slideshow) */
-/* تحسين الحاوية اليمنى للصور */
+/* الحاوية اليمنى: نمنعها تماماً من التمدد الطولي */
 .right-panel .panel.top {
-  flex: 2;             /* زيادة نسبة تمدد قسم الصور */
-  padding: 0;          /* إزالة الحواف الداخلية لتمتد الصورة للحواف */
-  background: #fff; 
-  overflow: hidden;
+  flex: 1;             /* تأخذ المساحة المتاحة فقط */
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  background: #f8f9fa; /* لون خلفية خفيف للفراغات إذا كانت الصورة أصغر من الإطار */
+  overflow: hidden;    /* منع أي تمرير نهائياً */
+  padding: 10px;       /* مسافة بسيطة للحماية */
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
-/* تكبير الصورة نفسها */
+/* الصورة: تكييف ذكي */
 #slideshowImage {
-  width: 100%;         /* تجعل الصورة بعرض الحاوية بالكامل */
-  height: 100%;        /* تجعل الصورة بارتفاع الحاوية بالكامل */
-  object-fit: cover;   /* أهم خاصية: تجعل الصورة تملأ الإطار تماماً مثل شاشات العرض الاحترافية */
-  display: block;
-  border-radius: 20px; /* لتبقى متناسقة مع زوايا اللوحة */
-  transition: opacity 0.8s ease-in-out; /* إضافة تأثير ناعم عند التغيير */
+  max-width: 100%;     /* لا تتجاوز العرض المتاح */
+  max-height: 100%;    /* لا تتجاوز الارتفاع المتاح نهائياً (يمنع السكرول) */
+  width: auto;         /* تحافظ على أبعادها الأصلية */
+  height: auto;        /* تحافظ على أبعادها الأصلية */
+  object-fit: contain; /* تعرض الصورة كاملة بدون قص، وتترك فراغاً (Letterbox) إذا لزم الأمر */
+  border-radius: 12px; 
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* ظل يعطي عمق للصورة */
 }
-
 /* إذا كنت تفضل أن تظهر الصورة كاملة دون قص الأطراف، استخدم:
    object-fit: contain; 
    بدلاً من cover */
