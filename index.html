@@ -132,40 +132,24 @@ body {
     height: 100%;
 }
 
+/* تحويل الجدول ليكون مرناً حسب محتواه */
 .schedule table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed; /* توزيع الأعمدة بالتساوي */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* هذا يجعل الكولوم يتوسع حسب الكلام */
 }
 
-/* هيدر الجدول السفلي */
-.schedule th {
-    background: #34495e !important; /* لون رمادي احترافي */
-    color: #fff !important;
-    padding: 12px 5px;
-    font-size: 16px;
-    font-weight: 600;
-    text-transform: uppercase;
-    border: none;
+.schedule th, .schedule td {
+  border: 1px solid rgba(0,0,0,0.2);
+  padding: 8px 12px;
+  text-align: center;
+  /* منع النص من النزول لسطر جديد لضمان بقاء الكولوم مفروداً */
+  white-space: nowrap; 
 }
 
-/* شكل الصفوف */
-.schedule td {
-    padding: 15px 5px;
-    border-bottom: 1px solid #eee;
-    font-size: 18px;
-    font-weight: 700;
-    color: #2c3e50;
-    text-align: center;
-}
-
-/* تمييز عمود الوقت (Pause) */
-.schedule td:first-child {
-    background: #f8f9fa;
-    color: var(--accent);
-    font-family: 'Courier New', monospace;
-    font-weight: 900;
-    border-right: 2px solid var(--accent-light);
+/* إذا أردت أن يكون عمود الوقت (Pause) أصغر ما يمكن لترك مساحة للبقية */
+.schedule td:first-child, .schedule th:first-child {
+  width: 1%;
 }
 
 /* تأثير عند مرور الماوس أو لجعل الصفوف مريحة */
