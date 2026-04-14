@@ -93,27 +93,32 @@ body {
 }
 
 /* Top panel (slideshow) */
+/* تحسين الحاوية اليمنى للصور */
 .right-panel .panel.top {
-  flex: 1 1 0;      /* fill remaining space */
-  background: rgba(255,255,255,0.35);
-  border-radius: 12px;
-  padding: 12px;
+  flex: 2;             /* زيادة نسبة تمدد قسم الصور */
+  padding: 0;          /* إزالة الحواف الداخلية لتمتد الصورة للحواف */
+  background: #fff; 
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
-  backdrop-filter: blur(6px);
+  position: relative;
 }
 
-/* Image inside top panel */
+/* تكبير الصورة نفسها */
 #slideshowImage {
-  max-height: 100%;  /* fit parent height */
-  width: auto;       /* scale width automatically */
-  object-fit: contain; /* maintain aspect ratio */
+  width: 100%;         /* تجعل الصورة بعرض الحاوية بالكامل */
+  height: 100%;        /* تجعل الصورة بارتفاع الحاوية بالكامل */
+  object-fit: cover;   /* أهم خاصية: تجعل الصورة تملأ الإطار تماماً مثل شاشات العرض الاحترافية */
   display: block;
-  border-radius: 18px;
+  border-radius: 20px; /* لتبقى متناسقة مع زوايا اللوحة */
+  transition: opacity 0.8s ease-in-out; /* إضافة تأثير ناعم عند التغيير */
 }
-.right-panel .panel.bottom{
+
+/* إذا كنت تفضل أن تظهر الصورة كاملة دون قص الأطراف، استخدم:
+   object-fit: contain; 
+   بدلاً من cover */
+  .right-panel .panel.bottom{
   flex:0 0 250px;
   min-height:250px;
   background:rgba(255,255,255,0.35);
