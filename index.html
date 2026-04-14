@@ -7,15 +7,26 @@
 <title>Al Irchad skolen - Infoskærm</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg: linear-gradient(135deg,#e8f0ff,#f9fbff);
-  --fg:#1e293b;
-  --overlay: rgba(255,255,255,0.85);
-  --accent:#007bff;
-  --gap:12px;
+:root {
+  /* لوحة ألوان مشرقة (Bright & Fresh) */
+  --bg: #f0f2f5; 
+  --panel-bg: #ffffff;
+  --accent: #0056b3; /* أزرق مدرسي رصين */
+  --accent-light: #e7f1ff;
+  --text-main: #2d3436;
+  --text-muted: #636e72;
+  --status-red: #ff7675;
+  --gap: 20px;
 }
-html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:'Tajawal',system-ui,sans-serif;overflow:hidden}
 
+body {
+  background-color: var(--bg);
+  /* إضافة نمط خفيف جداً للخلفية ليعطي فخامة */
+  background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  color: var(--text-main);
+  font-family: 'Tajawal', sans-serif;
+}
 /* Main wrapper grid: left 60%, right 40% */
 .wrapper {
   display: grid;
