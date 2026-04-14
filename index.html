@@ -333,12 +333,21 @@ function updateVikarskemaClock() {
                            String(now.getSeconds()).padStart(2,"0");
 }
 
+  const bigDateEl = document.getElementById("bigDate");
+const bigClockEl = document.getElementById("bigClock");
+
 function updateVikarskemaDateTime() {
   const now = new Date();
-  vikarDateEl.textContent = now.toLocaleDateString('da-DK', {
-    weekday:'long', year:'numeric', month:'long', day:'numeric'
+  
+  // تحديث التاريخ
+  bigDateEl.textContent = now.toLocaleDateString('da-DK', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
-  updateVikarskemaClock();
+
+  // تحديث الساعة
+  bigClockEl.textContent = String(now.getHours()).padStart(2, "0") + ":" +
+                           String(now.getMinutes()).padStart(2, "0") + ":" +
+                           String(now.getSeconds()).padStart(2, "0");
 }
 
 setInterval(updateVikarskemaDateTime, 1000);
