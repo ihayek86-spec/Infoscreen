@@ -11,10 +11,10 @@
   --primary: #1e293b;
   --accent: #2563eb;
   --danger: #dc2626;
-  --bg-gradient: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   --panel-bg: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.4);
-  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
   --gap: 16px;
 }
 
@@ -36,36 +36,27 @@ html, body {
   box-sizing: border-box;
 }
 
-/* Glass Panels */
 .panel {
   background: var(--panel-bg);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
   border: 1px solid var(--glass-border);
   border-radius: 24px;
   box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  transition: transform 0.3s ease;
 }
 
-/* Left Panel */
+/* Left Section */
 .left-panel { display: flex; flex-direction: column; gap: var(--gap); }
-
-.vikarskema {
-  padding: 24px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-}
+.vikarskema { padding: 24px; height: 100%; display: flex; flex-direction: column; box-sizing: border-box; }
 
 #vikarskemaHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 0 15px 60px; /* Space for logo */
+  padding: 0 0 15px 70px; 
   border-bottom: 2px solid rgba(0,0,0,0.05);
   margin-bottom: 20px;
 }
@@ -73,35 +64,11 @@ html, body {
 #vikarskemaTitle { font-size: 32px; font-weight: 700; color: var(--primary); }
 .header-meta { font-size: 22px; font-weight: 500; display: flex; gap: 25px; color: #475569; }
 
-/* Tables */
-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  border-radius: 16px;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
-}
+/* Table Design */
+table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 16px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05); }
+th { background: var(--primary); color: #fff; padding: 16px; font-weight: 600; font-size: 18px; }
+td { padding: 14px; text-align: center; border-bottom: 1px solid rgba(0,0,0,0.05); background: rgba(255,255,255,0.4); font-size: 20px; font-weight: 500; }
 
-th {
-  background: var(--primary);
-  color: #fff;
-  padding: 16px;
-  font-weight: 600;
-  font-size: 18px;
-  text-align: center;
-}
-
-td {
-  padding: 14px;
-  text-align: center;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  background: rgba(255,255,255,0.4);
-  font-size: 20px;
-  font-weight: 500;
-}
-
-/* Highlighting */
 .current-row-highlight {
   background-color: var(--danger) !important;
   color: white !important;
@@ -110,25 +77,22 @@ td {
 }
 
 @keyframes pulseHighlight {
-  0% { background-color: #dc2626; }
+  0%, 100% { background-color: #dc2626; }
   50% { background-color: #ef4444; }
-  100% { background-color: #dc2626; }
 }
 
-/* Right Panel */
+/* Right Section */
 .right-panel { display: flex; flex-direction: column; gap: var(--gap); height: 100%; }
-.right-panel .top { flex: 1; padding: 10px; }
-.right-panel .bottom { flex: 0 0 300px; padding: 20px; justify-content: center; }
+.right-panel .top { flex: 1; padding: 0; position: relative; background: #000; display: flex; justify-content: center; align-items: center; }
+.right-panel .bottom { flex: 0 0 320px; padding: 20px; }
 
 #slideshowImage {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 16px;
-  transition: opacity 0.5s ease-in-out;
+  object-fit: contain; 
+  transition: opacity 0.8s ease-in-out;
 }
 
-/* Message Box */
 #staticMessageBox {
   margin-top: 5px;
   padding: 18px;
@@ -141,7 +105,6 @@ td {
   box-shadow: 0 4px 15px rgba(220, 38, 38, 0.3);
 }
 
-/* Logo */
 .logo {
   position: fixed;
   top: 24px;
@@ -154,7 +117,6 @@ td {
 }
 .logo img { height: 50px; width: auto; }
 
-/* Info/Weather Box */
 #infoBox {
   position: fixed;
   bottom: 30px;
@@ -173,7 +135,6 @@ td {
 }
 #infoBox.show { opacity: 1; transform: translateY(0); }
 
-/* Reminder Overlay */
 #morgensamlingReminder {
   position: fixed;
   top: 50%;
@@ -212,12 +173,12 @@ td {
         <div id="vikarskemaContent">Indlæser vikarskema...</div>
       </div>
     </div>
-    <div id="staticMessageBox"></div>
+    <div id="staticMessageBox">Indlæser besked...</div>
   </div>
 
   <div class="right-panel">
     <div class="panel top">
-      <img id="slideshowImage" src="" alt="slideshow">
+      <img id="slideshowImage" src="" alt="Indlæser billeder...">
     </div>
     <div class="panel bottom">
       <div class="schedule" id="schedule"></div>
@@ -225,21 +186,15 @@ td {
   </div>
 </div>
 
-<div id="infoBox">Indlæser information...</div>
-
-<div id="morgensamlingReminder">
-  📢 TID TIL MORGENSAMLING!
-</div>
-
-<audio id="morgensamlingSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/morgensamling.mp3" muted></audio>
-<audio id="gardvagtSound" src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/a45ddd605ea18a69772f1352c39d63a2d9748be2/sounds/husk_gardvagt.mp3" muted></audio>
+<div id="infoBox"></div>
+<div id="morgensamlingReminder">📢 TID TIL MORGENSAMLING!</div>
 
 <script>
-// TV Browser management
+// Prevent TV freezing/scaling issues
 document.body.style.zoom = "1.0";
-setInterval(() => { document.body.style.zoom = "1.0"; window.scrollTo(0, 0); }, 30000);
+setInterval(() => { document.body.style.zoom = "1.0"; window.scrollTo(0,0); }, 30000);
 
-// Clock & Date
+// Clock
 function updateClock() {
   const now = new Date();
   document.getElementById("vikarskemaClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
@@ -248,7 +203,7 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-// Local Schedule Fallback
+// Gårdvagt Local Data
 const localSchedules = {
   1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
   2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
@@ -259,15 +214,14 @@ const localSchedules = {
 
 function renderSchedule() {
   const day = new Date().getDay();
-  const sch = localSchedules[day] || {title:"Ingen plan", rows:[["-","-","-","-","-","-"]]};
+  const sch = localSchedules[day] || {title:"Ingen plan i dag", rows:[["-","-","-","-","-","-"]]};
   let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr><tr style="background:#475569"><th>Pause</th><th>SG1</th><th>SG2</th><th>MB3</th><th>SG4</th><th>G5</th></tr></thead><tbody>`;
   sch.rows.forEach(r => { html += "<tr>" + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
-  html += "</tbody></table>";
-  document.getElementById("schedule").innerHTML = html;
+  document.getElementById("schedule").innerHTML = html + "</tbody></table>";
 }
 renderSchedule();
 
-// API Integration: Vikarskema
+// VIKARSKEMA FETCH
 async function updateVikarskema() {
   const vikarUrl = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
   try {
@@ -275,13 +229,11 @@ async function updateVikarskema() {
     const data = await res.json();
     let html = "<table><thead><tr>" + data.headers.map(h => `<th>${h}</th>`).join("") + "</tr></thead><tbody>";
     data.rows.forEach(r => {
-      html += "<tr>" + r.map(cell => cell.match(/\.(jpg|jpeg|png|gif|webp)$/i) ? `<td><img src="${cell}" style="max-height:60px;border-radius:4px"></td>` : `<td>${cell}</td>`).join("") + "</tr>";
+      html += "<tr>" + r.map(cell => cell.toString().match(/\.(jpg|jpeg|png|gif|webp)$/i) ? `<td><img src="${cell}" style="max-height:60px;border-radius:4px"></td>` : `<td>${cell}</td>`).join("") + "</tr>";
     });
     document.getElementById("vikarskemaContent").innerHTML = html + "</tbody></table>";
     highlightRows();
-  } catch (e) {
-    document.getElementById("vikarskemaContent").innerHTML = "<div style='text-align:center;padding:20px;color:red'>Kunne ikke hente data...</div>";
-  }
+  } catch (e) { console.error("Vikar fetch error"); }
 }
 setInterval(updateVikarskema, 60000);
 updateVikarskema();
@@ -305,58 +257,77 @@ function highlightRows() {
     process(0, 4); process(6, 10);
   });
 }
-setInterval(highlightRows, 15000);
 
-// Slideshow
+// SLIDESHOW FETCH (STRICTER LOGIC)
 const slideUrl = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 let images = [], imgIdx = 0;
+
 async function fetchImages() {
   try {
-    const res = await fetch(slideUrl);
+    const res = await fetch(slideUrl, { cache: "no-store" });
     const data = await res.json();
-    images = (Array.isArray(data) ? data : data.rows || []).flat().filter(s => typeof s === 'string' && s.includes('http'));
-  } catch(e) {}
-}
-function rotateSlides() {
-  if (images.length) {
-    const el = document.getElementById("slideshowImage");
-    el.style.opacity = 0;
-    setTimeout(() => {
-      el.src = images[imgIdx];
-      el.style.opacity = 1;
-      imgIdx = (imgIdx + 1) % images.length;
-    }, 500);
-  }
-}
-fetchImages().then(() => { rotateSlides(); setInterval(rotateSlides, 7000); });
+    
+    // Handle both array of arrays and object formats
+    let raw = Array.isArray(data) ? data : (data.rows || data.sheets?.[0]?.rows || []);
+    
+    images = raw.flat().filter(cell => {
+      return typeof cell === 'string' && 
+             (cell.startsWith('http') && (cell.match(/\.(jpg|jpeg|png|gif|webp)/i) || cell.includes('drive.google.com')));
+    });
 
-// Weather & Info
-let weather = "-";
+    if (images.length > 0 && !document.getElementById("slideshowImage").src) {
+        rotateSlides();
+    }
+  } catch(e) { console.error("Slideshow fetch error:", e); }
+}
+
+function rotateSlides() {
+  if (images.length === 0) return;
+  const el = document.getElementById("slideshowImage");
+  el.style.opacity = 0;
+  setTimeout(() => {
+    el.src = images[imgIdx];
+    el.style.opacity = 1;
+    imgIdx = (imgIdx + 1) % images.length;
+  }, 800);
+}
+
+fetchImages();
+setInterval(fetchImages, 60000); // Check for new images every minute
+setInterval(rotateSlides, 7000); // Cycle every 7 seconds
+
+// WEATHER & INFOBOX
+let weather = "Indlæser vejr...";
 async function fetchWeather() {
   try {
     const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true");
     const data = await res.json();
     weather = `☀️ Helsingør: ${Math.round(data.current_weather.temperature)}°C`;
-  } catch(e) {}
+  } catch(e) { weather = "Vejr utilgængeligt"; }
 }
 
 const infoUrl = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 let infoMsgs = [], msgIdx = 0;
+
 async function fetchInfo() {
   try {
-    const res = await fetch(infoUrl);
+    const res = await fetch(infoUrl, { cache: "no-store" });
     const data = await res.json();
     const rows = data.rows || data.sheets?.[0]?.rows || [];
-    if(rows[0]) document.getElementById("staticMessageBox").textContent = rows[0][1] || "";
+    if(rows[0]) document.getElementById("staticMessageBox").textContent = rows[0][1] || "Velkommen til Al Irchad";
     infoMsgs = rows.map(r => r[0]).filter(Boolean);
-  } catch(e) {}
+  } catch(e) { console.error("Info fetch error"); }
 }
 
 function cycleInfo() {
   const box = document.getElementById("infoBox");
   box.classList.remove("show");
   setTimeout(() => {
-    box.textContent = msgIdx === 0 ? weather : infoMsgs[msgIdx - 1] || "Velkommen";
+    if (msgIdx === 0) {
+        box.textContent = weather;
+    } else {
+        box.textContent = infoMsgs[msgIdx - 1] || "Al Irchad skolen";
+    }
     box.classList.add("show");
     msgIdx = (msgIdx + 1) % (infoMsgs.length + 1);
   }, 600);
@@ -366,14 +337,14 @@ fetchWeather(); fetchInfo();
 setInterval(cycleInfo, 10000);
 setInterval(() => { fetchWeather(); fetchInfo(); }, 60000);
 
-// Reminder Logic
+// Morgensamling logic
 setInterval(() => {
   const n = new Date();
   const h = n.getHours(), m = n.getMinutes();
   document.getElementById("morgensamlingReminder").style.display = (h === 8 && m >= 20 && m < 30) ? "block" : "none";
 }, 10000);
 
-// Auto-refresh to keep browser snappy
+// Auto-reload page every 10 mins
 setInterval(() => location.reload(), 600000);
 </script>
 </body>
