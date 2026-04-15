@@ -320,16 +320,13 @@ const bigClockEl = document.getElementById("bigClock");
 
 function updateVikarskemaDateTime() {
   const now = new Date();
-  
-  // تحديث التاريخ
-  bigDateEl.textContent = now.toLocaleDateString('da-DK', {
+  const timeStr = now.toLocaleTimeString('da-DK', { hour12: false });
+  const dateStr = now.toLocaleDateString('da-DK', {
     weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
   });
-
-  // تحديث الساعة
-  bigClockEl.textContent = String(now.getHours()).padStart(2, "0") + ":" +
-                           String(now.getMinutes()).padStart(2, "0") + ":" +
-                           String(now.getSeconds()).padStart(2, "0");
+  
+  if(bigClockEl.textContent !== timeStr) bigClockEl.textContent = timeStr;
+  if(bigDateEl.textContent !== dateStr) bigDateEl.textContent = dateStr;
 }
 
 setInterval(updateVikarskemaDateTime, 1000);
