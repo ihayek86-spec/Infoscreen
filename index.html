@@ -20,21 +20,14 @@
 }
 
 body {
-    /* تدرج لوني بين الأبيض والأحمر الهادئ */
-    background: linear-gradient(-45deg, #ffffff, #fff5f5, #ffebee, #ffffff);
-    background-size: 400% 400%;
-    /* حركة انسيابية بطيئة جداً (25 ثانية) لجعلها مريحة للعين */
-    animation: gradientBG 25s ease infinite;
-    color: var(--text-main);
-    font-family: 'Tajawal', sans-serif;
-    overflow: hidden; /* منع التمرير نهائياً */
+  background-color: var(--bg);
+  /* إضافة نمط خفيف جداً للخلفية ليعطي فخامة */
+  background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
+  background-size: 20px 20px;
+  color: var(--text-main);
+  font-family: 'Tajawal', sans-serif;
 }
-
-@keyframes gradientBG {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-}/* Main wrapper grid: left 60%, right 40% */
+/* Main wrapper grid: left 60%, right 40% */
 /* 1. قفل الحاوية الكبرى ومنع التمرير نهائياً */
 .wrapper {
   display: grid;
