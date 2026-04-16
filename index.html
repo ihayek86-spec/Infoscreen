@@ -27,7 +27,7 @@ body {
   font-family: 'Tajawal', sans-serif;
   margin: 0;
   height: 100vh;
-  overflow: hidden; /* يمنع التمرير نهائياً */
+  overflow: hidden;
 }
 
 .wrapper {
@@ -37,17 +37,10 @@ body {
   gap: var(--gap);
   padding: var(--gap);
   box-sizing: border-box;
-  transition: grid-template-columns 0.5s ease;
 }
 
-/* لوحة الجداول (الجهة اليسرى) */
-.left-side {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
-}
-
+/* الجهة اليسرى */
+.left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .panel {
   background: rgba(255,255,255,0.8);
   border-radius: 16px;
@@ -57,22 +50,10 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
-
-/* لجعل جدول الفيكار قابل للتمرير داخلياً فقط إذا زاد الطول */
-.vikarskema {
-  overflow-y: auto;
-  flex: 1;
-}
-
-.vikarskema table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
-  font-size: clamp(18px, 1.6vw, 22px);
-}
-
+.vikarskema { overflow-y: auto; flex: 1; }
+.vikarskema table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: clamp(18px, 1.6vw, 22px); }
 .vikarskema th { background: var(--accent); color: white; padding: 15px; border-radius: 8px; position: sticky; top: 0; }
-.vikarskema td { background: white; padding: 12px; border-radius: 4px; }
+.vikarskema td { background: white; padding: 12px; border-radius: 4px; text-align: center; }
 
 #staticMessageBox {
   margin-top: 10px;
@@ -85,19 +66,9 @@ body {
   text-align: center;
 }
 
-/* اللوحة الوسطى */
-#middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+/* الجهة اليمنى */
+.right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 
-/* اليمين: الصور + الساعة (الأهم) */
-.right-side {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
-  height: 100%;
-  overflow: hidden; /* يمنع أي عنصر من الخروج */
-}
-
-/* صندوق الصور: يأخذ كل المساحة المتبقية لكن لا يتعداها */
 .image-box {
   flex: 1; 
   display: flex;
@@ -107,20 +78,11 @@ body {
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   overflow: hidden;
-  position: relative;
 }
+#slideshowImage { max-width: 100%; max-height: 100%; object-fit: contain; }
 
-#slideshowImage {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain; /* يضمن عدم تمدد الصورة بشكل يشوه التصميم */
-}
-
-/* لوحة الساعة والجدول السفلي: ثابتة الارتفاع لضمان عدم اختفائها */
+/* حاوية المعلومات السفلى (جدول + ساعة + طقس) */
 .info-box-bottom {
-  height: 320px; /* ارتفاع ثابت يضمن ظهورها دائماً */
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -129,31 +91,31 @@ body {
   flex-direction: column;
 }
 
-#bigDateTime {
-  padding: 15px;
-  background: var(--accent);
-  color: white;
-  text-align: center;
-  margin-top: auto; /* يدفع الساعة لأسفل الصندوق */
-}
+.schedule { padding: 10px; }
+.schedule table { width: 100%; border-collapse: separate; border-spacing: 6px; }
+.schedule th { background: #2d5a27; color: white; padding: 10px; font-weight: 700; font-size: 20px; border-radius: 8px; }
+.schedule td { padding: 10px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 18px; border-radius: 6px; }
 
-#bigClock {
-  font-size: 65px;
-  font-weight: 800;
-  font-family: 'monospace', sans-serif;
-  line-height: 1;
-}
-
+#bigDateTime { padding: 15px; background: var(--accent); color: white; text-align: center; }
+#bigClock { font-size: 60px; font-weight: 800; font-family: 'monospace', sans-serif; line-height: 1; }
 #bigDate { font-size: 20px; opacity: 0.9; }
 
-.schedule { flex: 1; overflow-y: auto; }
-.schedule table { width: 100%; border-collapse: collapse; }
-.schedule th { background: #f8f9fa; padding: 8px; font-weight: 700; font-size: 14px; }
-.schedule td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; font-size: 16px; }
+/* شريط الطقس والمعلومات - الآن أصبح ثابتاً في الأسفل */
+#infoBox {
+  background: #003d80; /* أزرق أغمق للتمييز */
+  color: #fff;
+  padding: 12px;
+  text-align: center;
+  font-size: 20px;
+  font-weight: 600;
+  border-top: 2px solid rgba(255,255,255,0.1);
+  transition: opacity 0.5s ease;
+}
 
 .logo { position: fixed; top: 25px; left: 35px; z-index: 100; }
 .logo img { height: 60px; }
 
+#middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 </style>
 </head>
 <body>
@@ -161,7 +123,6 @@ body {
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 
 <div class="wrapper" id="mainWrapper">
-  
   <div class="left-side">
     <div class="panel" style="height: 100%;">
       <div class="vikarskema">
@@ -185,33 +146,69 @@ body {
     <div class="image-box">
       <img id="slideshowImage" src="" alt="slideshow">
     </div>
-
     <div class="info-box-bottom">
       <div class="schedule" id="schedule"></div>
       <div id="bigDateTime">
         <div id="bigClock">00:00:00</div>
         <div id="bigDate">Dato indlæses...</div>
       </div>
+      <div id="infoBox">Indlæser information...</div>
     </div>
   </div>
-
 </div>
 
 <script>
-// (نفس منطق الجافاسكريبت السابق دون تغيير لضمان استقرار العمل)
 const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 const INFO_SHEET_URL = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
 
 let imageData = [];
 let currentImageIndex = 0;
+let currentWeather = { desc: "-", temp: "-" };
+let sheetRows = [];
+let currentInfoIndex = 0;
 
 function updateDateTime() {
   const now = new Date();
   document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
   document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
-setInterval(updateDateTime, 1000);
+
+async function fetchWeather() {
+  try {
+    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
+    const data = await res.json();
+    currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
+    currentWeather.desc = `Vind ${data.current_weather.windspeed} km/t`;
+  } catch (e) { console.error("Weather error"); }
+}
+
+async function fetchSheetRows() {
+  try {
+    const res = await fetch(INFO_SHEET_URL);
+    const data = await res.json();
+    sheetRows = data.rows || (data.sheets && data.sheets[0].rows) || [];
+    if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
+  } catch(e) { console.error("Sheet error"); }
+}
+
+function showInfoBox() {
+  const infoBox = document.getElementById("infoBox");
+  infoBox.style.opacity = "0";
+  
+  setTimeout(() => {
+    let text = "";
+    if (currentInfoIndex === 0) {
+      text = `☀️ Vejr: ${currentWeather.desc}, ${currentWeather.temp}`;
+    } else {
+      const idx = (currentInfoIndex - 1) % sheetRows.length;
+      text = (sheetRows[idx] && sheetRows[idx][0]) || "Al Irchad skolen";
+    }
+    infoBox.textContent = text;
+    infoBox.style.opacity = "1";
+    currentInfoIndex = (currentInfoIndex + 1) % (sheetRows.length + 1);
+  }, 500);
+}
 
 async function fetchImages() {
   try {
@@ -228,24 +225,18 @@ function cycleImages() {
   currentImageIndex = (currentImageIndex + 1) % imageData.length;
 }
 
-async function initSlideshow() {
-  await fetchImages();
-  if (imageData.length > 0) { cycleImages(); setInterval(cycleImages, 5000); }
-}
-
 async function updateVikarskema() {
   try {
     const res = await fetch(VIKAR_URL);
     const data = await res.json();
     const rows = data.rows || [];
     const headers = data.headers || [];
-
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
     const wrapper = document.getElementById("mainWrapper");
     const middlePanel = document.getElementById("middlePanel");
 
     if (hasMiddleData) {
-      wrapper.style.setProperty('--layout-cols', '1fr 1fr 1fr');
+      wrapper.style.setProperty('--layout-cols', '33% 33% 33%');
       middlePanel.style.display = 'flex';
       renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
     } else {
@@ -263,8 +254,7 @@ function renderTable(containerId, headers, rows) {
       html += "<tr>" + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
     }
   });
-  html += "</tbody></table>";
-  document.getElementById(containerId).innerHTML = html;
+  document.getElementById(containerId).innerHTML = html + "</tbody></table>";
 }
 
 const localSchedules = {
@@ -283,18 +273,16 @@ function renderStaticSchedule() {
   document.getElementById("schedule").innerHTML = html + "</tbody></table>";
 }
 
-async function updateMessages() {
-  try {
-    const res = await fetch(INFO_SHEET_URL);
-    const data = await res.json();
-    const rows = data.rows || (data.sheets && data.sheets[0].rows) || [];
-    if(rows[0]) document.getElementById("staticMessageBox").textContent = rows[0][1] || "";
-  } catch(e) {}
-}
-
-window.onload = () => {
-  updateDateTime(); initSlideshow(); updateVikarskema(); renderStaticSchedule(); updateMessages();
-  setInterval(updateMessages, 60000); setInterval(updateVikarskema, 60000);
+window.onload = async () => {
+  updateDateTime(); setInterval(updateDateTime, 1000);
+  await fetchImages(); if (imageData.length > 0) { cycleImages(); setInterval(cycleImages, 5000); }
+  updateVikarskema(); setInterval(updateVikarskema, 60000);
+  renderStaticSchedule();
+  await fetchWeather();
+  await fetchSheetRows();
+  showInfoBox(); setInterval(showInfoBox, 10000);
+  setInterval(fetchWeather, 600000); 
+  setInterval(fetchSheetRows, 60000);
 };
 
 setInterval(() => location.reload(), 3600000);
