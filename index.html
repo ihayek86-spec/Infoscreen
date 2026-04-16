@@ -9,21 +9,15 @@
 <style>
 :root {
   --bg: #f0f2f5; 
-  --panel-bg: #ffffff;
   --accent: #0056b3; 
-  --accent-light: #e7f1ff;
-  --text-main: #2d3436;
-  --text-muted: #636e72;
-  --status-red: #ff7675;
   --gap: 20px;
-  --layout-cols: 40% 60%;
 }
 
 body {
   background-color: var(--bg);
   background-image: radial-gradient(#d1d1d1 0.5px, transparent 0.5px);
   background-size: 20px 20px;
-  color: var(--text-main);
+  color: #2d3436;
   font-family: 'Tajawal', sans-serif;
   margin: 0;
   height: 100vh;
@@ -32,14 +26,13 @@ body {
 
 .wrapper {
   display: grid;
-  grid-template-columns: var(--layout-cols); 
+  grid-template-columns: 40% 60%;
   height: 100vh;
   gap: var(--gap);
   padding: var(--gap);
   box-sizing: border-box;
 }
 
-/* الجهة اليسرى */
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .panel {
   background: rgba(255,255,255,0.8);
@@ -50,23 +43,23 @@ body {
   flex-direction: column;
   overflow: hidden;
 }
+
 .vikarskema { overflow-y: auto; flex: 1; }
-.vikarskema table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: clamp(18px, 1.6vw, 22px); }
-.vikarskema th { background: var(--accent); color: white; padding: 15px; border-radius: 8px; position: sticky; top: 0; }
-.vikarskema td { background: white; padding: 12px; border-radius: 4px; text-align: center; }
+.vikarskema table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: clamp(16px, 1.4vw, 20px); }
+.vikarskema th { background: var(--accent); color: white; padding: 12px; border-radius: 8px; position: sticky; top: 0; }
+.vikarskema td { background: white; padding: 10px; border-radius: 4px; text-align: center; }
 
 #staticMessageBox {
   margin-top: 10px;
   padding: 15px;
   background: #ff3b30;
   border-radius: 12px;
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: white;
   text-align: center;
 }
 
-/* الجهة اليمنى */
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 
 .image-box {
@@ -79,36 +72,44 @@ body {
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   overflow: hidden;
 }
-#slideshowImage { max-width: 100%; max-height: 100%; object-fit: contain; }
+#slideshowImage { width: 100%; height: 100%; object-fit: contain; }
 
-/* حاوية المعلومات السفلى (جدول + ساعة + طقس) */
+/* حاوية المعلومات السفلى */
 .info-box-bottom {
   background: white;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* عمودي افتراضياً لحالة الجدولين */
 }
 
-.schedule { padding: 10px; }
-.schedule table { width: 100%; border-collapse: separate; border-spacing: 6px; }
-.schedule th { background: #2d5a27; color: white; padding: 10px; font-weight: 700; font-size: 20px; border-radius: 8px; }
-.schedule td { padding: 10px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 18px; border-radius: 6px; }
+/* عندما يكون هناك جدول واحد فقط: تتحول الحاوية لسطر أفقي */
+.single-panel-layout .info-box-bottom {
+  flex-direction: row;
+  align-items: stretch;
+}
 
-#bigDateTime { padding: 15px; background: var(--accent); color: white; text-align: center; }
-#bigClock { font-size: 60px; font-weight: 800; font-family: 'monospace', sans-serif; line-height: 1; }
-#bigDate { font-size: 20px; opacity: 0.9; }
+.schedule { padding: 10px; flex: 1; }
+.schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
+.schedule th { background: #2d5a27; color: white; padding: 8px; font-weight: 700; font-size: 16px; border-radius: 6px; }
+.schedule td { padding: 6px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 14px; border-radius: 6px; }
 
-/* شريط الطقس والمعلومات - الآن أصبح ثابتاً في الأسفل */
+#bigDateTime { padding: 15px; background: var(--accent); color: white; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+#bigClock { font-size: 45px; font-weight: 800; font-family: 'monospace'; line-height: 1; }
+#bigDate { font-size: 16px; opacity: 0.9; }
+
 #infoBox {
-  background: #003d80; /* أزرق أغمق للتمييز */
+  background: #003d80;
   color: #fff;
-  padding: 12px;
+  padding: 15px;
   text-align: center;
   font-size: 20px;
   font-weight: 600;
-  border-top: 2px solid rgba(255,255,255,0.1);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: opacity 0.5s ease;
 }
 
@@ -118,9 +119,7 @@ body {
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 </style>
 </head>
-<body>
-
-<div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
+<body class="single-panel-layout"> <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side">
@@ -150,9 +149,9 @@ body {
       <div class="schedule" id="schedule"></div>
       <div id="bigDateTime">
         <div id="bigClock">00:00:00</div>
-        <div id="bigDate">Dato indlæses...</div>
+        <div id="bigDate">Dato...</div>
       </div>
-      <div id="infoBox">Indlæser information...</div>
+      <div id="infoBox">Indlæser معلومات...</div>
     </div>
   </div>
 </div>
@@ -171,7 +170,7 @@ let currentInfoIndex = 0;
 function updateDateTime() {
   const now = new Date();
   document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
-  document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 async function fetchWeather() {
@@ -179,7 +178,7 @@ async function fetchWeather() {
     const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
     const data = await res.json();
     currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
-    currentWeather.desc = `Vind ${data.current_weather.windspeed} km/t`;
+    currentWeather.desc = `Vejr: ${currentWeather.temp}`;
   } catch (e) { console.error("Weather error"); }
 }
 
@@ -195,11 +194,10 @@ async function fetchSheetRows() {
 function showInfoBox() {
   const infoBox = document.getElementById("infoBox");
   infoBox.style.opacity = "0";
-  
   setTimeout(() => {
     let text = "";
     if (currentInfoIndex === 0) {
-      text = `☀️ Vejr: ${currentWeather.desc}, ${currentWeather.temp}`;
+      text = `☀️ ${currentWeather.desc}`;
     } else {
       const idx = (currentInfoIndex - 1) % sheetRows.length;
       text = (sheetRows[idx] && sheetRows[idx][0]) || "Al Irchad skolen";
@@ -234,13 +232,16 @@ async function updateVikarskema() {
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
     const wrapper = document.getElementById("mainWrapper");
     const middlePanel = document.getElementById("middlePanel");
+    const body = document.body;
 
     if (hasMiddleData) {
-      wrapper.style.setProperty('--layout-cols', '33% 33% 33%');
+      body.classList.remove('single-panel-layout');
+      wrapper.style.gridTemplateColumns = '33% 33% 33%';
       middlePanel.style.display = 'flex';
       renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
     } else {
-      wrapper.style.setProperty('--layout-cols', '40% 60%');
+      body.classList.add('single-panel-layout');
+      wrapper.style.gridTemplateColumns = '40% 60%';
       middlePanel.style.display = 'none';
     }
     renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
@@ -258,11 +259,11 @@ function renderTable(containerId, headers, rows) {
 }
 
 const localSchedules = {
-  1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
-  2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
-  3:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","AD","SJ","LL","JL"],["11:20-11:55","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
-  4:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","MB","AFH","MT"],["11:20-11:55","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
-  5:{title:"Gårdvagtskema", rows:[["9:50-10:00","AD","MB","KP","MT","MA"],["11:20-11:55","MA","MB","MP","AFH","MT"]]}
+  1:{title:"Gårdvagtskema", rows:[["9:50","PP","EY","JL","TN","MA"],["11:20","PP","NC","LC","JD","MA"],["12:35","PP","JL","KP","JD","SR"]]},
+  2:{title:"Gårdvagtskema", rows:[["9:50","NC","EY","EK","TN","IR"],["11:20","MD","EY","EK","TN","IR"],["12:35","MD","JL","EK","IH","SR"]]},
+  3:{title:"Gårdvagtskema", rows:[["9:50","NC","AD","SJ","LL","JL"],["11:20","ZA","AD","SJ","IH","LL"],["12:35","ZA","AD","SJ","AFH","LL"]]},
+  4:{title:"Gårdvagtskema", rows:[["9:50","NC","EY","MB","AFH","MT"],["11:20","HR","LC","MP","MT","SR"],["12:35","MD","HR","MP","IH","JD"]]},
+  5:{title:"Gårdvagtskema", rows:[["9:50","AD","MB","KP","MT","MA"],["11:20","MA","MB","MP","AFH","MT"]]}
 };
 
 function renderStaticSchedule() {
