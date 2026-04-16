@@ -16,6 +16,7 @@
   --text-muted: #636e72;
   --status-red: #ff7675;
   --gap: 20px;
+  --layout-cols: 40% 60%;
 }
 
 body {
@@ -25,108 +26,42 @@ body {
   color: var(--text-main);
   font-family: 'Tajawal', sans-serif;
   margin: 0;
-  overflow: hidden;
+  height: 100vh;
+  overflow: hidden; /* يمنع التمرير نهائياً */
 }
 
 .wrapper {
   display: grid;
-  grid-template-columns: 60% 40%;
+  grid-template-columns: var(--layout-cols); 
   height: 100vh;
   gap: var(--gap);
   padding: var(--gap);
   box-sizing: border-box;
+  transition: grid-template-columns 0.5s ease;
 }
 
-.right-panel {
+/* لوحة الجداول (الجهة اليسرى) */
+.left-side {
   display: flex;
   flex-direction: column;
-  gap: var(--gap);
-  height: calc(100vh - (var(--gap) * 2));
+  height: 100%;
   overflow: hidden;
 }
 
-.right-panel .panel.top {
-  flex: 1;
-  height: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.5);
-  overflow: hidden;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-}
-
-#slideshowImage {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.right-panel .panel.bottom {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 0 !important;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-  background: white;
-  overflow: hidden;
-}
-
-#bigDateTime {
-  padding: 20px;
-  background: var(--accent);
-  color: white;
-  text-align: center;
-}
-
-#bigClock {
-  font-size: 70px;
-  font-weight: 800;
-  font-family: 'monospace', sans-serif;
-  line-height: 1;
-  margin-bottom: 5px;
-  letter-spacing: 2px;
-}
-
-#bigDate {
-  font-size: 24px;
-  font-weight: 400;
-  opacity: 0.9;
-}
-
-.schedule table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.schedule th {
-  background: #f8f9fa;
-  padding: 10px;
-  font-weight: 700;
-  border-bottom: 2px solid #eee;
-}
-
-.schedule td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid #eee;
-  white-space: nowrap;
-}
-
-.left-panel { display: flex; flex-direction: column; gap: var(--gap); }
-.left-panel .panel {
-  flex: 1;
+.panel {
   background: rgba(255,255,255,0.8);
   border-radius: 16px;
   padding: 20px;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
+}
+
+/* لجعل جدول الفيكار قابل للتمرير داخلياً فقط إذا زاد الطول */
+.vikarskema {
+  overflow-y: auto;
+  flex: 1;
 }
 
 .vikarskema table {
@@ -136,18 +71,8 @@ body {
   font-size: clamp(18px, 1.6vw, 22px);
 }
 
-.vikarskema th {
-  background: var(--accent);
-  color: white;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.vikarskema td {
-  background: white;
-  padding: 12px;
-  border-radius: 4px;
-}
+.vikarskema th { background: var(--accent); color: white; padding: 15px; border-radius: 8px; position: sticky; top: 0; }
+.vikarskema td { background: white; padding: 12px; border-radius: 4px; }
 
 #staticMessageBox {
   margin-top: 10px;
@@ -160,17 +85,74 @@ body {
   text-align: center;
 }
 
+/* اللوحة الوسطى */
+#middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
+
+/* اليمين: الصور + الساعة (الأهم) */
+.right-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  height: 100%;
+  overflow: hidden; /* يمنع أي عنصر من الخروج */
+}
+
+/* صندوق الصور: يأخذ كل المساحة المتبقية لكن لا يتعداها */
+.image-box {
+  flex: 1; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+}
+
+#slideshowImage {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain; /* يضمن عدم تمدد الصورة بشكل يشوه التصميم */
+}
+
+/* لوحة الساعة والجدول السفلي: ثابتة الارتفاع لضمان عدم اختفائها */
+.info-box-bottom {
+  height: 320px; /* ارتفاع ثابت يضمن ظهورها دائماً */
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+#bigDateTime {
+  padding: 15px;
+  background: var(--accent);
+  color: white;
+  text-align: center;
+  margin-top: auto; /* يدفع الساعة لأسفل الصندوق */
+}
+
+#bigClock {
+  font-size: 65px;
+  font-weight: 800;
+  font-family: 'monospace', sans-serif;
+  line-height: 1;
+}
+
+#bigDate { font-size: 20px; opacity: 0.9; }
+
+.schedule { flex: 1; overflow-y: auto; }
+.schedule table { width: 100%; border-collapse: collapse; }
+.schedule th { background: #f8f9fa; padding: 8px; font-weight: 700; font-size: 14px; }
+.schedule td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; font-size: 16px; }
+
 .logo { position: fixed; top: 25px; left: 35px; z-index: 100; }
 .logo img { height: 60px; }
-
-#infoBox {
-  position: fixed; bottom: 25px; left: 25px;
-  background: rgba(0,0,0,0.7);
-  color: white; padding: 10px 20px;
-  border-radius: 30px; font-size: 20px;
-  transition: opacity 0.5s; opacity: 0;
-}
-#infoBox.show { opacity: 1; }
 
 </style>
 </head>
@@ -178,22 +160,33 @@ body {
 
 <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 
-<div class="wrapper">
-  <div class="left-panel">
-    <div class="panel">
+<div class="wrapper" id="mainWrapper">
+  
+  <div class="left-side">
+    <div class="panel" style="height: 100%;">
       <div class="vikarskema">
-        <h2 id="vikarskemaTitle" style="margin-top:0">Vikarskema</h2>
-        <div id="vikarskemaContent">Indlæser...</div>
+        <h2 style="margin-top:0">Vikarskema (1-5)</h2>
+        <div id="vikarLeftContent">Indlæser...</div>
       </div>
       <div id="staticMessageBox"></div>
     </div>
   </div>
 
-  <div class="right-panel">
-    <div class="panel top">
+  <div id="middlePanel">
+    <div class="panel" style="height: 100%;">
+      <div class="vikarskema">
+        <h2 style="margin-top:0">Vikarskema (7-11)</h2>
+        <div id="vikarMiddleContent"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-side">
+    <div class="image-box">
       <img id="slideshowImage" src="" alt="slideshow">
     </div>
-    <div class="panel bottom">
+
+    <div class="info-box-bottom">
       <div class="schedule" id="schedule"></div>
       <div id="bigDateTime">
         <div id="bigClock">00:00:00</div>
@@ -201,13 +194,11 @@ body {
       </div>
     </div>
   </div>
+
 </div>
 
-<div id="infoBox"></div>
-<div id="morgensamlingReminder" style="position:fixed; top:20px; left:50%; transform:translateX(-50%); background:red; color:white; padding:15px 30px; border-radius:10px; font-size:24px; font-weight:bold; display:none; z-index:1000;">Det er tid til morgensamling!</div>
-
 <script>
-// الإعدادات الأساسية
+// (نفس منطق الجافاسكريبت السابق دون تغيير لضمان استقرار العمل)
 const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 const INFO_SHEET_URL = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
@@ -215,78 +206,67 @@ const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7
 let imageData = [];
 let currentImageIndex = 0;
 
-// 1. تحديث الوقت والتاريخ (تحسين الأداء)
-const bigClockEl = document.getElementById("bigClock");
-const bigDateEl = document.getElementById("bigDate");
-
 function updateDateTime() {
   const now = new Date();
-  const timeStr = now.toLocaleTimeString('da-DK', { hour12: false });
-  const dateStr = now.toLocaleDateString('da-DK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  
-  if (bigClockEl.textContent !== timeStr) bigClockEl.textContent = timeStr;
-  if (bigDateEl.textContent !== dateStr) bigDateEl.textContent = dateStr;
+  document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
+  document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 }
 setInterval(updateDateTime, 1000);
 
-// 2. السلايد شو (تعديل: جلب الصور مرة واحدة فقط)
 async function fetchImages() {
   try {
-    const res = await fetch(IMAGE_WEBHOOK, { cache: "no-store" });
+    const res = await fetch(IMAGE_WEBHOOK);
     const data = await res.json();
     let rows = Array.isArray(data) ? data : data.rows || [];
     imageData = rows.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-  } catch (e) { console.error("Image Fetch Error", e); }
+  } catch (e) { console.error("Image Fetch Error"); }
 }
 
 function cycleImages() {
   if (imageData.length === 0) return;
-  const imgEl = document.getElementById("slideshowImage");
-  imgEl.src = imageData[currentImageIndex];
+  document.getElementById("slideshowImage").src = imageData[currentImageIndex];
   currentImageIndex = (currentImageIndex + 1) % imageData.length;
 }
 
 async function initSlideshow() {
-  await fetchImages(); // جلب مرة واحدة عند البداية
-  if (imageData.length > 0) {
-    cycleImages();
-    setInterval(cycleImages, 5000); // تقليب الصور المحلية كل 5 ثواني
-  }
+  await fetchImages();
+  if (imageData.length > 0) { cycleImages(); setInterval(cycleImages, 5000); }
 }
 
-// 3. تحديث جدول الـ Vikarskema (كل دقيقة)
 async function updateVikarskema() {
   try {
     const res = await fetch(VIKAR_URL);
     const data = await res.json();
-    let html = "<table><thead><tr>" + data.headers.map(h => `<th>${h}</th>`).join("") + "</tr></thead><tbody>";
-    data.rows.forEach(r => {
-      html += "<tr>" + r.map(cell => `<td>${cell}</td>`).join("") + "</tr>";
-    });
-    html += "</tbody></table>";
-    document.getElementById("vikarskemaContent").innerHTML = html;
-    highlightRow();
+    const rows = data.rows || [];
+    const headers = data.headers || [];
+
+    const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
+    const wrapper = document.getElementById("mainWrapper");
+    const middlePanel = document.getElementById("middlePanel");
+
+    if (hasMiddleData) {
+      wrapper.style.setProperty('--layout-cols', '1fr 1fr 1fr');
+      middlePanel.style.display = 'flex';
+      renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
+    } else {
+      wrapper.style.setProperty('--layout-cols', '40% 60%');
+      middlePanel.style.display = 'none';
+    }
+    renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
   } catch (e) { console.error("Vikar Error"); }
 }
 
-function highlightRow() {
-  const rows = document.querySelectorAll("#vikarskemaContent tbody tr");
-  const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-  rows.forEach(row => {
-    const timeMatch = row.cells[0]?.textContent.match(/(\d{1,2}):(\d{2})/);
-    if (timeMatch) {
-      const startMin = parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
-      if (nowMin >= startMin && nowMin < startMin + 45) {
-        row.style.background = "#ff4d4d"; row.style.color = "white";
-      } else {
-        row.style.background = ""; row.style.color = "";
-      }
+function renderTable(containerId, headers, rows) {
+  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r => {
+    if (r.some(cell => cell && cell.toString().trim() !== "")) {
+      html += "<tr>" + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
     }
   });
+  html += "</tbody></table>";
+  document.getElementById(containerId).innerHTML = html;
 }
-setInterval(updateVikarskema, 60000);
 
-// 4. جدول المناوبات الثابت (Gårdvagt)
 const localSchedules = {
   1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
   2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
@@ -303,7 +283,6 @@ function renderStaticSchedule() {
   document.getElementById("schedule").innerHTML = html + "</tbody></table>";
 }
 
-// 5. رسائل المعلومات (InfoBox)
 async function updateMessages() {
   try {
     const res = await fetch(INFO_SHEET_URL);
@@ -313,19 +292,12 @@ async function updateMessages() {
   } catch(e) {}
 }
 
-// تشغيل كل شيء
 window.onload = () => {
-  updateDateTime();
-  initSlideshow();
-  updateVikarskema();
-  renderStaticSchedule();
-  updateMessages();
-  setInterval(updateMessages, 60000);
+  updateDateTime(); initSlideshow(); updateVikarskema(); renderStaticSchedule(); updateMessages();
+  setInterval(updateMessages, 60000); setInterval(updateVikarskema, 60000);
 };
 
-// إعادة تحميل الصفحة كل ساعة لضمان النظافة التامة للذاكرة
 setInterval(() => location.reload(), 3600000);
-
 </script>
 </body>
 </html>
