@@ -28,7 +28,6 @@ body {
   box-sizing: border-box;
 }
 
-/* الشعار في أعلى اليمين */
 .logo { 
   position: fixed; 
   top: 25px; 
@@ -46,8 +45,6 @@ body {
   padding: var(--gap);
   box-sizing: border-box;
 }
-
-.no-vikar-layout { grid-template-columns: 100% !important; }
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .panel {
@@ -103,16 +100,21 @@ body {
 }
 #slideshowImage { width: 100%; height: 100%; object-fit: contain; }
 
+/* تنسيق الرسالة لتكون مكان جدول الغيابات فقط */
 #noVikarMessage {
   display: none;
   background: #fff;
   color: #2d3436;
-  padding: 15px;
-  border-radius: 12px;
+  padding: 30px;
+  border-radius: 16px;
   text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-  border-left: 10px solid var(--accent);
+  font-size: 22px;
+  font-weight: 600;
+  border-left: 10px solid #f39c12;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 
 .info-box-bottom {
@@ -163,11 +165,18 @@ body {
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side" id="leftSideContainer">
-    <div class="panel" style="height: 100%;">
+    <div id="vikarPanelContainer" class="panel" style="height: 100%;">
       <div class="vikarskema">
-        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
+        <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent">Indlæser...</div>
       </div>
+      
+      <div id="noVikarMessage">
+        Der er ikke noget vikarskema endnu. 
+        <br><br>
+        Der kan komme ændringer senere, hold øje med skærmen.
+      </div>
+
       <div id="staticMessageBox"></div>
     </div>
   </div>
@@ -186,8 +195,6 @@ body {
       <img id="slideshowImage" src="" alt="slideshow">
     </div>
     
-    <div id="noVikarMessage">Der er ingen vikarskema for i dag.</div>
-
     <div class="info-box-bottom" id="bottomFooter">
       <div class="schedule" id="schedule"></div>
       <div id="infoBox">Indlæser...</div>
@@ -200,7 +207,6 @@ body {
 </div>
 
 <script>
-// الإعدادات والروابط
 const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 const INFO_SHEET_URL = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
@@ -265,9 +271,10 @@ async function updateVikarskema() {
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
 
     const wrapper = document.getElementById("mainWrapper");
-    const leftSide = document.getElementById("leftSideContainer");
-    const middlePanel = document.getElementById("middlePanel");
+    const vikarContent = document.getElementById("vikarLeftContent");
+    const vikarTitle = document.getElementById("vikarTitle");
     const noVikarMsg = document.getElementById("noVikarMessage");
+    const middlePanel = document.getElementById("middlePanel");
     const rightSide = document.getElementById("rightSide");
     const schedule = document.getElementById("schedule");
     const infoBox = document.getElementById("infoBox");
@@ -275,17 +282,21 @@ async function updateVikarskema() {
     const bottomFooter = document.getElementById("bottomFooter");
 
     if (!hasLeftData) {
-      wrapper.classList.add('no-vikar-layout');
-      leftSide.style.display = 'none';
+      // إخفاء الجدول وإظهار الرسالة في نفس المكان (يسار أسفل)
+      vikarContent.style.display = 'none';
+      vikarTitle.style.display = 'none';
+      noVikarMsg.style.display = 'flex';
+      
       middlePanel.style.display = 'none';
-      noVikarMsg.style.display = 'block';
+      wrapper.style.gridTemplateColumns = '40% 60%';
       wrapper.classList.remove('mode-two-panels');
       bottomFooter.appendChild(schedule);
       bottomFooter.appendChild(infoBox);
       bottomFooter.appendChild(dateTime);
     } else {
-      wrapper.classList.remove('no-vikar-layout');
-      leftSide.style.display = 'flex';
+      // إظهار الجدول وإخفاء الرسالة
+      vikarContent.style.display = 'block';
+      vikarTitle.style.display = 'block';
       noVikarMsg.style.display = 'none';
 
       if (hasMiddleData) {
