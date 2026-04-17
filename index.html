@@ -10,7 +10,9 @@
 :root {
   --bg: #f0f2f5; 
   --accent: #0056b3; 
+  --info-bg: #007aff; 
   --gap: 20px;
+  --highlight: #fffa65;
 }
 
 body {
@@ -35,26 +37,62 @@ body {
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 .panel {
-  background: rgba(255,255,255,0.8);
+  background: rgba(255,255,255,0.9);
   border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
+/* تحسين شكل جدول الـ Vikarskema */
 .vikarskema { overflow-y: auto; flex: 1; }
-.vikarskema table { width: 100%; border-collapse: separate; border-spacing: 0 8px; font-size: clamp(16px, 1.4vw, 20px); }
-.vikarskema th { background: var(--accent); color: white; padding: 12px; border-radius: 8px; position: sticky; top: 0; }
-.vikarskema td { background: white; padding: 10px; border-radius: 4px; text-align: center; }
+.vikarskema table { 
+  width: 100%; 
+  border-collapse: collapse; /* دمج الحدود بدلاً من فصلها */
+  font-size: clamp(14px, 1.2vw, 18px); 
+}
+
+.vikarskema th { 
+  background: var(--accent); 
+  color: white; 
+  padding: 12px 8px; 
+  text-align: center;
+  position: sticky; 
+  top: 0; 
+  font-weight: 700;
+  border-bottom: 2px solid rgba(0,0,0,0.1);
+}
+
+.vikarskema td { 
+  background: white; 
+  padding: 8px 4px; /* تقليل الحشوة الداخلية لتقليل الفراغ */
+  text-align: center;
+  border-bottom: 1px solid #eee; /* خط فاصل ناعم بين الأسطر */
+}
+
+/* لون خفيف للأسطر المتبادلة */
+.vikarskema tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+/* تمييز الصف النشط */
+.active-shift td {
+  background-color: var(--highlight) !important;
+  color: #000 !important;
+  font-weight: 800;
+  border-bottom: 2px solid #e1b12c !important;
+  transform: scale(1.01);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
 
 #staticMessageBox {
   margin-top: 10px;
-  padding: 15px;
+  padding: 12px;
   background: #ff3b30;
-  border-radius: 12px;
-  font-size: 22px;
+  border-radius: 10px;
+  font-size: 20px;
   font-weight: 700;
   color: white;
   text-align: center;
@@ -69,48 +107,43 @@ body {
   align-items: center;
   background: rgba(255, 255, 255, 0.5);
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   overflow: hidden;
 }
 #slideshowImage { width: 100%; height: 100%; object-fit: contain; }
 
-/* حاوية المعلومات السفلى */
 .info-box-bottom {
   background: white;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0,0,0,0.1);
   display: flex;
-  flex-direction: column; /* عمودي افتراضياً لحالة الجدولين */
+  flex-direction: column;
 }
 
-/* عندما يكون هناك جدول واحد فقط: تتحول الحاوية لسطر أفقي */
-.single-panel-layout .info-box-bottom {
-  flex-direction: row;
-  align-items: stretch;
-}
+.single-panel-layout .info-box-bottom { flex-direction: row; align-items: stretch; }
+.single-panel-layout #schedule { order: 1; flex: 1.2; }
+.single-panel-layout #infoBox { order: 2; flex: 1; }
+.single-panel-layout #bigDateTime { order: 3; flex: 0.8; }
 
-.schedule { padding: 10px; flex: 1; }
+.schedule { padding: 10px; }
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
-.schedule th { background: #2d5a27; color: white; padding: 8px; font-weight: 700; font-size: 16px; border-radius: 6px; }
-.schedule td { padding: 6px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 14px; border-radius: 6px; }
+.schedule th { background: #2d5a27; color: white; padding: 6px; font-weight: 700; font-size: 14px; border-radius: 6px; }
+.schedule td { padding: 5px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 13px; border-radius: 4px; }
 
-#bigDateTime { padding: 15px; background: var(--accent); color: white; text-align: center; flex: 1; display: flex; flex-direction: column; justify-content: center; }
+#bigDateTime { padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
 #bigClock { font-size: 45px; font-weight: 800; font-family: 'monospace'; line-height: 1; }
 #bigDate { font-size: 16px; opacity: 0.9; }
 
 #infoBox {
-  background: #003d80;
+  background: linear-gradient(135deg, var(--info-bg), #005bb5);
   color: #fff;
   padding: 15px;
   text-align: center;
   font-size: 20px;
   font-weight: 600;
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.5s ease;
 }
 
 .logo { position: fixed; top: 25px; left: 35px; z-index: 100; }
@@ -119,13 +152,15 @@ body {
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 </style>
 </head>
-<body class="single-panel-layout"> <div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
+<body class="single-panel-layout">
+
+<div class="logo"><img src="https://www.al-irchadskolen.dk/wp-content/uploads/2024/03/images.png" alt="logo"></div>
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side">
     <div class="panel" style="height: 100%;">
       <div class="vikarskema">
-        <h2 style="margin-top:0">Vikarskema (1-5)</h2>
+        <h2 style="margin:0 0 10px 0; font-size: 22px;">Vikarskema (1-5)</h2>
         <div id="vikarLeftContent">Indlæser...</div>
       </div>
       <div id="staticMessageBox"></div>
@@ -135,7 +170,7 @@ body {
   <div id="middlePanel">
     <div class="panel" style="height: 100%;">
       <div class="vikarskema">
-        <h2 style="margin-top:0">Vikarskema (7-11)</h2>
+        <h2 style="margin:0 0 10px 0; font-size: 22px;">Vikarskema (7-11)</h2>
         <div id="vikarMiddleContent"></div>
       </div>
     </div>
@@ -147,11 +182,11 @@ body {
     </div>
     <div class="info-box-bottom">
       <div class="schedule" id="schedule"></div>
+      <div id="infoBox">Indlæser معلومات...</div>
       <div id="bigDateTime">
         <div id="bigClock">00:00:00</div>
         <div id="bigDate">Dato...</div>
       </div>
-      <div id="infoBox">Indlæser معلومات...</div>
     </div>
   </div>
 </div>
@@ -171,6 +206,52 @@ function updateDateTime() {
   const now = new Date();
   document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
   document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
+  renderStaticSchedule(); 
+}
+
+function isCurrentShift(timeText) {
+  try {
+    if (!timeText) return false;
+    const now = new Date();
+    const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+    const timeMatch = timeText.match(/(\d{1,2}):(\d{2})/);
+    if (!timeMatch) return false;
+    const h = parseInt(timeMatch[1]);
+    const m = parseInt(timeMatch[2]);
+    const startTimeMinutes = h * 60 + m;
+    const endTimeMinutes = startTimeMinutes + 40; 
+    return currentTimeMinutes >= startTimeMinutes && currentTimeMinutes < endTimeMinutes;
+  } catch (e) { return false; }
+}
+
+const localSchedules = {
+  1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
+  2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
+  3:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","AD","SJ","LL","JL"],["11:20-11:55","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
+  4:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","MB","AFH","MT"],["11:20-11:55","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
+  5:{title:"Gårdvagtskema", rows:[["9:50-10:00","AD","MB","KP","MT","MA"],["11:20-11:55","MA","MB","MP","AFH","MT"]]}
+};
+
+function renderStaticSchedule() {
+  const day = new Date().getDay();
+  const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
+  let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
+  sch.rows.forEach(r => {
+    const activeClass = isCurrentShift(r[0]) ? 'class="active-shift"' : '';
+    html += `<tr ${activeClass}>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>";
+  });
+  document.getElementById("schedule").innerHTML = html + "</tbody></table>";
+}
+
+function renderTable(containerId, headers, rows) {
+  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r => {
+    if (r.some(cell => cell && cell.toString().trim() !== "")) {
+      const activeClass = isCurrentShift(r[0] ? r[0].toString() : "") ? 'class="active-shift"' : '';
+      html += `<tr ${activeClass}>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
+    }
+  });
+  document.getElementById(containerId).innerHTML = html + "</tbody></table>";
 }
 
 async function fetchWeather() {
@@ -179,7 +260,7 @@ async function fetchWeather() {
     const data = await res.json();
     currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
     currentWeather.desc = `Vejr: ${currentWeather.temp}`;
-  } catch (e) { console.error("Weather error"); }
+  } catch (e) { }
 }
 
 async function fetchSheetRows() {
@@ -188,7 +269,7 @@ async function fetchSheetRows() {
     const data = await res.json();
     sheetRows = data.rows || (data.sheets && data.sheets[0].rows) || [];
     if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
-  } catch(e) { console.error("Sheet error"); }
+  } catch(e) { }
 }
 
 function showInfoBox() {
@@ -214,7 +295,7 @@ async function fetchImages() {
     const data = await res.json();
     let rows = Array.isArray(data) ? data : data.rows || [];
     imageData = rows.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-  } catch (e) { console.error("Image Fetch Error"); }
+  } catch (e) { }
 }
 
 function cycleImages() {
@@ -245,40 +326,13 @@ async function updateVikarskema() {
       middlePanel.style.display = 'none';
     }
     renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
-  } catch (e) { console.error("Vikar Error"); }
-}
-
-function renderTable(containerId, headers, rows) {
-  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => {
-    if (r.some(cell => cell && cell.toString().trim() !== "")) {
-      html += "<tr>" + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
-    }
-  });
-  document.getElementById(containerId).innerHTML = html + "</tbody></table>";
-}
-
-const localSchedules = {
-  1:{title:"Gårdvagtskema", rows:[["9:50","PP","EY","JL","TN","MA"],["11:20","PP","NC","LC","JD","MA"],["12:35","PP","JL","KP","JD","SR"]]},
-  2:{title:"Gårdvagtskema", rows:[["9:50","NC","EY","EK","TN","IR"],["11:20","MD","EY","EK","TN","IR"],["12:35","MD","JL","EK","IH","SR"]]},
-  3:{title:"Gårdvagtskema", rows:[["9:50","NC","AD","SJ","LL","JL"],["11:20","ZA","AD","SJ","IH","LL"],["12:35","ZA","AD","SJ","AFH","LL"]]},
-  4:{title:"Gårdvagtskema", rows:[["9:50","NC","EY","MB","AFH","MT"],["11:20","HR","LC","MP","MT","SR"],["12:35","MD","HR","MP","IH","JD"]]},
-  5:{title:"Gårdvagtskema", rows:[["9:50","AD","MB","KP","MT","MA"],["11:20","MA","MB","MP","AFH","MT"]]}
-};
-
-function renderStaticSchedule() {
-  const day = new Date().getDay();
-  const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
-  let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
-  sch.rows.forEach(r => { html += "<tr>" + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
-  document.getElementById("schedule").innerHTML = html + "</tbody></table>";
+  } catch (e) { }
 }
 
 window.onload = async () => {
   updateDateTime(); setInterval(updateDateTime, 1000);
   await fetchImages(); if (imageData.length > 0) { cycleImages(); setInterval(cycleImages, 5000); }
   updateVikarskema(); setInterval(updateVikarskema, 60000);
-  renderStaticSchedule();
   await fetchWeather();
   await fetchSheetRows();
   showInfoBox(); setInterval(showInfoBox, 10000);
