@@ -192,10 +192,12 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
-    // الجدول الأول: الأعمدة 0-4 (A-E)
-    const leftRows = rows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
-    // الجدول الثاني: الأعمدة 6-10 (G-K)
-    const middleRows = rows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
+    // تنظيف البيانات: استبعاد الصفوف الفارغة تماماً
+    const cleanRows = rows.filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
+
+    // تحديد بيانات الجدول الأول (A-E) والجدول الثاني (G-K)
+    const leftRows = cleanRows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
+    const middleRows = cleanRows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
     const hasLeftData = leftRows.length > 0;
     const hasMiddleData = middleRows.length > 0;
@@ -209,18 +211,28 @@ async function updateVikarskema() {
     const schedule = document.getElementById("schedule");
     const dateTime = document.getElementById("bigDateTime");
 
-    if (!hasLeftData) {
+    // منطق العرض
+    if (!hasLeftData && !hasMiddleData) {
+      // لا توجد بيانات في أي جدول
       vikarLeftWrapper.style.display = 'none';
-      noVikar.style.display = 'flex'; 
       middlePanel.style.display = 'none';
+      noVikar.style.display = 'flex'; 
       wrapper.classList.remove('mode-two-panels');
       bottomFooter.appendChild(schedule);
       bottomFooter.appendChild(dateTime);
-    } else {
+    } 
+    else {
       noVikar.style.display = 'none';
-      renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
-      vikarLeftWrapper.style.display = 'block';
+      
+      // عرض الجدول الأول إذا وُجد
+      if (hasLeftData) {
+        renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
+        vikarLeftWrapper.style.display = 'block';
+      } else {
+        vikarLeftWrapper.style.display = 'none';
+      }
 
+      // عرض الجدول الثاني إذا وُجد (هنا يكمن الحل)
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
@@ -234,7 +246,7 @@ async function updateVikarskema() {
         bottomFooter.appendChild(dateTime);
       }
     }
-  } catch (e) { console.error("Vikar fetch error:", e); }
+  } catch (e) { console.error("Error updating Vikarskema:", e); }
 }
 
 function renderTable(id, headers, rows) {
