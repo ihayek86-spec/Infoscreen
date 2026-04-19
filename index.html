@@ -27,6 +27,14 @@ body {
   overflow: hidden;
 }
 
+/* --- تنسيق الحصة النشطة (اللون الأحمر) --- */
+.active-lesson td {
+  background-color: #ff3b30 !important;
+  color: white !important;
+  font-weight: 700 !important;
+  transition: all 0.5s ease;
+}
+
 /* --- Splash Screen --- */
 #splashScreen {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -69,11 +77,7 @@ body {
 }
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-
-/* الخط أصبح 21px */
 .vikarskema table { width: 100%; border-collapse: collapse; font-size: 21px; }
-
-/* الـ padding أصبح 13px والخط 21px */
 .vikarskema th { 
   background: var(--accent); 
   color: white; 
@@ -82,8 +86,6 @@ body {
   top: 0; 
   font-size: 21px; 
 }
-
-/* الـ padding أصبح 13px */
 .vikarskema td { 
   background: white; 
   padding: 13px; 
@@ -91,8 +93,6 @@ body {
   border-bottom: 1px solid #eee; 
   font-weight: 400; 
 }
-
-/* الخط أصبح 23px والمسافة السفلية 15px */
 .vikarskema h2 { 
   margin: 0 0 15px 0; 
   font-size: 23px !important; 
@@ -112,14 +112,14 @@ body {
 }
 
 #noVikarMessage .main-text { 
-  font-size: 60px; /* خط كبير جداً للعنوان */
+  font-size: 60px; 
   color: var(--accent); 
   font-weight: 800; 
   margin-bottom: 30px;
 }
 
 #noVikarMessage .sub-text { 
-  font-size: 36px; /* خط كبير وواضح للوصف */
+  font-size: 36px; 
   color: #2d3436; 
   line-height: 1.4;
   font-weight: 400;
@@ -139,7 +139,6 @@ body {
 
 @keyframes cinematicZoom { from { transform: scale(1); } to { transform: scale(1.25); } }
 
-/* --- تعديل ارتفاع منطقة الجدول والساعة --- */
 .info-box-bottom { 
   background: white; 
   border-radius: 16px; 
@@ -147,14 +146,14 @@ body {
   display: flex; 
   box-shadow: 0 6px 20px rgba(0,0,0,0.1); 
   flex-shrink: 0;
-  max-height: 180px; /* تحديد أقصى ارتفاع للمنطقة بالكامل */
+  max-height: 180px; 
 }
 
-#schedule { flex: 1.2; padding: 6px; background: white; } /* تقليل padding */
+#schedule { flex: 1.2; padding: 6px; background: white; }
 
 #bigDateTime { 
   flex: 0.8; 
-  padding: 8px; /* تقليل padding من 15px */
+  padding: 8px; 
   background: var(--accent); 
   color: white; 
   text-align: center; 
@@ -163,24 +162,24 @@ body {
   justify-content: center; 
 }
 
-#bigClock { font-size: 38px; font-weight: 800; font-family: 'monospace'; } /* تصغير الخط من 46px */
-#bigDate { font-size: 26px; font-weight: 700; margin-top: 2px; } /* تصغير الخط من 32px */
+#bigClock { font-size: 38px; font-weight: 800; font-family: 'monospace'; }
+#bigDate { font-size: 26px; font-weight: 700; margin-top: 2px; }
 
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 3px; }
 .schedule th { 
   background: #2d5a27; 
   color: white; 
-  padding: 8px; /* تقليل padding من 12px */
-  font-size: 22px; /* تصغير الخط من 28px */
+  padding: 8px; 
+  font-size: 22px; 
   border-radius: 6px; 
 }
 .schedule td { 
-  padding: 6px; /* تقليل padding من 10px */
+  padding: 6px; 
   text-align: center; 
   background: #f0f9f0; 
   color: #2d5a27; 
   font-weight: 700; 
-  font-size: 18px; /* تصغير الخط من 22px */
+  font-size: 18px; 
   border-radius: 4px; 
 }
 
@@ -196,7 +195,6 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2 Layout --- */
 .mode-two-panels { grid-template-columns: 1fr 1fr 1.15fr !important; gap: 15px !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
 .mode-two-panels .right-side { width: 100% !important; display: flex !important; flex-direction: column !important; gap: 15px !important; }
@@ -332,8 +330,46 @@ async function updateVikarskema() {
 
 function renderTable(id, headers, rows) {
   if (rows.length === 0) return;
+
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
   let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => { html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>"; });
+  
+  rows.forEach(r => {
+    let rowClass = "";
+    let cellValue = String(r[0]); // القيمة مثل "8.t:21:10"
+
+    // فحص تنسيق الوقت واستخراج الساعة والدقيقة
+    if (cellValue.includes(":")) {
+      const parts = cellValue.split(":");
+      // إذا كان التنسيق "8.t:21:10" فإن المصفوفة ستكون ["8.t", "21", "10"]
+      if (parts.length >= 3) {
+        const startHour = parseInt(parts[1]);
+        const startMin = parseInt(parts[2]);
+        
+        const startTimeInMinutes = startHour * 60 + startMin;
+        const endTimeInMinutes = startTimeInMinutes + 40; // مدة الحصة 40 دقيقة
+
+        if (currentMinutes >= startTimeInMinutes && currentMinutes < endTimeInMinutes) {
+          rowClass = 'class="active-lesson"';
+        }
+      } 
+      // دعم التنسيق العادي "21:10" في حال تغير النظام
+      else if (parts.length === 2) {
+        const startHour = parseInt(parts[0]);
+        const startMin = parseInt(parts[1]);
+        const startTimeInMinutes = startHour * 60 + startMin;
+        const endTimeInMinutes = startTimeInMinutes + 40;
+        if (currentMinutes >= startTimeInMinutes && currentMinutes < endTimeInMinutes) {
+          rowClass = 'class="active-lesson"';
+        }
+      }
+    }
+
+    html += `<tr ${rowClass}>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
+  });
+  
   document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
@@ -394,7 +430,7 @@ window.onload = async () => {
   await fetchImages(); 
   setInterval(cycleImages, 12000);
   updateVikarskema(); 
-  setInterval(updateVikarskema, 60000);
+  setInterval(updateVikarskema, 30000); // تحديث كل 30 ثانية لضمان دقة التلوين
   fetchSheetRows(); 
   setInterval(fetchSheetRows, 600000);
   setTimeout(() => {
