@@ -3,7 +3,6 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-
 <title>Al Irchad skolen - Infoskærm</title>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +29,7 @@ body {
   font-size: 17px;
 }
 
-/* --- شاشة الترحيب --- */
+/* --- Splash Screen --- */
 #splashScreen {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: white; display: flex; justify-content: center; align-items: center;
@@ -71,16 +70,15 @@ body {
 .vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
 
-.active-shift td {
-  background-color: var(--highlight) !important;
-  color: #000 !important; font-weight: 800;
-  border-bottom: 2px solid #e1b12c !important;
+#noVikarMessage {
+  display: none; background: #fff; text-align: center; padding: 30px; border-radius: 16px;
+  font-size: 24px; font-weight: 600; border-left: 10px solid #f39c12; height: 100%;
+  flex-direction: column; justify-content: center; animation: pulseBg 3s infinite;
 }
+@keyframes pulseBg { 0% { background-color: #fff; } 50% { background-color: #fff9e6; } 100% { background-color: #fff; } }
 
-#staticMessageBox {
-  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
-  font-size: 23px; font-weight: 700; color: white; text-align: center;
-}
+.funny-loader { font-size: 60px; display: block; margin-bottom: 20px; animation: bounce 1.5s infinite; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; max-width: 100%; }
 
@@ -98,25 +96,11 @@ body {
   100% { transform: scale(1.1) translate(-1%, -1%); }
 }
 
-.funny-loader { font-size: 60px; display: block; margin-bottom: 20px; animation: bounce 1.5s infinite; }
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
-
-#noVikarMessage {
-  display: none; background: #fff; text-align: center; padding: 30px; border-radius: 16px;
-  font-size: 24px; font-weight: 600; border-left: 10px solid #f39c12; height: 100%;
-  flex-direction: column; justify-content: center; animation: pulseBg 3s infinite;
-}
-@keyframes pulseBg { 0% { background-color: #fff; } 50% { background-color: #fff9e6; } 100% { background-color: #fff; } }
-
 .info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
 
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
-
-@keyframes scrollText {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
+@keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 #schedule { flex: 1.2; padding: 10px; background: white; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
@@ -129,7 +113,7 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2 Layout --- */
+/* --- Mode 2 --- */
 .mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
 .mode-two-panels .right-side { gap: 12px !important; }
@@ -137,6 +121,10 @@ body {
 .mode-two-panels #schedule { display: flex !important; flex: 1 1 auto !important; }
 .mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 100px !important; }
 
+#staticMessageBox {
+  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
+  font-size: 23px; font-weight: 700; color: white; text-align: center;
+}
 </style>
 </head>
 <body>
@@ -152,8 +140,8 @@ body {
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side">
-    <div id="vikarPanelContainer" class="panel" style="height: 100%;">
-      <div id="vikarLeftWrapper" class="vikarskema">
+    <div class="panel" style="height: 100%;">
+      <div id="vikarLeftWrapper" class="vikarskema" style="display:none;">
         <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
@@ -211,8 +199,12 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
-    const hasLeftData = rows.some(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
-    const hasMiddleData = rows.some(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
+    // فحص البيانات قبل أي تعديل في الـ DOM
+    const leftRows = rows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
+    const middleRows = rows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
+
+    const hasLeftData = leftRows.length > 0;
+    const hasMiddleData = middleRows.length > 0;
 
     const wrapper = document.getElementById("mainWrapper");
     const middlePanel = document.getElementById("middlePanel");
@@ -223,44 +215,44 @@ async function updateVikarskema() {
     const vikarLeftWrapper = document.getElementById("vikarLeftWrapper");
     const noVikar = document.getElementById("noVikarMessage");
 
-    // 1. التعامل مع الطرف الأيسر (الجدول 1 أو الرسالة المضحكة)
+    // الترتيب المنطقي لمنع الوميض
     if (!hasLeftData) {
+      // الحالة 1: لا يوجد داتا نهائياً
       vikarLeftWrapper.style.display = 'none';
       noVikar.style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
-      if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
-      if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
+      bottomFooter.appendChild(schedule);
+      bottomFooter.appendChild(dateTime);
     } else {
+      // الحالة 2: يوجد داتا
       noVikar.style.display = 'none';
+      
+      // رسم الجداول أولاً في الذاكرة
+      renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
       vikarLeftWrapper.style.display = 'block';
-      renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
 
-      // 2. التعامل مع الجدول الأوسط (Mode 2)
       if (hasMiddleData) {
+        // الحالة 3: Mode 2
+        renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
-        if (!rightSide.contains(schedule)) rightSide.appendChild(schedule);
-        if (!rightSide.contains(dateTime)) rightSide.appendChild(dateTime);
-        renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
+        rightSide.appendChild(schedule);
+        rightSide.appendChild(dateTime);
       } else {
+        // الحالة 4: داتا يسار فقط
         middlePanel.style.display = 'none';
         wrapper.classList.remove('mode-two-panels');
-        if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
-        if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
+        bottomFooter.appendChild(schedule);
+        bottomFooter.appendChild(dateTime);
       }
     }
-  } catch (e) {}
+  } catch (e) { console.error(e); }
 }
 
 function renderTable(id, headers, rows) {
-  const filtered = rows.filter(r => r.some(c => c && c.toString().trim() !== ""));
-  if (filtered.length === 0) {
-    document.getElementById(id).innerHTML = "";
-    return;
-  }
   let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  filtered.forEach(r => {
+  rows.forEach(r => {
     html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
   });
   document.getElementById(id).innerHTML = html + "</tbody></table>";
