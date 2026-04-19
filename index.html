@@ -9,6 +9,7 @@
 :root {
   --bg: #f0f2f5; 
   --accent: #2d3436; 
+  --brand-orange: #ff9500; /* اللون البرتقالي المعتمد */
   --info-bg: #007aff; 
   --gap: 20px;
 }
@@ -57,17 +58,30 @@ body {
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
+/* --- Panel Styling مع الشريط البرتقالي --- */
 .panel {
-  background: rgba(255,255,255,0.9);
-  border-radius: 16px; padding: 15px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 16px; 
+  padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  display: flex; flex-direction: column; overflow: hidden;
+  display: flex; 
+  flex-direction: column; 
+  overflow: hidden;
+  /* إضافة الشريط البرتقالي على اليسار */
+  border-left: 12px solid var(--brand-orange); 
 }
 
-/* --- Vikarskema Styling (تم تكبير الخط) --- */
+/* --- Vikarskema Styling (خط كبير وعناوين برتقالية) --- */
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
 .vikarskema table { width: 100%; border-collapse: collapse; font-size: 24px; }
-.vikarskema th { background: var(--accent); color: white; padding: 15px; position: sticky; top: 0; font-size: 26px; }
+.vikarskema th { 
+  background: var(--brand-orange); /* تغيير لون رأس الجدول للبرتقالي */
+  color: white; 
+  padding: 15px; 
+  position: sticky; 
+  top: 0; 
+  font-size: 26px; 
+}
 .vikarskema td { background: white; padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-weight: 600; }
 .vikarskema h2 { margin: 0 0 15px 0; font-size: 32px; color: var(--accent); text-align: center; font-weight: 700; }
 
@@ -80,7 +94,7 @@ body {
 #noVikarMessage .main-text { font-size: 42px; color: var(--accent); font-weight: 800; margin-bottom: 15px; }
 #noVikarMessage .sub-text { font-size: 28px; color: #636e72; }
 
-/* --- Slideshow Styling (تأثير الفيديو) --- */
+/* --- Slideshow Styling (تأثير الفيديو السينمائي) --- */
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 .image-box {
   flex: 1; position: relative; background: #000; border-radius: 16px;
@@ -111,7 +125,7 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Modes --- */
+/* --- Layout Modes --- */
 .mode-two-panels { grid-template-columns: 33.3% 33.3% 33.3% !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
 .mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
@@ -193,7 +207,6 @@ async function updateVikarskema() {
 
     const cleanRows = rows.filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
 
-    // تقسيم البيانات بناءً على الأعمدة A-E (0-4) و G-K (6-10)
     const leftRows = cleanRows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
     const middleRows = cleanRows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
