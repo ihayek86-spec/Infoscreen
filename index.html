@@ -30,7 +30,7 @@ body {
   font-size: 17px;
 }
 
-/* --- شاشة الترحيب --- */
+/* --- Splash Screen --- */
 #splashScreen {
   position: fixed; top: 0; left: 0; width: 100%; height: 100%;
   background: white; display: flex; justify-content: center; align-items: center;
@@ -89,31 +89,36 @@ body {
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
-.image-box { flex: 1; position: relative; background: #000; border-radius: 16px; overflow: hidden; }
+.image-box { flex: 1; position: relative; background: #000; border-radius: 16px; overflow: hidden; min-height: 100px;}
 #slideshowImage { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: opacity 1.5s; }
 
-.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); height: 180px; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: var(--info-bg); color: #fff; display: flex; align-items: center; overflow: hidden; }
 
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-#schedule { flex: 1.2; padding: 10px; background: white; }
+#schedule { flex: 1.2; padding: 10px; background: white; overflow: hidden; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
 #bigClock { font-size: 46px; font-weight: 800; }
 #bigDate { font-size: 32px; font-weight: 700; }
 
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
-.schedule th { background: #2d5a27; color: white; padding: 12px; font-size: 28px; border-radius: 6px; }
-.schedule td { padding: 10px; text-align: center; background: #f0f9f0; font-weight: 700; font-size: 22px; border-radius: 4px; }
+.schedule th { background: #2d5a27; color: white; padding: 8px; font-size: 22px; border-radius: 6px; }
+.schedule td { padding: 6px; text-align: center; background: #f0f9f0; font-weight: 700; font-size: 18px; border-radius: 4px; }
 
 #middlePanel { display: none; flex-direction: column; height: 100%; }
 
+/* --- Mode 2 Layout Fix --- */
 .mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
-.mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
-.mode-two-panels #schedule { display: flex !important; width: 100% !important; border-radius: 12px; flex: 1 !important; }
-.mode-two-panels #bigDateTime { display: flex !important; width: 100% !important; border-radius: 12px; flex: 0 0 120px !important; }
+
+/* Force image to 50% height in Mode 2 */
+.mode-two-panels .image-box { flex: 0 0 50% !important; height: 50% !important; }
+
+/* In Mode 2, make schedule and clock take the remaining space in right-side */
+.mode-two-panels #schedule { display: block !important; flex: 1 !important; border-radius: 16px; margin-bottom: 5px; border: 1px solid #ddd; }
+.mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 130px !important; border-radius: 16px; }
 
 #staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
 
@@ -209,25 +214,25 @@ async function updateVikarskema() {
       noVikar.style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
-      if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
+      // Append to bottom if not there
+      if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
+      if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
     } else {
       noVikar.style.display = 'none';
       leftWrap.style.display = 'block';
       if (hasMiddleData) {
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
-        if (!rightSide.contains(schedule)) {
-           rightSide.appendChild(schedule); 
-           rightSide.appendChild(dateTime);
-        }
+        // Move to right side stack in Mode 2
+        if (!rightSide.contains(schedule)) rightSide.appendChild(schedule);
+        if (!rightSide.contains(dateTime)) rightSide.appendChild(dateTime);
         renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
       } else {
         middlePanel.style.display = 'none';
         wrapper.classList.remove('mode-two-panels');
-        if (!bottomFooter.contains(schedule)) {
-           bottomFooter.appendChild(schedule); 
-           bottomFooter.appendChild(dateTime);
-        }
+        // Move back to bottom footer
+        if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
+        if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
       }
       renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
     }
@@ -295,8 +300,6 @@ function updateTicker() {
   const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
   const ticker = document.getElementById("tickerWrapper");
   ticker.innerHTML = `<span class="ticker-content">${fullText}</span><span class="ticker-content">${fullText}</span>`;
-  
-  // السرعة هنا تم رفعها (القسمة على 8 تجعلها سريعة جداً)
   ticker.style.animation = `scrollText ${fullText.length/8}s linear infinite`;
 }
 
