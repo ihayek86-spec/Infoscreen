@@ -15,7 +15,9 @@
   --highlight: #fffa65;
 }
 
-* { box-sizing: border-box; }
+* { 
+  box-sizing: border-box; 
+}
 
 body {
   background-color: var(--bg);
@@ -26,15 +28,18 @@ body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  overflow: hidden;
+  overflow: hidden; /* يمنع أي خروج للعناصر يميناً أو لأسفل */
   font-size: 17px;
 }
 
 /* --- شاشة الترحيب --- */
 #splashScreen {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: white; display: flex; justify-content: center; align-items: center;
-  z-index: 9999; transition: opacity 0.8s ease-out;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: white;
+  display: flex; justify-content: center; align-items: center;
+  z-index: 9999;
+  transition: opacity 0.8s ease-out;
 }
 .splash-content { text-align: center; }
 .splash-text { font-size: 80px; font-weight: 800; margin-top: 20px; color: var(--accent); }
@@ -46,82 +51,173 @@ body {
 }
 
 #mainWrapper { 
-  opacity: 0; transition: opacity 1s ease-in; 
-  height: 100vh; width: 100%; padding-bottom: 60px; 
+  opacity: 0; 
+  transition: opacity 1s ease-in; 
+  height: 100vh; 
+  width: 100%;
+  padding-bottom: 60px; 
 }
 
-.logo { position: fixed; top: 25px; right: 35px; z-index: 100; }
+/* --- تنسيقات النظام الأساسية --- */
+.logo { position: fixed; top: 25px; right: 35px; z-index: 100; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
 .logo img { height: 75px; }
 
 .wrapper {
-  display: grid; grid-template-columns: 40% 1fr;
-  height: 100vh; gap: var(--gap); padding: var(--gap); width: 100%;
+  display: grid;
+  grid-template-columns: 40% 1fr; /* الـ 1fr تضمن أن العمود الأيمن لا يخرج عن الشاشة */
+  height: 100vh;
+  gap: var(--gap);
+  padding: var(--gap);
+  width: 100%;
 }
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
-
 .panel {
-  background: #ffffff !important; border-radius: 16px; padding: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column;
-  overflow: hidden; height: 100%; position: relative;
+  background: rgba(255,255,255,0.9);
+  border-radius: 16px;
+  padding: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.vikarskema { overflow-y: auto; flex: 1; background: transparent; }
-.vikarskema table { width: 100%; border-collapse: collapse; }
+.vikarskema { overflow-y: auto; flex: 1; }
+.vikarskema table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 1.3vw, 19px); }
 .vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
 
-.active-shift td { background-color: var(--highlight) !important; font-weight: 800; }
-
-/* --- تأثيرات رسالة "لا معلومات" --- */
-#noVikarMessage {
-  display: none; background: #ffffff !important; text-align: center; padding: 40px; 
-  border-radius: 16px; border-left: 12px solid #f39c12; 
-  height: 100%; width: 100%; flex-direction: column; justify-content: center; align-items: center;
-  position: absolute; top: 0; left: 0; z-index: 20;
-  animation: pulseOrange 3s infinite ease-in-out;
+.active-shift td {
+  background-color: var(--highlight) !important;
+  color: #000 !important;
+  font-weight: 800;
+  border-bottom: 2px solid #e1b12c !important;
 }
-@keyframes pulseOrange { 0%, 100% { background-color: #ffffff; } 50% { background-color: #fff4e6; } }
 
-.funny-loader { 
-  font-size: 70px; display: inline-block; margin-bottom: 20px; 
-  animation: bounce 1.5s infinite ease-in-out; 
+#staticMessageBox {
+  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
+  font-size: 23px; font-weight: 700; color: white; text-align: center;
 }
+
+.right-side { 
+  display: flex; 
+  flex-direction: column; 
+  gap: var(--gap); 
+  height: 100%; 
+  overflow: hidden; 
+  max-width: 100%; /* منع الخروج يميناً */
+}
+
+/* --- تأثير Ken Burns للصور --- */
+.image-box {
+  flex: 1; 
+  position: relative;
+  background: #000;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+#slideshowImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0; left: 0;
+  transition: opacity 1.5s ease-in-out;
+  animation: kenBurns 12s linear infinite alternate;
+}
+@keyframes kenBurns {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.1) translate(-1%, -1%); }
+}
+
+/* --- أنيميشن مضحك --- */
+.funny-loader { font-size: 60px; display: block; margin-bottom: 20px; animation: bounce 1.5s infinite; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
-.right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
-.image-box { flex: 1; position: relative; background: #000; border-radius: 16px; overflow: hidden; }
-#slideshowImage { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: opacity 1.5s; }
+#noVikarMessage {
+  display: none; background: #fff; text-align: center; padding: 30px; border-radius: 16px;
+  font-size: 24px; font-weight: 600; border-left: 10px solid #f39c12; height: 100%;
+  flex-direction: column; justify-content: center; animation: pulseBg 3s infinite;
+}
+@keyframes pulseBg { 0% { background-color: #fff; } 50% { background-color: #fff9e6; } 100% { background-color: #fff; } }
 
-.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); height: 150px; }
-#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: var(--info-bg); color: #fff; display: flex; align-items: center; overflow: hidden; }
+/* --- التذييل والساعة --- */
+.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
+#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
+/* التنسيق الجديد لشريط الأخبار */
+.ticker-wrapper {
+  display: inline-flex; 
+  white-space: nowrap;
+  font-size: 26px;
+  font-weight: 600;
+  will-change: transform; /* لتحسين أداء الأنميشن */
+}
 
-.ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
-@keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+/* الأنميشن الجديد يبدأ من الصفر إلى نصف العرض المكرر */
+@keyframes scrollText {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 
+/* مسافة بين الأخبار */
+.ticker-item-custom {
+  padding: 0 50px;
+  display: inline-block;
+}
 #schedule { flex: 1.2; padding: 10px; background: white; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-#bigClock { font-size: 46px; font-weight: 800; }
-#bigDate { font-size: 32px; font-weight: 700; }
+#bigClock { font-size: 46px; font-weight: 800; font-family: 'monospace'; }
+#bigDate { font-size: 32px; font-weight: 700; margin-top: 5px; }
 
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
 .schedule th { background: #2d5a27; color: white; padding: 12px; font-size: 28px; border-radius: 6px; }
-.schedule td { padding: 10px; text-align: center; background: #f0f9f0; font-weight: 700; font-size: 22px; border-radius: 4px; }
+.schedule td { padding: 10px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 22px; border-radius: 4px; }
 
-#middlePanel { display: none; flex-direction: column; height: 100%; }
+#middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- تعديلات Mode 2 المطلوبة --- */
-.mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
+/* --- Mode 2 Layout (FIXED) --- */
+.mode-two-panels {
+    grid-template-columns: 33% 33% 1fr !important; /* توزيع عادل للأعمدة الثلاثة */
+}
+
+.mode-two-panels .right-side { 
+  gap: 12px !important; 
+  padding-bottom: 10px;
+  max-width: 100%;
+}
 .mode-two-panels .info-box-bottom { display: none !important; }
 
-/* جعل الصور تأخذ 50% من الارتفاع في Mode 2 */
-.mode-two-panels .image-box { flex: 0 0 50% !important; height: 50% !important; }
+.mode-two-panels .image-box {
+  flex: 0 0 calc(50% - 6px) !important;
+  height: calc(50% - 6px) !important;
+  width: 100%;
+}
 
-/* جعل الساعة والجدول يظهران تحت الصور في Mode 2 */
-.mode-two-panels #schedule { display: block !important; flex: 1 !important; border-radius: 16px; margin-bottom: 5px; border: 1px solid #ddd; }
-.mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 130px !important; border-radius: 16px; }
+.mode-two-panels #schedule { 
+  display: flex !important; 
+  width: 100% !important; 
+  margin-top: 0 !important; 
+  border-radius: 12px; 
+  padding: 8px;
+  flex: 1 1 auto !important; 
+  overflow: hidden;
+}
 
-#staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
+.mode-two-panels #bigDateTime { 
+  display: flex !important; 
+  width: 100% !important; 
+  margin-top: 0 !important;
+  padding: 10px !important; 
+  border-radius: 12px; 
+  flex-direction: column; 
+  justify-content: center; 
+  flex: 0 0 100px !important;
+  height: 100px;
+}
+
+.mode-two-panels #bigClock { font-size: 42px; }
+.mode-two-panels #bigDate { font-size: 22px; margin-top: 0; }
 
 </style>
 </head>
@@ -129,31 +225,33 @@ body {
 
 <div id="splashScreen">
   <div class="splash-content">
-      <img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo">
+      <img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo" alt="Al Irchad Logo">
       <div class="splash-text">INFOSKÆRM</div>
   </div>
 </div>
 
-<div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png"></div>
+<div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" alt="logo"></div>
 
 <div class="wrapper" id="mainWrapper">
-  <div class="left-side">
-    <div class="panel">
-      <div class="vikarskema" id="vikarLeftWrapper">
+  <div class="left-side" id="leftSideContainer">
+    <div id="vikarPanelContainer" class="panel" style="height: 100%;">
+      <div class="vikarskema">
         <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
-        <div id="vikarLeftContent">Indlæسر...</div>
+        <div id="vikarLeftContent">Indlæser...</div>
       </div>
       <div id="noVikarMessage">
         <span class="funny-loader">🔭🧐</span>
-        <div style="font-size: 32px; color: #d35400; margin-bottom: 10px; font-weight: 800;">Hov! Der er tomt her...</div>
-        <div style="color: #2c3e50;">Der er ikke noget vikarskema endnu.</div>
+        <div style="font-size: 30px; color: #d35400; margin-bottom: 10px;">Hov! Der er tomt her...</div>
+        Der er ikke noget vikarskema endnu. 
+        <br><br>
+        <span style="font-size: 19px; color: #7f8c8d;">Der kan komme ændringer senere, hold øje med skærmen!</span>
       </div>
       <div id="staticMessageBox"></div>
     </div>
   </div>
 
   <div id="middlePanel">
-    <div class="panel">
+    <div class="panel" style="height: 100%;">
       <div class="vikarskema">
         <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 2</h2>
         <div id="vikarMiddleContent"></div>
@@ -162,7 +260,9 @@ body {
   </div>
 
   <div class="right-side" id="rightSide">
-    <div class="image-box"><img id="slideshowImage" src=""></div>
+    <div class="image-box">
+      <img id="slideshowImage" src="" alt="slideshow">
+    </div>
     <div class="info-box-bottom" id="bottomFooter">
       <div class="schedule" id="schedule"></div>
       <div id="bigDateTime">
@@ -173,7 +273,11 @@ body {
   </div>
 </div>
 
-<div id="infoBox"><div class="ticker-wrapper" id="tickerWrapper"></div></div>
+<div id="infoBox">
+    <div class="ticker-wrapper" id="tickerWrapper">
+        <span class="ticker-item" id="tickerText">Indlæser information...</span>
+    </div>
+</div>
 
 <script>
 const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
@@ -182,71 +286,27 @@ const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7
 
 let imageData = [];
 let currentImageIndex = 0;
+let currentWeather = { desc: "-", temp: "-" };
 let sheetRows = [];
 
 function updateDateTime() {
   const now = new Date();
   document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
   document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
+  renderStaticSchedule(); 
 }
 
-async function updateVikarskema() {
+function isCurrentShift(timeText) {
   try {
-    const res = await fetch(VIKAR_URL);
-    const data = await res.json();
-    const rows = data.rows || [];
-    
-    const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
-    const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
-
-    const wrapper = document.getElementById("mainWrapper");
-    const middlePanel = document.getElementById("middlePanel");
-    const noVikar = document.getElementById("noVikarMessage");
-    const leftWrap = document.getElementById("vikarLeftWrapper");
-    const vikarLeftContent = document.getElementById("vikarLeftContent");
-    const bottomFooter = document.getElementById("bottomFooter");
-    const schedule = document.getElementById("schedule");
-    const dateTime = document.getElementById("bigDateTime");
-    const rightSide = document.getElementById("rightSide");
-
-    if (!hasLeftData) {
-      leftWrap.style.display = 'none';
-      vikarLeftContent.innerHTML = ""; 
-      noVikar.style.display = 'flex';
-      middlePanel.style.display = 'none';
-      wrapper.classList.remove('mode-two-panels');
-      if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
-      if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
-    } else {
-      noVikar.style.display = 'none';
-      leftWrap.style.display = 'block';
-      if (hasMiddleData) {
-        middlePanel.style.display = 'flex';
-        wrapper.classList.add('mode-two-panels');
-        // في المود 2، ننقل العناصر لجهة اليمين لتظهر تحت الصور
-        if (!rightSide.contains(schedule)) rightSide.appendChild(schedule);
-        if (!rightSide.contains(dateTime)) rightSide.appendChild(dateTime);
-        renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
-      } else {
-        middlePanel.style.display = 'none';
-        wrapper.classList.remove('mode-two-panels');
-        // العودة للوضع الطبيعي (العناصر في الأسفل)
-        if (!bottomFooter.contains(schedule)) bottomFooter.appendChild(schedule);
-        if (!bottomFooter.contains(dateTime)) bottomFooter.appendChild(dateTime);
-      }
-      renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
-    }
-  } catch (e) {}
-}
-
-function renderTable(id, headers, rows) {
-  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => {
-    if (r.some(cell => cell && cell.toString().trim() !== "")) {
-      html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
-    }
-  });
-  document.getElementById(id).innerHTML = html + "</tbody></table>";
+    if (!timeText) return false;
+    const now = new Date();
+    const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
+    const timeMatch = timeText.match(/(\d{1,2}):(\d{2})/);
+    if (!timeMatch) return false;
+    const h = parseInt(timeMatch[1]), m = parseInt(timeMatch[2]);
+    const start = h * 60 + m;
+    return currentTimeMinutes >= start && currentTimeMinutes < (start + 40);
+  } catch (e) { return false; }
 }
 
 const localSchedules = {
@@ -261,16 +321,120 @@ function renderStaticSchedule() {
   const day = new Date().getDay();
   const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
   let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
-  sch.rows.forEach(r => { html += `<tr>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
+  sch.rows.forEach(r => {
+    const activeClass = isCurrentShift(r[0]) ? 'class="active-shift"' : '';
+    html += `<tr ${activeClass}>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>";
+  });
   document.querySelectorAll(".schedule").forEach(container => container.innerHTML = html + "</tbody></table>");
+}
+
+async function updateVikarskema() {
+  try {
+    const res = await fetch(VIKAR_URL);
+    const data = await res.json();
+    const rows = data.rows || [];
+    const headers = data.headers || [];
+    const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
+    const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
+
+    const wrapper = document.getElementById("mainWrapper");
+    const middlePanel = document.getElementById("middlePanel");
+    const rightSide = document.getElementById("rightSide");
+    const schedule = document.getElementById("schedule");
+    const dateTime = document.getElementById("bigDateTime");
+    const bottomFooter = document.getElementById("bottomFooter");
+
+    if (!hasLeftData) {
+      document.getElementById("vikarLeftContent").style.display = 'none';
+      document.getElementById("vikarTitle").style.display = 'none';
+      document.getElementById("noVikarMessage").style.display = 'flex';
+      middlePanel.style.display = 'none';
+      wrapper.classList.remove('mode-two-panels');
+      bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime);
+    } else {
+      document.getElementById("vikarLeftContent").style.display = 'block';
+      document.getElementById("vikarTitle").style.display = 'block';
+      document.getElementById("noVikarMessage").style.display = 'none';
+      if (hasMiddleData) {
+        middlePanel.style.display = 'flex';
+        rightSide.appendChild(schedule); rightSide.appendChild(dateTime);
+        wrapper.classList.add('mode-two-panels');
+        renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
+      } else {
+        middlePanel.style.display = 'none';
+        bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime);
+        wrapper.classList.remove('mode-two-panels');
+      }
+      renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
+    }
+  } catch (e) {}
+}
+
+function renderTable(containerId, headers, rows) {
+  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r => {
+    if (r.some(cell => cell && cell.toString().trim() !== "")) {
+      const activeClass = isCurrentShift(r[0] ? r[0].toString() : "") ? 'class="active-shift"' : '';
+      html += `<tr ${activeClass}>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
+    }
+  });
+  document.getElementById(containerId).innerHTML = html + "</tbody></table>";
+}
+
+async function fetchWeather() {
+  try {
+    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
+    const data = await res.json();
+    currentWeather.temp = Math.round(data.current_weather.temperature) + "°C";
+    currentWeather.desc = `☀️ Vejr: ${currentWeather.temp}`;
+    updateTickerText();
+  } catch (e) {}
+}
+
+async function fetchSheetRows() {
+  try {
+    const res = await fetch(INFO_SHEET_URL);
+    const data = await res.json();
+    sheetRows = data.rows || (data.sheets && data.sheets[0].rows) || [];
+    if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
+    updateTickerText();
+  } catch(e) {}
+}
+
+function updateTickerText() {
+  let messages = [currentWeather.desc];
+  sheetRows.forEach(row => { if(row[0]) messages.push(row[0]); });
+  
+  // النص الكامل مع فاصل في النهاية
+  const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
+  const tickerWrapper = document.getElementById("tickerWrapper");
+  
+  // نضع النص مرتين بجانب بعضهما لضمان عدم وجود فراغ (حلقة مستمرة)
+  tickerWrapper.innerHTML = `
+    <span class="ticker-content">${fullText}</span>
+    <span class="ticker-content">${fullText}</span>
+  `;
+  
+  // حساب عرض النص الواحد
+  const contentWidth = tickerWrapper.querySelector('.ticker-content').offsetWidth;
+  
+  // التحكم بالسرعة: (كلما زاد الرقم زادت السرعة)
+  // 80 إلى 100 هو رقم ممتاز لمعظم الشاشات
+  const speed = 90; 
+  
+  // حساب الوقت المطلوب بناءً على طول النص
+  const duration = contentWidth / speed;
+  
+  // تطبيق الأنميشن بالوقت المحسوب
+  tickerWrapper.style.animation = `scrollText ${duration}s linear infinite`;
 }
 
 async function fetchImages() {
   try {
     const res = await fetch(IMAGE_WEBHOOK);
     const data = await res.json();
-    imageData = (data.rows || data).map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|webp)$/i)) : r.img).filter(Boolean);
-    if (imageData.length > 0 && !document.getElementById("slideshowImage").src) cycleImages();
+    let rows = Array.isArray(data) ? data : data.rows || [];
+    imageData = rows.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
   } catch (e) {}
 }
 
@@ -285,37 +449,19 @@ function cycleImages() {
   }, 1500);
 }
 
-async function fetchSheetRows() {
-  try {
-    const res = await fetch(INFO_SHEET_URL);
-    const data = await res.json();
-    sheetRows = data.rows || [];
-    if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
-    updateTicker();
-  } catch(e) {}
-}
-
-function updateTicker() {
-  const messages = sheetRows.map(r => r[0]).filter(Boolean);
-  const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
-  const ticker = document.getElementById("tickerWrapper");
-  ticker.innerHTML = `<span class="ticker-content">${fullText}</span><span class="ticker-content">${fullText}</span>`;
-  ticker.style.animation = `scrollText ${fullText.length/3}s linear infinite`;
-}
-
 window.onload = async () => {
   updateDateTime(); setInterval(updateDateTime, 1000);
-  renderStaticSchedule(); setInterval(renderStaticSchedule, 60000);
-  await fetchImages(); setInterval(cycleImages, 12000); setInterval(fetchImages, 300000);
+  await fetchImages(); 
+  if (imageData.length > 0) { cycleImages(); setInterval(cycleImages, 10000); }
   updateVikarskema(); setInterval(updateVikarskema, 60000);
-  fetchSheetRows(); setInterval(fetchSheetRows, 600000);
-  
+  fetchWeather(); fetchSheetRows();
   setTimeout(() => {
     document.getElementById("splashScreen").style.opacity = "0";
     document.getElementById("mainWrapper").style.opacity = "1";
     setTimeout(() => document.getElementById("splashScreen").style.display = "none", 800);
   }, 2000);
 };
+setInterval(() => location.reload(), 3600000);
 </script>
 </body>
 </html>
