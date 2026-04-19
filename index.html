@@ -71,7 +71,7 @@ body {
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; min-width: 40%; }
 
 .panel {
-  background: #ffffff !important;
+  background: #ffffff !important; /* لون أبيض صريح لمنع الوميض الخلفي */
   border-radius: 16px;
   padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -97,43 +97,6 @@ body {
 #staticMessageBox {
   margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
   font-size: 23px; font-weight: 700; color: white; text-align: center;
-}
-
-/* --- أنيميشن النط للأيموجي --- */
-.funny-loader { 
-  font-size: 70px; 
-  display: inline-block; 
-  margin-bottom: 20px; 
-  animation: bounce 1.5s infinite ease-in-out; 
-}
-@keyframes bounce { 
-  0%, 100% { transform: translateY(0); } 
-  50% { transform: translateY(-30px); } 
-}
-
-/* --- أنيميشن النبض البرتقالي للعلبة --- */
-#noVikarMessage {
-  display: none; 
-  background: #ffffff; 
-  text-align: center; 
-  padding: 40px; 
-  border-radius: 16px;
-  font-size: 26px; 
-  font-weight: 600; 
-  border-left: 12px solid #f39c12; 
-  height: 100%; 
-  width: 100%;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  position: absolute;
-  top: 0; left: 0;
-  z-index: 20;
-  animation: pulseOrange 3s infinite ease-in-out;
-}
-@keyframes pulseOrange { 
-  0%, 100% { background-color: #ffffff; } 
-  50% { background-color: #fff4e6; } /* لون برتقالي خفيف جداً ونبضي */
 }
 
 .right-side { 
@@ -167,10 +130,31 @@ body {
   100% { transform: scale(1.1) translate(-1%, -1%); }
 }
 
+#noVikarMessage {
+  display: none; 
+  background: #ffffff !important; 
+  text-align: center; 
+  padding: 30px; 
+  border-radius: 16px;
+  font-size: 24px; 
+  font-weight: 600; 
+  border-left: 10px solid #f39c12; 
+  height: 100%; 
+  width: 100%;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 20;
+  animation: pulseBg 3s infinite;
+}
+@keyframes pulseBg { 0%, 100% { background-color: #ffffff; } 50% { background-color: #fffdf5; } }
+
 .info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
 
-.ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
+.ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; will-change: transform; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 #schedule { flex: 1.2; padding: 10px; background: white; }
@@ -207,21 +191,19 @@ body {
 <div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" alt="logo"></div>
 
 <div class="wrapper" id="mainWrapper">
-  <div class="left-side">
+  <div class="left-side" id="leftSideContainer">
     <div id="vikarPanelContainer" class="panel">
       <div class="vikarskema" id="vikarLeftWrapper">
         <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent">Indlæser...</div>
       </div>
-      
       <div id="noVikarMessage">
-        <span class="funny-loader">🔭🧐</span>
-        <div style="font-size: 32px; color: #d35400; margin-bottom: 10px; font-weight: 800;">Hov! Der er tomt her...</div>
-        <div style="color: #2c3e50;">Der er ikke noget vikarskema endnu.</div>
-        <br>
-        <span style="font-size: 20px; color: #7f8c8d;">Hold øje med skærmen for ændringer!</span>
+        <div style="font-size: 60px; margin-bottom: 20px;">🔭🧐</div>
+        <div style="font-size: 30px; color: #d35400; margin-bottom: 10px;">Hov! Der er tomt her...</div>
+        Der er ikke noget vikarskema endnu. 
+        <br><br>
+        <span style="font-size: 19px; color: #7f8c8d;">Hold øje med skærmen for ændringer!</span>
       </div>
-
       <div id="staticMessageBox"></div>
     </div>
   </div>
@@ -251,7 +233,7 @@ body {
 
 <div id="infoBox">
     <div class="ticker-wrapper" id="tickerWrapper">
-        <span class="ticker-item" id="tickerText">Indlæser information...</span>
+        <span class="ticker-item" id="tickerText">Indlæسر information...</span>
     </div>
 </div>
 
@@ -279,6 +261,7 @@ function isCurrentShift(timeText) {
     if (!timeMatch) return false;
     const h = parseInt(timeMatch[1]), m = parseInt(timeMatch[2]);
     const start = h * 60 + m;
+    // التحقق من أن الوقت الحالي يقع ضمن الـ 45 دقيقة التالية لبدء الوردية
     return currentTimeMinutes >= start && currentTimeMinutes < (start + 45);
   } catch (e) { return false; }
 }
@@ -309,6 +292,7 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
+    // التحقق من وجود بيانات حقيقية في الأعمدة
     const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
 
@@ -321,20 +305,23 @@ async function updateVikarskema() {
     const noVikar = document.getElementById("noVikarMessage");
     const leftWrap = document.getElementById("vikarLeftWrapper");
     const vikarLeftContent = document.getElementById("vikarLeftContent");
+    const vikarMiddleContent = document.getElementById("vikarMiddleContent");
 
     if (!hasLeftData) {
+      // حالة لا توجد بيانات: إخفاء الجداول ومسح محتواها لمنع الوميض الأزرق
       leftWrap.style.display = 'none';
       vikarLeftContent.innerHTML = ""; 
+      vikarMiddleContent.innerHTML = "";
       noVikar.style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
-      if (bottomFooter.children.length < 2) { 
-          bottomFooter.appendChild(schedule); 
-          bottomFooter.appendChild(dateTime); 
-      }
+      // إعادة ترتيب عناصر الساعة والجدول السفلي
+      if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
     } else {
+      // حالة توجد بيانات
       noVikar.style.display = 'none';
       leftWrap.style.display = 'block';
+      
       if (hasMiddleData) {
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
@@ -347,7 +334,7 @@ async function updateVikarskema() {
       }
       renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
     }
-  } catch (e) { console.error(e); }
+  } catch (e) { console.error("Update Error:", e); }
 }
 
 function renderTable(containerId, headers, rows) {
@@ -420,14 +407,14 @@ window.onload = async () => {
   setInterval(renderStaticSchedule, 60000); 
 
   await fetchImages();
-  setInterval(fetchImages, 300000);
-  setInterval(cycleImages, 12000);
+  setInterval(fetchImages, 300000); // تحديث قائمة الصور كل 5 دقائق
+  setInterval(cycleImages, 12000);  // تغيير الصورة كل 12 ثانية
 
   updateVikarskema();
-  setInterval(updateVikarskema, 60000);
+  setInterval(updateVikarskema, 60000); // تحديث الفيكار كل دقيقة
 
   fetchSheetRows();
-  setInterval(fetchSheetRows, 600000);
+  setInterval(fetchSheetRows, 600000); // تحديث الأخبار كل 10 دقائق
 
   setTimeout(() => {
     document.getElementById("splashScreen").style.opacity = "0";
@@ -436,6 +423,7 @@ window.onload = async () => {
   }, 2000);
 };
 
+// تحديث الصفحة بالكامل كل ساعة لضمان استقرار المتصفح
 setInterval(() => location.reload(), 3600000);
 </script>
 </body>
