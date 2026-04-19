@@ -8,10 +8,9 @@
 <style>
 :root {
   --bg: #f0f2f5; 
-  --accent: #0056b3; 
+  --accent: #2d3436; 
   --info-bg: #007aff; 
   --gap: 20px;
-  --highlight: #fffa65;
 }
 
 * { box-sizing: border-box; }
@@ -26,7 +25,6 @@ body {
   height: 100vh;
   width: 100vw;
   overflow: hidden;
-  font-size: 17px;
 }
 
 /* --- Splash Screen --- */
@@ -59,27 +57,43 @@ body {
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* Panel تبدأ شفافة وبدون حدود حتى يتم التحميل */
 .panel {
   background: rgba(255,255,255,0.9);
   border-radius: 16px; padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
   display: flex; flex-direction: column; overflow: hidden;
-  min-height: 50px;
 }
 
-.vikarskema { overflow-y: auto; flex: 1; display: none; } /* مخفي افتراضياً */
+.vikarskema { overflow-y: auto; flex: 1; display: none; }
 .vikarskema table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 1.3vw, 19px); }
 .vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
 
-/* رسالة "لا توجد داتا" مخفية تماماً في البداية */
+/* تصميم رسالة "لا يوجد داتا" بدون ايموجي وبخط كبير */
 #noVikarMessage {
-  display: none; text-align: center; padding: 30px; 
-  flex-direction: column; justify-content: center; height: 100%;
+  display: none; 
+  text-align: center; 
+  padding: 20px; 
+  flex-direction: column; 
+  justify-content: center; 
+  height: 100%;
+  background: linear-gradient(to bottom, #ffffff, #fcfcfc);
+  border-radius: 16px;
 }
 
-.right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; max-width: 100%; }
+#noVikarMessage .main-text {
+  font-size: 42px; /* خط كبير للعنوان */
+  color: var(--accent);
+  font-weight: 800;
+  margin-bottom: 15px;
+}
+
+#noVikarMessage .sub-text {
+  font-size: 28px; /* خط كبير للنص الفرعي */
+  color: #636e72;
+}
+
+.right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 
 .image-box {
   flex: 1; position: relative; background: #000; border-radius: 16px;
@@ -108,8 +122,11 @@ body {
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
 /* --- Mode 2 --- */
-.mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
+.mode-two-panels { grid-template-columns: 33.3% 33.3% 33.3% !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
+.mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
+.mode-two-panels #schedule { display: flex !important; flex: 1 !important; border-radius: 16px; margin-bottom: 5px; }
+.mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 120px !important; border-radius: 16px; }
 
 #staticMessageBox {
   margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
@@ -130,14 +147,17 @@ body {
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side">
-    <div id="leftPanelMain" class="panel" style="height: 100%;">
+    <div class="panel" style="height: 100%;">
       <div id="vikarLeftWrapper" class="vikarskema">
-        <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
+        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
+      
       <div id="noVikarMessage">
-        <div style="font-size: 24px; color: #7f8c8d;">Ingen vikarer pt.</div>
+        <div class="main-text">Ingen vikarer pt.</div>
+        <div class="sub-text">Alt kører som planlagt.</div>
       </div>
+
       <div id="staticMessageBox"></div>
     </div>
   </div>
@@ -201,12 +221,7 @@ async function updateVikarskema() {
     const schedule = document.getElementById("schedule");
     const dateTime = document.getElementById("bigDateTime");
 
-    // تفريغ المحتوى لمنع الوميض الأزرق
-    document.getElementById("vikarLeftContent").innerHTML = "";
-    document.getElementById("vikarMiddleContent").innerHTML = "";
-
     if (!hasLeftData) {
-      // إخفاء الـ Panel تماماً وجعلها فارغة
       vikarLeftWrapper.style.display = 'none';
       noVikar.style.display = 'flex'; 
       middlePanel.style.display = 'none';
@@ -220,7 +235,6 @@ async function updateVikarskema() {
 
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
-        document.getElementById("vikarMiddleWrapper").style.display = 'block';
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
         rightSide.appendChild(schedule);
@@ -243,7 +257,6 @@ function renderTable(id, headers, rows) {
   document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
-// ... بقية الدوال (Schedules, Sheets, Images) بنفس المنطق السابق ...
 const localSchedules = {
   1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
   2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
@@ -298,8 +311,7 @@ window.onload = async () => {
   updateDateTime(); setInterval(updateDateTime, 1000);
   renderStaticSchedule();
   await fetchImages(); setInterval(cycleImages, 12000);
-  updateVikarskema(); // أول استدعاء سيحدد ما إذا كانت Panel ستظهر أم لا
-  setInterval(updateVikarskema, 60000);
+  updateVikarskema(); setInterval(updateVikarskema, 60000);
   fetchSheetRows(); setInterval(fetchSheetRows, 600000);
   setTimeout(() => {
     document.getElementById("splashScreen").style.opacity = "0";
