@@ -36,10 +36,19 @@ body {
   background: white; display: flex; justify-content: center; align-items: center;
   z-index: 9999; transition: opacity 0.8s ease-out;
 }
-.splash-logo { height: 560px; animation: logoZoomIn 1.2s ease-out forwards; }
-@keyframes logoZoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.splash-content { text-align: center; }
+.splash-text { font-size: 80px; font-weight: 800; margin-top: 20px; color: var(--accent); }
+.splash-logo { height: 560px; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.1)); animation: logoZoomIn 1.2s ease-out forwards; }
 
-#mainWrapper { opacity: 0; transition: opacity 1s ease-in; height: 100vh; width: 100%; padding-bottom: 60px; }
+@keyframes logoZoomIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+#mainWrapper { 
+  opacity: 0; transition: opacity 1s ease-in; 
+  height: 100vh; width: 100%; padding-bottom: 60px; 
+}
 
 .logo { position: fixed; top: 25px; right: 35px; z-index: 100; }
 .logo img { height: 75px; }
@@ -49,65 +58,73 @@ body {
   height: 100vh; gap: var(--gap); padding: var(--gap); width: 100%;
 }
 
+.left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
+
 .panel {
   background: #ffffff !important; border-radius: 16px; padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column;
   overflow: hidden; height: 100%; position: relative;
 }
 
-.vikarskema { overflow-y: auto; flex: 1; }
+.vikarskema { overflow-y: auto; flex: 1; background: transparent; }
 .vikarskema table { width: 100%; border-collapse: collapse; }
-.vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; }
+.vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
 
 .active-shift td { background-color: var(--highlight) !important; font-weight: 800; }
 
-/* --- أنيميشن النط للأيموجي --- */
-.funny-loader { 
-  font-size: 70px; display: inline-block; margin-bottom: 20px; 
-  animation: bounce 2s infinite ease-in-out; 
-}
-@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-
-/* --- أنيميشن النبض البرتقالي محسّن لمنع التعليق --- */
+/* --- تأثيرات رسالة "لا معلومات" --- */
 #noVikarMessage {
-  display: none; background: #ffffff; text-align: center; padding: 40px; 
+  display: none; background: #ffffff !important; text-align: center; padding: 40px; 
   border-radius: 16px; border-left: 12px solid #f39c12; 
   height: 100%; width: 100%; flex-direction: column; justify-content: center; align-items: center;
   position: absolute; top: 0; left: 0; z-index: 20;
-  animation: pulseOrange 4s infinite alternate ease-in-out;
-  will-change: background-color; /* لتحسين أداء كرت الشاشة */
+  animation: pulseOrange 3s infinite ease-in-out;
 }
-@keyframes pulseOrange { 0% { background-color: #ffffff; } 100% { background-color: #fff8f0; } }
+@keyframes pulseOrange { 0%, 100% { background-color: #ffffff; } 50% { background-color: #fff4e6; } }
+
+.funny-loader { 
+  font-size: 70px; display: inline-block; margin-bottom: 20px; 
+  animation: bounce 1.5s infinite ease-in-out; 
+}
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 .image-box { flex: 1; position: relative; background: #000; border-radius: 16px; overflow: hidden; }
 #slideshowImage { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: opacity 1.5s; }
 
-.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; height: 140px; }
-#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: var(--info-bg); color: #fff; display: flex; align-items: center; overflow: hidden; }
+.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: var(--info-bg); color: #fff; display: flex; align-items: center; overflow: hidden; }
 
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-#schedule { flex: 1.2; padding: 10px; }
+#schedule { flex: 1.2; padding: 10px; background: white; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
 #bigClock { font-size: 46px; font-weight: 800; }
-#bigDate { font-size: 32px; }
+#bigDate { font-size: 32px; font-weight: 700; }
 
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
-.schedule th { background: #2d5a27; color: white; padding: 10px; font-size: 24px; border-radius: 6px; }
-.schedule td { padding: 8px; text-align: center; background: #f0f9f0; font-weight: 700; border-radius: 4px; }
+.schedule th { background: #2d5a27; color: white; padding: 12px; font-size: 28px; border-radius: 6px; }
+.schedule td { padding: 10px; text-align: center; background: #f0f9f0; font-weight: 700; font-size: 22px; border-radius: 4px; }
 
-#middlePanel { display: none; height: 100%; }
+#middlePanel { display: none; flex-direction: column; height: 100%; }
 .mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
+
+#staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
 
 </style>
 </head>
 <body>
 
-<div id="splashScreen"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo"></div>
+<div id="splashScreen">
+  <div class="splash-content">
+      <img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo">
+      <div class="splash-text">INFOSKÆRM</div>
+  </div>
+</div>
+
 <div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png"></div>
 
 <div class="wrapper" id="mainWrapper">
@@ -119,17 +136,31 @@ body {
       </div>
       <div id="noVikarMessage">
         <span class="funny-loader">🔭🧐</span>
-        <div style="font-size: 30px; color: #d35400; margin-bottom: 10px; font-weight: 800;">Hov! Der er tomt her...</div>
-        <div style="font-size: 20px;">Der er ikke noget vikarskema endnu.</div>
+        <div style="font-size: 32px; color: #d35400; margin-bottom: 10px; font-weight: 800;">Hov! Der er tomt her...</div>
+        <div style="color: #2c3e50;">Der er ikke noget vikarskema endnu.</div>
       </div>
       <div id="staticMessageBox"></div>
     </div>
   </div>
-  <div id="middlePanel" class="panel"><div class="vikarskema"><h2 style="margin:0 0 10px 0;">Vikarskema 2</h2><div id="vikarMiddleContent"></div></div></div>
+
+  <div id="middlePanel">
+    <div class="panel">
+      <div class="vikarskema">
+        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 2</h2>
+        <div id="vikarMiddleContent"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="right-side" id="rightSide">
     <div class="image-box"><img id="slideshowImage" src=""></div>
     <div class="info-box-bottom" id="bottomFooter">
-        </div>
+      <div class="schedule" id="schedule"></div>
+      <div id="bigDateTime">
+        <div id="bigClock">00:00:00</div>
+        <div id="bigDate">Dato...</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -140,112 +171,137 @@ const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehc
 const INFO_SHEET_URL = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
 
-// تخزين العناصر لتجنب إعادة استدعائها
-const elements = {
-    schedule: null, dateTime: null, bottomFooter: null, rightSide: null, wrapper: null
-};
-
-function createStaticElements() {
-    elements.schedule = document.createElement('div'); elements.schedule.id = "schedule"; elements.schedule.className = "schedule";
-    elements.dateTime = document.createElement('div'); elements.dateTime.id = "bigDateTime";
-    elements.dateTime.innerHTML = `<div id="bigClock">00:00:00</div><div id="bigDate">Dato...</div>`;
-    elements.bottomFooter = document.getElementById("bottomFooter");
-    elements.rightSide = document.getElementById("rightSide");
-    elements.wrapper = document.getElementById("mainWrapper");
-}
+let imageData = [];
+let currentImageIndex = 0;
+let sheetRows = [];
 
 function updateDateTime() {
-    const now = new Date();
-    document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
-    document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
+  const now = new Date();
+  document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
+  document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 async function updateVikarskema() {
-    try {
-        const res = await fetch(VIKAR_URL);
-        const data = await res.json();
-        const rows = data.rows || [];
-        const hasLeft = rows.some(r => r.slice(0, 5).some(c => c && c.toString().trim() !== ""));
-        const hasMid = rows.some(r => r.slice(6, 11).some(c => c && c.toString().trim() !== ""));
+  try {
+    const res = await fetch(VIKAR_URL);
+    const data = await res.json();
+    const rows = data.rows || [];
+    
+    const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
+    const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
 
-        const noVikar = document.getElementById("noVikarMessage");
-        const leftWrap = document.getElementById("vikarLeftWrapper");
-        const middlePanel = document.getElementById("middlePanel");
+    const wrapper = document.getElementById("mainWrapper");
+    const middlePanel = document.getElementById("middlePanel");
+    const noVikar = document.getElementById("noVikarMessage");
+    const leftWrap = document.getElementById("vikarLeftWrapper");
+    const vikarLeftContent = document.getElementById("vikarLeftContent");
+    const bottomFooter = document.getElementById("bottomFooter");
+    const schedule = document.getElementById("schedule");
+    const dateTime = document.getElementById("bigDateTime");
+    const rightSide = document.getElementById("rightSide");
 
-        if (!hasLeft) {
-            noVikar.style.display = 'flex';
-            leftWrap.style.display = 'none';
-            middlePanel.style.display = 'none';
-            elements.wrapper.classList.remove('mode-two-panels');
-            if (elements.bottomFooter.children.length === 0) {
-                elements.bottomFooter.appendChild(elements.schedule);
-                elements.bottomFooter.appendChild(elements.dateTime);
-            }
-        } else {
-            noVikar.style.display = 'none';
-            leftWrap.style.display = 'block';
-            if (hasMid) {
-                middlePanel.style.display = 'flex';
-                elements.wrapper.classList.add('mode-two-panels');
-                if (!elements.rightSide.contains(elements.schedule)) {
-                    elements.rightSide.appendChild(elements.schedule);
-                    elements.rightSide.appendChild(elements.dateTime);
-                }
-                renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
-            } else {
-                middlePanel.style.display = 'none';
-                elements.wrapper.classList.remove('mode-two-panels');
-                if (!elements.bottomFooter.contains(elements.schedule)) {
-                    elements.bottomFooter.appendChild(elements.schedule);
-                    elements.bottomFooter.appendChild(elements.dateTime);
-                }
-            }
-            renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
-        }
-    } catch (e) {}
+    if (!hasLeftData) {
+      leftWrap.style.display = 'none';
+      vikarLeftContent.innerHTML = ""; // مسح الجدول لمنع الوميض الأزرق
+      noVikar.style.display = 'flex';
+      middlePanel.style.display = 'none';
+      wrapper.classList.remove('mode-two-panels');
+      if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
+    } else {
+      noVikar.style.display = 'none';
+      leftWrap.style.display = 'block';
+      if (hasMiddleData) {
+        middlePanel.style.display = 'flex';
+        wrapper.classList.add('mode-two-panels');
+        rightSide.appendChild(schedule); rightSide.appendChild(dateTime);
+        renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
+      } else {
+        middlePanel.style.display = 'none';
+        wrapper.classList.remove('mode-two-panels');
+        if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
+      }
+      renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
+    }
+  } catch (e) {}
 }
 
-function renderTable(id, head, rows) {
-    let html = "<table><thead><tr>" + head.map(h => `<th>${h||''}</th>`).join("") + "</tr></thead><tbody>";
-    rows.forEach(r => {
-        if (r.some(c => c && c.toString().trim() !== "")) {
-            html += `<tr>` + r.map(c => `<td>${c||''}</td>`).join("") + "</tr>";
-        }
-    });
-    document.getElementById(id).innerHTML = html + "</tbody></table>";
+function renderTable(id, headers, rows) {
+  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
+  rows.forEach(r => {
+    if (r.some(cell => cell && cell.toString().trim() !== "")) {
+      html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
+    }
+  });
+  document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
-// الأكواد الأخرى (الصور، الطقس، الأخبار) مدمجة لتعمل بسلاسة
-let imageData = [];
+// دالة Gårdvagtskema
+const localSchedules = {
+  1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
+  2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
+  3:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","AD","SJ","LL","JL"],["11:20-11:55","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
+  4:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","MB","AFH","MT"],["11:20-11:55","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
+  5:{title:"Gårdvagtskema", rows:[["9:50-10:00","AD","MB","KP","MT","MA"],["10:50-11:20","MA","MB","MP","AFH","MT"]]}
+};
+
+function renderStaticSchedule() {
+  const day = new Date().getDay();
+  const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
+  let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
+  sch.rows.forEach(r => { html += `<tr>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
+  document.querySelectorAll(".schedule").forEach(container => container.innerHTML = html + "</tbody></table>");
+}
+
 async function fetchImages() {
-    try {
-        const res = await fetch(IMAGE_WEBHOOK);
-        const data = await res.json();
-        imageData = (data.rows || data).map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|webp)$/i)) : r.img).filter(Boolean);
-    } catch(e){}
+  try {
+    const res = await fetch(IMAGE_WEBHOOK);
+    const data = await res.json();
+    imageData = (data.rows || data).map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|webp)$/i)) : r.img).filter(Boolean);
+    if (imageData.length > 0 && !document.getElementById("slideshowImage").src) cycleImages();
+  } catch (e) {}
 }
 
 function cycleImages() {
-    if (imageData.length === 0) return;
-    const img = document.getElementById("slideshowImage");
-    img.style.opacity = "0";
-    setTimeout(() => {
-        img.src = imageData[Math.floor(Math.random() * imageData.length)];
-        img.style.opacity = "1";
-    }, 1500);
+  if (imageData.length === 0) return;
+  const img = document.getElementById("slideshowImage");
+  img.style.opacity = "0";
+  setTimeout(() => {
+    img.src = imageData[currentImageIndex];
+    img.style.opacity = "1";
+    currentImageIndex = (currentImageIndex + 1) % imageData.length;
+  }, 1500);
+}
+
+async function fetchSheetRows() {
+  try {
+    const res = await fetch(INFO_SHEET_URL);
+    const data = await res.json();
+    sheetRows = data.rows || [];
+    if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
+    updateTicker();
+  } catch(e) {}
+}
+
+function updateTicker() {
+  const messages = sheetRows.map(r => r[0]).filter(Boolean);
+  const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
+  const ticker = document.getElementById("tickerWrapper");
+  ticker.innerHTML = `<span class="ticker-content">${fullText}</span><span class="ticker-content">${fullText}</span>`;
+  ticker.style.animation = `scrollText ${fullText.length/3}s linear infinite`;
 }
 
 window.onload = async () => {
-    createStaticElements();
-    updateDateTime(); setInterval(updateDateTime, 1000);
-    await fetchImages(); cycleImages(); setInterval(cycleImages, 15000);
-    updateVikarskema(); setInterval(updateVikarskema, 60000);
-    
-    setTimeout(() => {
-        document.getElementById("splashScreen").style.opacity = "0";
-        document.getElementById("mainWrapper").style.opacity = "1";
-        setTimeout(() => document.getElementById("splashScreen").style.display = "none", 800);
-    }, 2000);
+  updateDateTime(); setInterval(updateDateTime, 1000);
+  renderStaticSchedule(); setInterval(renderStaticSchedule, 60000);
+  await fetchImages(); setInterval(cycleImages, 12000); setInterval(fetchImages, 300000);
+  updateVikarskema(); setInterval(updateVikarskema, 60000);
+  fetchSheetRows(); setInterval(fetchSheetRows, 600000);
+  
+  setTimeout(() => {
+    document.getElementById("splashScreen").style.opacity = "0";
+    document.getElementById("mainWrapper").style.opacity = "1";
+    setTimeout(() => document.getElementById("splashScreen").style.display = "none", 800);
+  }, 2000);
 };
 </script>
 </body>
