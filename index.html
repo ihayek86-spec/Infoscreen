@@ -65,9 +65,40 @@ body {
 }
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-.vikarskema table { width: 100%; border-collapse: collapse; font-size: 24px; }
-.vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
-.vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
+/* البحث عن هذا القسم في كودك واستبداله */
+.vikarskema table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  /* تم تكبير الخط الأساسي هنا */
+  font-size: 24px; 
+}
+
+.vikarskema th { 
+  background: var(--accent); 
+  color: white; 
+  padding: 15px; /* زيادة الحشوة لجعل العنوان بارزاً */
+  position: sticky; 
+  top: 0; 
+  /* تكبير خط العناوين */
+  font-size: 26px; 
+}
+
+.vikarskema td { 
+  background: white; 
+  padding: 12px; 
+  text-align: center; 
+  border-bottom: 1px solid #eee; 
+  /* تأكيد حجم خط الخلايا مع جعل الخط عريضاً قليلاً */
+  font-weight: 600;
+}
+
+/* تكبير عنوان الجدول (Vikarskema 1 & 2) */
+.vikarskema h2 {
+  margin: 0 0 15px 0; 
+  font-size: 32px !important; 
+  color: var(--accent);
+  text-align: center;
+}
 
 #noVikarMessage {
   display: none; text-align: center; padding: 20px; 
