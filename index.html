@@ -47,24 +47,12 @@ body {
   height: 100vh; width: 100%; padding-bottom: 60px;
 }
 
-/* --- تنسيق اللوجو الجديد داخل شريط الأخبار --- */
 .bottom-right-logo {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  height: 60px; 
-  width: 120px; 
-  z-index: 3000; 
-  background: white; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: fixed; bottom: 0; right: 0; height: 60px; width: 120px; z-index: 3000; 
+  background: white; display: flex; justify-content: center; align-items: center;
   box-shadow: -2px 0 10px rgba(0,0,0,0.1);
 }
-.bottom-right-logo img {
-  height: 50px; 
-  width: auto;
-}
+.bottom-right-logo img { height: 50px; width: auto; }
 
 .wrapper {
   display: grid; grid-template-columns: 40% 1fr;
@@ -81,36 +69,10 @@ body {
 }
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-
-.vikarskema table { 
-  width: 100%; 
-  border-collapse: collapse; 
-  font-size: 18px; 
-}
-
-.vikarskema th { 
-  background: var(--accent); 
-  color: white; 
-  padding: 10px; 
-  position: sticky; 
-  top: 0; 
-  font-size: 18px; 
-}
-
-.vikarskema td { 
-  background: white; 
-  padding: 10px; 
-  text-align: center; 
-  border-bottom: 1px solid #eee; 
-  font-weight: 400;
-}
-
-.vikarskema h2 {
-  margin: 0 0 12px 0; 
-  font-size: 20px !important; 
-  color: var(--accent);
-  text-align: center;
-}
+.vikarskema table { width: 100%; border-collapse: collapse; font-size: 18px; }
+.vikarskema th { background: var(--accent); color: white; padding: 10px; position: sticky; top: 0; font-size: 18px; }
+.vikarskema td { background: white; padding: 10px; text-align: center; border-bottom: 1px solid #eee; font-weight: 400; }
+.vikarskema h2 { margin: 0 0 12px 0; font-size: 20px !important; color: var(--accent); text-align: center; }
 
 #noVikarMessage {
   display: none; text-align: center; padding: 20px; 
@@ -118,7 +80,6 @@ body {
   background: linear-gradient(to bottom, #ffffff, #fcfcfc);
   border-radius: 16px;
 }
-
 #noVikarMessage .main-text { font-size: 42px; color: var(--accent); font-weight: 800; margin-bottom: 15px; }
 #noVikarMessage .sub-text { font-size: 28px; color: #636e72; }
 
@@ -134,18 +95,51 @@ body {
   animation: cinematicZoom 25s infinite alternate ease-in-out;
 }
 
-@keyframes cinematicZoom {
-  from { transform: scale(1); }
-  to { transform: scale(1.18); }
-}
+@keyframes cinematicZoom { from { transform: scale(1); } to { transform: scale(1.18); } }
 
+/* --- تعديل ارتفاع منطقة الجدول والساعة --- */
 .info-box-bottom { 
   background: white; 
   border-radius: 16px; 
   overflow: hidden; 
   display: flex; 
   box-shadow: 0 6px 20px rgba(0,0,0,0.1); 
-  flex-shrink: 0; 
+  flex-shrink: 0;
+  max-height: 180px; /* تحديد أقصى ارتفاع للمنطقة بالكامل */
+}
+
+#schedule { flex: 1.2; padding: 6px; background: white; } /* تقليل padding */
+
+#bigDateTime { 
+  flex: 0.8; 
+  padding: 8px; /* تقليل padding من 15px */
+  background: var(--accent); 
+  color: white; 
+  text-align: center; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+}
+
+#bigClock { font-size: 38px; font-weight: 800; font-family: 'monospace'; } /* تصغير الخط من 46px */
+#bigDate { font-size: 26px; font-weight: 700; margin-top: 2px; } /* تصغير الخط من 32px */
+
+.schedule table { width: 100%; border-collapse: separate; border-spacing: 3px; }
+.schedule th { 
+  background: #2d5a27; 
+  color: white; 
+  padding: 8px; /* تقليل padding من 12px */
+  font-size: 22px; /* تصغير الخط من 28px */
+  border-radius: 6px; 
+}
+.schedule td { 
+  padding: 6px; /* تقليل padding من 10px */
+  text-align: center; 
+  background: #f0f9f0; 
+  color: #2d5a27; 
+  font-weight: 700; 
+  font-size: 18px; /* تصغير الخط من 22px */
+  border-radius: 4px; 
 }
 
 #infoBox { 
@@ -158,55 +152,17 @@ body {
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-#schedule { flex: 1.2; padding: 10px; background: white; }
-#bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-#bigClock { font-size: 46px; font-weight: 800; font-family: 'monospace'; }
-#bigDate { font-size: 32px; font-weight: 700; margin-top: 5px; }
-
-.schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
-.schedule th { background: #2d5a27; color: white; padding: 12px; font-size: 28px; border-radius: 6px; }
-.schedule td { padding: 10px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 22px; border-radius: 4px; }
-
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2 Optimized Layout --- */
-.mode-two-panels { 
-  grid-template-columns: 1fr 1fr 1.15fr !important; 
-  gap: 15px !important;
-}
+/* --- Mode 2 Layout --- */
+.mode-two-panels { grid-template-columns: 1fr 1fr 1.15fr !important; gap: 15px !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
+.mode-two-panels .right-side { width: 100% !important; display: flex !important; flex-direction: column !important; gap: 15px !important; }
+.mode-two-panels .image-box { flex: 1 !important; height: auto !important; width: 100% !important; border-radius: 16px; }
+.mode-two-panels #schedule { display: flex !important; flex: 0 0 auto !important; border-radius: 16px; margin-bottom: 0 !important; }
+.mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 110px !important; border-radius: 16px; }
 
-.mode-two-panels .right-side {
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 15px !important;
-}
-
-.mode-two-panels .image-box { 
-  flex: 1 !important; 
-  height: auto !important;
-  width: 100% !important;
-  border-radius: 16px;
-}
-
-.mode-two-panels #schedule { 
-  display: flex !important; 
-  flex: 0 0 auto !important; 
-  border-radius: 16px; 
-  margin-bottom: 0 !important;
-}
-
-.mode-two-panels #bigDateTime { 
-  display: flex !important; 
-  flex: 0 0 110px !important; 
-  border-radius: 16px; 
-}
-
-#staticMessageBox {
-  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
-  font-size: 23px; font-weight: 700; color: white; text-align: center;
-}
+#staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
 </style>
 </head>
 <body>
@@ -229,12 +185,10 @@ body {
         <h2 id="titleLeft">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
-      
       <div id="noVikarMessage">
         <div class="main-text">Ingen vikarer pt.</div>
         <div class="sub-text">Alt kører som planlagt.</div>
       </div>
-
       <div id="staticMessageBox"></div>
     </div>
   </div>
@@ -334,9 +288,7 @@ async function updateVikarskema() {
 function renderTable(id, headers, rows) {
   if (rows.length === 0) return;
   let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => {
-    html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
-  });
+  rows.forEach(r => { html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>"; });
   document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
