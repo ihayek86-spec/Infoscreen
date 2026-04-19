@@ -71,7 +71,7 @@ body {
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; min-width: 40%; }
 
 .panel {
-  background: rgba(255,255,255,0.9);
+  background: #ffffff !important; /* لون أبيض صريح لمنع الوميض الخلفي */
   border-radius: 16px;
   padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
@@ -79,9 +79,10 @@ body {
   flex-direction: column;
   overflow: hidden;
   height: 100%;
+  position: relative;
 }
 
-.vikarskema { overflow-y: auto; flex: 1; }
+.vikarskema { overflow-y: auto; flex: 1; background: transparent; }
 .vikarskema table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 1.3vw, 19px); }
 .vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
@@ -130,12 +131,25 @@ body {
 }
 
 #noVikarMessage {
-  display: none; background: #fff; text-align: center; padding: 30px; border-radius: 16px;
-  font-size: 24px; font-weight: 600; border-left: 10px solid #f39c12; 
-  height: 100%; flex-direction: column; justify-content: center; align-items: center;
+  display: none; 
+  background: #ffffff !important; 
+  text-align: center; 
+  padding: 30px; 
+  border-radius: 16px;
+  font-size: 24px; 
+  font-weight: 600; 
+  border-left: 10px solid #f39c12; 
+  height: 100%; 
+  width: 100%;
+  flex-direction: column; 
+  justify-content: center; 
+  align-items: center;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 20;
   animation: pulseBg 3s infinite;
 }
-@keyframes pulseBg { 0%, 100% { background-color: #fff; } 50% { background-color: #fff9e6; } }
+@keyframes pulseBg { 0%, 100% { background-color: #ffffff; } 50% { background-color: #fffdf5; } }
 
 .info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
@@ -188,7 +202,7 @@ body {
         <div style="font-size: 30px; color: #d35400; margin-bottom: 10px;">Hov! Der er tomt her...</div>
         Der er ikke noget vikarskema endnu. 
         <br><br>
-        <span style="font-size: 19px; color: #7f8c8d;">Der kan komme æندringer senere!</span>
+        <span style="font-size: 19px; color: #7f8c8d;">Hold øje med skærmen for ændringer!</span>
       </div>
       <div id="staticMessageBox"></div>
     </div>
@@ -219,7 +233,7 @@ body {
 
 <div id="infoBox">
     <div class="ticker-wrapper" id="tickerWrapper">
-        <span class="ticker-item" id="tickerText">Indlæser information...</span>
+        <span class="ticker-item" id="tickerText">Indlæسر information...</span>
     </div>
 </div>
 
@@ -247,6 +261,7 @@ function isCurrentShift(timeText) {
     if (!timeMatch) return false;
     const h = parseInt(timeMatch[1]), m = parseInt(timeMatch[2]);
     const start = h * 60 + m;
+    // التحقق من أن الوقت الحالي يقع ضمن الـ 45 دقيقة التالية لبدء الوردية
     return currentTimeMinutes >= start && currentTimeMinutes < (start + 45);
   } catch (e) { return false; }
 }
@@ -277,6 +292,7 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
+    // التحقق من وجود بيانات حقيقية في الأعمدة
     const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
 
@@ -288,16 +304,24 @@ async function updateVikarskema() {
     const bottomFooter = document.getElementById("bottomFooter");
     const noVikar = document.getElementById("noVikarMessage");
     const leftWrap = document.getElementById("vikarLeftWrapper");
+    const vikarLeftContent = document.getElementById("vikarLeftContent");
+    const vikarMiddleContent = document.getElementById("vikarMiddleContent");
 
     if (!hasLeftData) {
+      // حالة لا توجد بيانات: إخفاء الجداول ومسح محتواها لمنع الوميض الأزرق
       leftWrap.style.display = 'none';
+      vikarLeftContent.innerHTML = ""; 
+      vikarMiddleContent.innerHTML = "";
       noVikar.style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
+      // إعادة ترتيب عناصر الساعة والجدول السفلي
       if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
     } else {
+      // حالة توجد بيانات
       noVikar.style.display = 'none';
       leftWrap.style.display = 'block';
+      
       if (hasMiddleData) {
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
@@ -310,7 +334,7 @@ async function updateVikarskema() {
       }
       renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
     }
-  } catch (e) {}
+  } catch (e) { console.error("Update Error:", e); }
 }
 
 function renderTable(containerId, headers, rows) {
@@ -379,19 +403,18 @@ window.onload = async () => {
   updateDateTime(); 
   setInterval(updateDateTime, 1000);
   
-  // تحديث الجداول والبيانات بشكل منفصل عن الساعة
   renderStaticSchedule();
   setInterval(renderStaticSchedule, 60000); 
 
   await fetchImages();
-  setInterval(fetchImages, 300000);
-  setInterval(cycleImages, 10000);
+  setInterval(fetchImages, 300000); // تحديث قائمة الصور كل 5 دقائق
+  setInterval(cycleImages, 12000);  // تغيير الصورة كل 12 ثانية
 
   updateVikarskema();
-  setInterval(updateVikarskema, 60000);
+  setInterval(updateVikarskema, 60000); // تحديث الفيكار كل دقيقة
 
   fetchSheetRows();
-  setInterval(fetchSheetRows, 600000);
+  setInterval(fetchSheetRows, 600000); // تحديث الأخبار كل 10 دقائق
 
   setTimeout(() => {
     document.getElementById("splashScreen").style.opacity = "0";
@@ -400,6 +423,7 @@ window.onload = async () => {
   }, 2000);
 };
 
+// تحديث الصفحة بالكامل كل ساعة لضمان استقرار المتصفح
 setInterval(() => location.reload(), 3600000);
 </script>
 </body>
