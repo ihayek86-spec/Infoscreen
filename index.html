@@ -9,7 +9,6 @@
 :root {
   --bg: #f0f2f5; 
   --accent: #2d3436; 
-  --brand-orange: #ff9500; /* اللون البرتقالي المعتمد */
   --info-bg: #007aff; 
   --gap: 20px;
 }
@@ -58,32 +57,45 @@ body {
 
 .left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Panel Styling مع الشريط البرتقالي --- */
 .panel {
-  background: rgba(255,255,255,0.95);
-  border-radius: 16px; 
-  padding: 15px;
+  background: rgba(255,255,255,0.9);
+  border-radius: 16px; padding: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  display: flex; 
-  flex-direction: column; 
-  overflow: hidden;
-  /* إضافة الشريط البرتقالي على اليسار */
-  border-left: 12px solid var(--brand-orange); 
+  display: flex; flex-direction: column; overflow: hidden;
 }
 
-/* --- Vikarskema Styling (خط كبير وعناوين برتقالية) --- */
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-.vikarskema table { width: 100%; border-collapse: collapse; font-size: 24px; }
+
+/* تكبير الخط في الجداول */
+.vikarskema table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  font-size: 24px; /* حجم خط الخلايا */
+}
+
 .vikarskema th { 
-  background: var(--brand-orange); /* تغيير لون رأس الجدول للبرتقالي */
+  background: var(--accent); 
   color: white; 
   padding: 15px; 
   position: sticky; 
   top: 0; 
-  font-size: 26px; 
+  font-size: 26px; /* حجم خط العناوين */
 }
-.vikarskema td { background: white; padding: 12px; text-align: center; border-bottom: 1px solid #eee; font-weight: 600; }
-.vikarskema h2 { margin: 0 0 15px 0; font-size: 32px; color: var(--accent); text-align: center; font-weight: 700; }
+
+.vikarskema td { 
+  background: white; 
+  padding: 12px; 
+  text-align: center; 
+  border-bottom: 1px solid #eee; 
+  font-weight: 600;
+}
+
+.vikarskema h2 {
+  margin: 0 0 15px 0; 
+  font-size: 32px !important; 
+  color: var(--accent);
+  text-align: center;
+}
 
 #noVikarMessage {
   display: none; text-align: center; padding: 20px; 
@@ -91,26 +103,24 @@ body {
   background: linear-gradient(to bottom, #ffffff, #fcfcfc);
   border-radius: 16px;
 }
+
 #noVikarMessage .main-text { font-size: 42px; color: var(--accent); font-weight: 800; margin-bottom: 15px; }
 #noVikarMessage .sub-text { font-size: 28px; color: #636e72; }
 
-/* --- Slideshow Styling (تأثير الفيديو السينمائي) --- */
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
+
 .image-box {
   flex: 1; position: relative; background: #000; border-radius: 16px;
-  overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+  overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 #slideshowImage {
   width: 100%; height: 100%; object-fit: cover; position: absolute;
-  top: 0; left: 0; opacity: 0;
-  transition: opacity 2s ease-in-out, transform 12s linear;
-  transform: scale(1);
+  top: 0; left: 0; transition: opacity 1.5s ease-in-out;
 }
-.image-active { opacity: 1 !important; transform: scale(1.15) !important; }
 
-/* --- Bottom Info & Schedule --- */
 .info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
+
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
@@ -125,14 +135,17 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Layout Modes --- */
+/* --- Mode 2 --- */
 .mode-two-panels { grid-template-columns: 33.3% 33.3% 33.3% !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
 .mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
 .mode-two-panels #schedule { display: flex !important; flex: 1 !important; border-radius: 16px; margin-bottom: 5px; }
 .mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 120px !important; border-radius: 16px; }
 
-#staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
+#staticMessageBox {
+  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
+  font-size: 23px; font-weight: 700; color: white; text-align: center;
+}
 </style>
 </head>
 <body>
@@ -150,21 +163,23 @@ body {
   <div class="left-side">
     <div class="panel" style="height: 100%;">
       <div id="vikarLeftWrapper" class="vikarskema">
-        <h2>Vikarskema 1</h2>
+        <h2 id="titleLeft">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
+      
       <div id="noVikarMessage">
         <div class="main-text">Ingen vikarer pt.</div>
         <div class="sub-text">Alt kører som planlagt.</div>
       </div>
+
       <div id="staticMessageBox"></div>
     </div>
   </div>
 
   <div id="middlePanel">
     <div class="panel" style="height: 100%;">
-      <div id="vikarMiddleWrapper" class="vikarskema" style="display: block;">
-        <h2>Vikarskema 2</h2>
+      <div id="vikarMiddleWrapper" class="vikarskema">
+        <h2 id="titleMiddle">Vikarskema 2</h2>
         <div id="vikarMiddleContent"></div>
       </div>
     </div>
@@ -205,9 +220,13 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
+    // تنظيف شامل للصفوف للتأكد من وجود محتوى حقيقي
     const cleanRows = rows.filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
 
+    // منطق جلب الجدولين بناءً على الأعمدة
+    // الجدول 1: الأعمدة A-E (0-4)
     const leftRows = cleanRows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
+    // الجدول 2: الأعمدة G-K (6-10)
     const middleRows = cleanRows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
     const hasLeftData = leftRows.length > 0;
@@ -216,6 +235,7 @@ async function updateVikarskema() {
     const wrapper = document.getElementById("mainWrapper");
     const middlePanel = document.getElementById("middlePanel");
     const vikarLeftWrapper = document.getElementById("vikarLeftWrapper");
+    const vikarMiddleWrapper = document.getElementById("vikarMiddleWrapper");
     const noVikar = document.getElementById("noVikarMessage");
     const rightSide = document.getElementById("rightSide");
     const bottomFooter = document.getElementById("bottomFooter");
@@ -231,14 +251,20 @@ async function updateVikarskema() {
       bottomFooter.appendChild(dateTime);
     } else {
       noVikar.style.display = 'none';
+
+      // عرض الجدول الأول
       if (hasLeftData) {
         renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
         vikarLeftWrapper.style.display = 'block';
+      } else {
+        vikarLeftWrapper.style.display = 'none';
       }
-      
+
+      // عرض الجدول الثاني (تم تصحيح الشرط هنا)
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
+        vikarMiddleWrapper.style.display = 'block'; // تأكيد العرض داخل البانل
         wrapper.classList.add('mode-two-panels');
         rightSide.appendChild(schedule);
         rightSide.appendChild(dateTime);
@@ -249,31 +275,16 @@ async function updateVikarskema() {
         bottomFooter.appendChild(dateTime);
       }
     }
-  } catch (e) { console.error("Vikar Error:", e); }
+  } catch (e) { console.error("Error updating Vikarskema:", e); }
 }
 
 function renderTable(id, headers, rows) {
+  if (rows.length === 0) return;
   let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => { html += "<tr>" + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>"; });
+  rows.forEach(r => {
+    html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
+  });
   document.getElementById(id).innerHTML = html + "</tbody></table>";
-}
-
-function cycleImages() {
-  if (imageData.length === 0) return;
-  const img = document.getElementById("slideshowImage");
-  img.classList.remove("image-active");
-  img.style.transition = "opacity 1.5s ease-in-out, transform 0.5s";
-  
-  setTimeout(() => {
-    img.src = imageData[currentImageIndex];
-    img.style.transition = "none";
-    img.style.transform = "scale(1)";
-    setTimeout(() => {
-      img.style.transition = "opacity 2s ease-in-out, transform 12s linear";
-      img.classList.add("image-active");
-    }, 50);
-    currentImageIndex = (currentImageIndex + 1) % imageData.length;
-  }, 1500);
 }
 
 const localSchedules = {
@@ -288,8 +299,8 @@ function renderStaticSchedule() {
   const day = new Date().getDay();
   const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
   let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
-  sch.rows.forEach(r => { html += "<tr>" + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
-  document.querySelectorAll(".schedule").forEach(c => c.innerHTML = html + "</tbody></table>");
+  sch.rows.forEach(r => { html += `<tr>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>"; });
+  document.querySelectorAll(".schedule").forEach(container => container.innerHTML = html + "</tbody></table>");
 }
 
 async function fetchSheetRows() {
@@ -315,12 +326,27 @@ async function fetchImages() {
   } catch (e) {}
 }
 
+function cycleImages() {
+  if (imageData.length === 0) return;
+  const img = document.getElementById("slideshowImage");
+  img.style.opacity = "0";
+  setTimeout(() => {
+    img.src = imageData[currentImageIndex];
+    img.style.opacity = "1";
+    currentImageIndex = (currentImageIndex + 1) % imageData.length;
+  }, 1500);
+}
+
 window.onload = async () => {
-  updateDateTime(); setInterval(updateDateTime, 1000);
+  updateDateTime(); 
+  setInterval(updateDateTime, 1000);
   renderStaticSchedule();
-  await fetchImages(); setInterval(cycleImages, 12000);
-  updateVikarskema(); setInterval(updateVikarskema, 60000);
-  fetchSheetRows(); setInterval(fetchSheetRows, 600000);
+  await fetchImages(); 
+  setInterval(cycleImages, 12000);
+  updateVikarskema(); 
+  setInterval(updateVikarskema, 60000);
+  fetchSheetRows(); 
+  setInterval(fetchSheetRows, 600000);
   setTimeout(() => {
     document.getElementById("splashScreen").style.opacity = "0";
     document.getElementById("mainWrapper").style.opacity = "1";
