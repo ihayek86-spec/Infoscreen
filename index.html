@@ -69,10 +69,36 @@ body {
 }
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-.vikarskema table { width: 100%; border-collapse: collapse; font-size: 18px; }
-.vikarskema th { background: var(--accent); color: white; padding: 10px; position: sticky; top: 0; font-size: 18px; }
-.vikarskema td { background: white; padding: 10px; text-align: center; border-bottom: 1px solid #eee; font-weight: 400; }
-.vikarskema h2 { margin: 0 0 12px 0; font-size: 20px !important; color: var(--accent); text-align: center; }
+
+/* الخط أصبح 21px */
+.vikarskema table { width: 100%; border-collapse: collapse; font-size: 21px; }
+
+/* الـ padding أصبح 13px والخط 21px */
+.vikarskema th { 
+  background: var(--accent); 
+  color: white; 
+  padding: 13px; 
+  position: sticky; 
+  top: 0; 
+  font-size: 21px; 
+}
+
+/* الـ padding أصبح 13px */
+.vikarskema td { 
+  background: white; 
+  padding: 13px; 
+  text-align: center; 
+  border-bottom: 1px solid #eee; 
+  font-weight: 400; 
+}
+
+/* الخط أصبح 23px والمسافة السفلية 15px */
+.vikarskema h2 { 
+  margin: 0 0 15px 0; 
+  font-size: 23px !important; 
+  color: var(--accent); 
+  text-align: center; 
+}
 
 #noVikarMessage {
   display: none; 
