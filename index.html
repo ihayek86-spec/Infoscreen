@@ -73,7 +73,6 @@ body {
 
 .active-shift td { background-color: var(--highlight) !important; font-weight: 800; }
 
-/* --- تأثيرات رسالة "لا معلومات" --- */
 #noVikarMessage {
   display: none; background: #ffffff !important; text-align: center; padding: 40px; 
   border-radius: 16px; border-left: 12px solid #f39c12; 
@@ -109,8 +108,12 @@ body {
 .schedule td { padding: 10px; text-align: center; background: #f0f9f0; font-weight: 700; font-size: 22px; border-radius: 4px; }
 
 #middlePanel { display: none; flex-direction: column; height: 100%; }
+
 .mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
+.mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
+.mode-two-panels #schedule { display: flex !important; width: 100% !important; border-radius: 12px; flex: 1 !important; }
+.mode-two-panels #bigDateTime { display: flex !important; width: 100% !important; border-radius: 12px; flex: 0 0 120px !important; }
 
 #staticMessageBox { margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px; font-size: 23px; font-weight: 700; color: white; text-align: center; }
 
@@ -202,7 +205,7 @@ async function updateVikarskema() {
 
     if (!hasLeftData) {
       leftWrap.style.display = 'none';
-      vikarLeftContent.innerHTML = ""; // مسح الجدول لمنع الوميض الأزرق
+      vikarLeftContent.innerHTML = ""; 
       noVikar.style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
@@ -213,12 +216,18 @@ async function updateVikarskema() {
       if (hasMiddleData) {
         middlePanel.style.display = 'flex';
         wrapper.classList.add('mode-two-panels');
-        rightSide.appendChild(schedule); rightSide.appendChild(dateTime);
+        if (!rightSide.contains(schedule)) {
+           rightSide.appendChild(schedule); 
+           rightSide.appendChild(dateTime);
+        }
         renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
       } else {
         middlePanel.style.display = 'none';
         wrapper.classList.remove('mode-two-panels');
-        if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
+        if (!bottomFooter.contains(schedule)) {
+           bottomFooter.appendChild(schedule); 
+           bottomFooter.appendChild(dateTime);
+        }
       }
       renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
     }
@@ -235,7 +244,6 @@ function renderTable(id, headers, rows) {
   document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
-// دالة Gårdvagtskema
 const localSchedules = {
   1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
   2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
@@ -287,7 +295,9 @@ function updateTicker() {
   const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
   const ticker = document.getElementById("tickerWrapper");
   ticker.innerHTML = `<span class="ticker-content">${fullText}</span><span class="ticker-content">${fullText}</span>`;
-  ticker.style.animation = `scrollText ${fullText.length/3}s linear infinite`;
+  
+  // السرعة هنا تم رفعها (القسمة على 8 تجعلها سريعة جداً)
+  ticker.style.animation = `scrollText ${fullText.length/8}s linear infinite`;
 }
 
 window.onload = async () => {
