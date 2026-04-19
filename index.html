@@ -52,17 +52,17 @@ body {
   position: fixed;
   bottom: 0;
   right: 0;
-  height: 60px; /* نفس ارتفاع شريط الأخبار */
-  width: 120px; /* عرض صندوق اللوجو */
-  z-index: 3000; /* ليكون فوق شريط الأخبار */
-  background: white; /* خلفية بيضاء للوجو لتمييزه */
+  height: 60px; 
+  width: 120px; 
+  z-index: 3000; 
+  background: white; 
   display: flex;
   justify-content: center;
   align-items: center;
   box-shadow: -2px 0 10px rgba(0,0,0,0.1);
 }
 .bottom-right-logo img {
-  height: 50px; /* حجم اللوجو متناسب مع الشريط */
+  height: 50px; 
   width: auto;
 }
 
@@ -85,29 +85,29 @@ body {
 .vikarskema table { 
   width: 100%; 
   border-collapse: collapse; 
-  font-size: 24px; 
+  font-size: 18px; 
 }
 
 .vikarskema th { 
   background: var(--accent); 
   color: white; 
-  padding: 15px; 
+  padding: 10px; 
   position: sticky; 
   top: 0; 
-  font-size: 26px; 
+  font-size: 18px; 
 }
 
 .vikarskema td { 
   background: white; 
-  padding: 12px; 
+  padding: 10px; 
   text-align: center; 
   border-bottom: 1px solid #eee; 
-  font-weight: 600;
+  font-weight: 400;
 }
 
 .vikarskema h2 {
-  margin: 0 0 15px 0; 
-  font-size: 32px !important; 
+  margin: 0 0 12px 0; 
+  font-size: 20px !important; 
   color: var(--accent);
   text-align: center;
 }
@@ -152,7 +152,7 @@ body {
   position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; 
   z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); 
   color: #fff; overflow: hidden; display: flex; align-items: center;
-  padding-right: 130px; /* مساحة لعدم تداخل النص مع اللوجو في اليمين */
+  padding-right: 130px; 
 }
 
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
@@ -169,12 +169,39 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2 --- */
-.mode-two-panels { grid-template-columns: 33.3% 33.3% 33.3% !important; }
+/* --- Mode 2 Optimized Layout --- */
+.mode-two-panels { 
+  grid-template-columns: 1fr 1fr 1.15fr !important; 
+  gap: 15px !important;
+}
 .mode-two-panels .info-box-bottom { display: none !important; }
-.mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
-.mode-two-panels #schedule { display: flex !important; flex: 1 !important; border-radius: 16px; margin-bottom: 5px; }
-.mode-two-panels #bigDateTime { display: flex !important; flex: 0 0 120px !important; border-radius: 16px; }
+
+.mode-two-panels .right-side {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 15px !important;
+}
+
+.mode-two-panels .image-box { 
+  flex: 1 !important; 
+  height: auto !important;
+  width: 100% !important;
+  border-radius: 16px;
+}
+
+.mode-two-panels #schedule { 
+  display: flex !important; 
+  flex: 0 0 auto !important; 
+  border-radius: 16px; 
+  margin-bottom: 0 !important;
+}
+
+.mode-two-panels #bigDateTime { 
+  display: flex !important; 
+  flex: 0 0 110px !important; 
+  border-radius: 16px; 
+}
 
 #staticMessageBox {
   margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
