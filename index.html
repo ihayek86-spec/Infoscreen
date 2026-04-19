@@ -75,13 +75,29 @@ body {
 .vikarskema h2 { margin: 0 0 12px 0; font-size: 20px !important; color: var(--accent); text-align: center; }
 
 #noVikarMessage {
-  display: none; text-align: center; padding: 20px; 
-  flex-direction: column; justify-content: center; height: 100%;
-  background: linear-gradient(to bottom, #ffffff, #fcfcfc);
+  display: none; 
+  text-align: center; 
+  padding: 40px; 
+  flex-direction: column; 
+  justify-content: center; 
+  height: 100%;
+  background: #ffffff;
   border-radius: 16px;
 }
-#noVikarMessage .main-text { font-size: 42px; color: var(--accent); font-weight: 800; margin-bottom: 15px; }
-#noVikarMessage .sub-text { font-size: 28px; color: #636e72; }
+
+#noVikarMessage .main-text { 
+  font-size: 60px; /* خط كبير جداً للعنوان */
+  color: var(--accent); 
+  font-weight: 800; 
+  margin-bottom: 30px;
+}
+
+#noVikarMessage .sub-text { 
+  font-size: 36px; /* خط كبير وواضح للوصف */
+  color: #2d3436; 
+  line-height: 1.4;
+  font-weight: 400;
+}
 
 .right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
 
@@ -91,11 +107,11 @@ body {
 }
 #slideshowImage {
   width: 100%; height: 100%; object-fit: cover; position: absolute;
-  top: 0; left: 0; transition: opacity 1.5s ease-in-out;
+  top: 0; left: 0; transition: opacity 1.3s ease-in-out;
   animation: cinematicZoom 25s infinite alternate ease-in-out;
 }
 
-@keyframes cinematicZoom { from { transform: scale(1); } to { transform: scale(1.18); } }
+@keyframes cinematicZoom { from { transform: scale(1); } to { transform: scale(1.25); } }
 
 /* --- تعديل ارتفاع منطقة الجدول والساعة --- */
 .info-box-bottom { 
@@ -185,10 +201,13 @@ body {
         <h2 id="titleLeft">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
-      <div id="noVikarMessage">
-        <div class="main-text">Ingen vikarer pt.</div>
-        <div class="sub-text">Alt kører som planlagt.</div>
-      </div>
+<div id="noVikarMessage">
+  <div class="main-text">Hov! Der er tomt her...</div>
+  <div class="sub-text">
+    Der er ikke noget vikarskema endnu.<br><br>
+    <span style="color: #d63031; font-weight: 700;">Der kan komme ændringer senere, hold øje med skærmen!</span>
+  </div>
+</div>
       <div id="staticMessageBox"></div>
     </div>
   </div>
