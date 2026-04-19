@@ -28,7 +28,7 @@ body {
   margin: 0;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* يمنع أي خروج للعناصر يميناً أو لأسفل */
+  overflow: hidden;
   font-size: 17px;
 }
 
@@ -58,13 +58,12 @@ body {
   padding-bottom: 60px; 
 }
 
-/* --- تنسيقات النظام الأساسية --- */
 .logo { position: fixed; top: 25px; right: 35px; z-index: 100; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
 .logo img { height: 75px; }
 
 .wrapper {
   display: grid;
-  grid-template-columns: 40% 1fr; /* الـ 1fr تضمن أن العمود الأيمن لا يخرج عن الشاشة */
+  grid-template-columns: 40% 1fr;
   height: 100vh;
   gap: var(--gap);
   padding: var(--gap);
@@ -105,10 +104,9 @@ body {
   gap: var(--gap); 
   height: 100%; 
   overflow: hidden; 
-  max-width: 100%; /* منع الخروج يميناً */
+  max-width: 100%;
 }
 
-/* --- تأثير Ken Burns للصور --- */
 .image-box {
   flex: 1; 
   position: relative;
@@ -131,7 +129,6 @@ body {
   100% { transform: scale(1.1) translate(-1%, -1%); }
 }
 
-/* --- أنيميشن مضحك --- */
 .funny-loader { font-size: 60px; display: block; margin-bottom: 20px; animation: bounce 1.5s infinite; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-25px); } }
 
@@ -142,29 +139,22 @@ body {
 }
 @keyframes pulseBg { 0% { background-color: #fff; } 50% { background-color: #fff9e6; } 100% { background-color: #fff; } }
 
-/* --- التذييل والساعة --- */
 .info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
 #infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
-/* التنسيق الجديد لشريط الأخبار */
+
 .ticker-wrapper {
   display: inline-flex; 
   white-space: nowrap;
   font-size: 26px;
   font-weight: 600;
-  will-change: transform; /* لتحسين أداء الأنميشن */
+  will-change: transform;
 }
 
-/* الأنميشن الجديد يبدأ من الصفر إلى نصف العرض المكرر */
 @keyframes scrollText {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-/* مسافة بين الأخبار */
-.ticker-item-custom {
-  padding: 0 50px;
-  display: inline-block;
-}
 #schedule { flex: 1.2; padding: 10px; background: white; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
 #bigClock { font-size: 46px; font-weight: 800; font-family: 'monospace'; }
@@ -176,9 +166,8 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2 Layout (FIXED) --- */
 .mode-two-panels {
-    grid-template-columns: 33% 33% 1fr !important; /* توزيع عادل للأعمدة الثلاثة */
+    grid-template-columns: 33% 33% 1fr !important;
 }
 
 .mode-two-panels .right-side { 
@@ -235,7 +224,7 @@ body {
 <div class="wrapper" id="mainWrapper">
   <div class="left-side" id="leftSideContainer">
     <div id="vikarPanelContainer" class="panel" style="height: 100%;">
-      <div class="vikarskema">
+      <div class="vikarskema" id="vikarLeftWrapper">
         <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent">Indlæser...</div>
       </div>
@@ -252,7 +241,7 @@ body {
 
   <div id="middlePanel">
     <div class="panel" style="height: 100%;">
-      <div class="vikarskema">
+      <div class="vikarskema" id="vikarMiddleWrapper">
         <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 2</h2>
         <div id="vikarMiddleContent"></div>
       </div>
@@ -334,6 +323,8 @@ async function updateVikarskema() {
     const data = await res.json();
     const rows = data.rows || [];
     const headers = data.headers || [];
+    
+    // فحص إذا كان هناك داتا في العمودين الأول والثاني
     const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
     const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
 
@@ -345,15 +336,15 @@ async function updateVikarskema() {
     const bottomFooter = document.getElementById("bottomFooter");
 
     if (!hasLeftData) {
-      document.getElementById("vikarLeftContent").style.display = 'none';
-      document.getElementById("vikarTitle").style.display = 'none';
+      // الحل هنا: تفريغ المحتوى فوراً لمنع الوميض الأزرق
+      document.getElementById("vikarLeftContent").innerHTML = ""; 
+      document.getElementById("vikarLeftWrapper").style.display = 'none';
       document.getElementById("noVikarMessage").style.display = 'flex';
       middlePanel.style.display = 'none';
       wrapper.classList.remove('mode-two-panels');
       bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime);
     } else {
-      document.getElementById("vikarLeftContent").style.display = 'block';
-      document.getElementById("vikarTitle").style.display = 'block';
+      document.getElementById("vikarLeftWrapper").style.display = 'block';
       document.getElementById("noVikarMessage").style.display = 'none';
       if (hasMiddleData) {
         middlePanel.style.display = 'flex';
@@ -361,6 +352,8 @@ async function updateVikarskema() {
         wrapper.classList.add('mode-two-panels');
         renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
       } else {
+        // تفريغ الجدول الأوسط لتجنب بقاء داتا قديمة
+        document.getElementById("vikarMiddleContent").innerHTML = ""; 
         middlePanel.style.display = 'none';
         bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime);
         wrapper.classList.remove('mode-two-panels');
@@ -404,28 +397,15 @@ async function fetchSheetRows() {
 function updateTickerText() {
   let messages = [currentWeather.desc];
   sheetRows.forEach(row => { if(row[0]) messages.push(row[0]); });
-  
-  // النص الكامل مع فاصل في النهاية
   const fullText = messages.join("   |   ") + "   |   Al Irchad Skolen   |   ";
   const tickerWrapper = document.getElementById("tickerWrapper");
-  
-  // نضع النص مرتين بجانب بعضهما لضمان عدم وجود فراغ (حلقة مستمرة)
   tickerWrapper.innerHTML = `
     <span class="ticker-content">${fullText}</span>
     <span class="ticker-content">${fullText}</span>
   `;
-  
-  // حساب عرض النص الواحد
   const contentWidth = tickerWrapper.querySelector('.ticker-content').offsetWidth;
-  
-  // التحكم بالسرعة: (كلما زاد الرقم زادت السرعة)
-  // 80 إلى 100 هو رقم ممتاز لمعظم الشاشات
   const speed = 90; 
-  
-  // حساب الوقت المطلوب بناءً على طول النص
   const duration = contentWidth / speed;
-  
-  // تطبيق الأنميشن بالوقت المحسوب
   tickerWrapper.style.animation = `scrollText ${duration}s linear infinite`;
 }
 
