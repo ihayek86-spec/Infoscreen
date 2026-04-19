@@ -65,22 +65,21 @@ body {
 }
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
-/* البحث عن هذا القسم في كودك واستبداله */
+
+/* تكبير الخط في الجداول */
 .vikarskema table { 
   width: 100%; 
   border-collapse: collapse; 
-  /* تم تكبير الخط الأساسي هنا */
-  font-size: 24px; 
+  font-size: 24px; /* حجم خط الخلايا */
 }
 
 .vikarskema th { 
   background: var(--accent); 
   color: white; 
-  padding: 15px; /* زيادة الحشوة لجعل العنوان بارزاً */
+  padding: 15px; 
   position: sticky; 
   top: 0; 
-  /* تكبير خط العناوين */
-  font-size: 26px; 
+  font-size: 26px; /* حجم خط العناوين */
 }
 
 .vikarskema td { 
@@ -88,11 +87,9 @@ body {
   padding: 12px; 
   text-align: center; 
   border-bottom: 1px solid #eee; 
-  /* تأكيد حجم خط الخلايا مع جعل الخط عريضاً قليلاً */
   font-weight: 600;
 }
 
-/* تكبير عنوان الجدول (Vikarskema 1 & 2) */
 .vikarskema h2 {
   margin: 0 0 15px 0; 
   font-size: 32px !important; 
@@ -138,7 +135,7 @@ body {
 
 #middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
 
-/* --- Mode 2: التعديل الخاص بارتفاع الصور 50% --- */
+/* --- Mode 2 --- */
 .mode-two-panels { grid-template-columns: 33.3% 33.3% 33.3% !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
 .mode-two-panels .image-box { flex: 0 0 calc(50% - (var(--gap) / 2)) !important; height: 50% !important; }
@@ -166,7 +163,7 @@ body {
   <div class="left-side">
     <div class="panel" style="height: 100%;">
       <div id="vikarLeftWrapper" class="vikarskema">
-        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
+        <h2 id="titleLeft">Vikarskema 1</h2>
         <div id="vikarLeftContent"></div>
       </div>
       
@@ -182,7 +179,7 @@ body {
   <div id="middlePanel">
     <div class="panel" style="height: 100%;">
       <div id="vikarMiddleWrapper" class="vikarskema">
-        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 2</h2>
+        <h2 id="titleMiddle">Vikarskema 2</h2>
         <div id="vikarMiddleContent"></div>
       </div>
     </div>
@@ -223,11 +220,13 @@ async function updateVikarskema() {
     const rows = data.rows || [];
     const headers = data.headers || [];
 
-    // تنظيف البيانات: استبعاد الصفوف الفارغة تماماً
+    // تنظيف شامل للصفوف للتأكد من وجود محتوى حقيقي
     const cleanRows = rows.filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
 
-    // تحديد بيانات الجدول الأول (A-E) والجدول الثاني (G-K)
+    // منطق جلب الجدولين بناءً على الأعمدة
+    // الجدول 1: الأعمدة A-E (0-4)
     const leftRows = cleanRows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
+    // الجدول 2: الأعمدة G-K (6-10)
     const middleRows = cleanRows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
     const hasLeftData = leftRows.length > 0;
@@ -236,26 +235,24 @@ async function updateVikarskema() {
     const wrapper = document.getElementById("mainWrapper");
     const middlePanel = document.getElementById("middlePanel");
     const vikarLeftWrapper = document.getElementById("vikarLeftWrapper");
+    const vikarMiddleWrapper = document.getElementById("vikarMiddleWrapper");
     const noVikar = document.getElementById("noVikarMessage");
     const rightSide = document.getElementById("rightSide");
     const bottomFooter = document.getElementById("bottomFooter");
     const schedule = document.getElementById("schedule");
     const dateTime = document.getElementById("bigDateTime");
 
-    // منطق العرض
     if (!hasLeftData && !hasMiddleData) {
-      // لا توجد بيانات في أي جدول
       vikarLeftWrapper.style.display = 'none';
       middlePanel.style.display = 'none';
       noVikar.style.display = 'flex'; 
       wrapper.classList.remove('mode-two-panels');
       bottomFooter.appendChild(schedule);
       bottomFooter.appendChild(dateTime);
-    } 
-    else {
+    } else {
       noVikar.style.display = 'none';
-      
-      // عرض الجدول الأول إذا وُجد
+
+      // عرض الجدول الأول
       if (hasLeftData) {
         renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
         vikarLeftWrapper.style.display = 'block';
@@ -263,10 +260,11 @@ async function updateVikarskema() {
         vikarLeftWrapper.style.display = 'none';
       }
 
-      // عرض الجدول الثاني إذا وُجد (هنا يكمن الحل)
+      // عرض الجدول الثاني (تم تصحيح الشرط هنا)
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
+        vikarMiddleWrapper.style.display = 'block'; // تأكيد العرض داخل البانل
         wrapper.classList.add('mode-two-panels');
         rightSide.appendChild(schedule);
         rightSide.appendChild(dateTime);
@@ -281,6 +279,7 @@ async function updateVikarskema() {
 }
 
 function renderTable(id, headers, rows) {
+  if (rows.length === 0) return;
   let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
   rows.forEach(r => {
     html += `<tr>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
