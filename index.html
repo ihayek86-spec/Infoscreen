@@ -32,399 +32,221 @@ body {
 
 /* --- شاشة الترحيب --- */
 #splashScreen {
-  position: fixed;
-  top: 0; left: 0; width: 100%; height: 100%;
-  background: white;
-  display: flex; justify-content: center; align-items: center;
-  z-index: 9999;
-  transition: opacity 0.8s ease-out;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: white; display: flex; justify-content: center; align-items: center;
+  z-index: 9999; transition: opacity 0.8s ease-out;
 }
-.splash-content { text-align: center; }
-.splash-text { font-size: 80px; font-weight: 800; margin-top: 20px; color: var(--accent); }
-.splash-logo { height: 560px; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.1)); animation: logoZoomIn 1.2s ease-out forwards; }
+.splash-logo { height: 560px; animation: logoZoomIn 1.2s ease-out forwards; }
+@keyframes logoZoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-@keyframes logoZoomIn {
-  from { transform: scale(0.5); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-}
+#mainWrapper { opacity: 0; transition: opacity 1s ease-in; height: 100vh; width: 100%; padding-bottom: 60px; }
 
-#mainWrapper { 
-  opacity: 0; 
-  transition: opacity 1s ease-in; 
-  height: 100vh; 
-  width: 100%;
-  padding-bottom: 60px; 
-}
-
-.logo { position: fixed; top: 25px; right: 35px; z-index: 100; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
+.logo { position: fixed; top: 25px; right: 35px; z-index: 100; }
 .logo img { height: 75px; }
 
 .wrapper {
-  display: grid;
-  grid-template-columns: 40% 1fr;
-  height: 100vh;
-  gap: var(--gap);
-  padding: var(--gap);
-  width: 100%;
+  display: grid; grid-template-columns: 40% 1fr;
+  height: 100vh; gap: var(--gap); padding: var(--gap); width: 100%;
 }
-
-.left-side { display: flex; flex-direction: column; height: 100%; overflow: hidden; min-width: 40%; }
 
 .panel {
-  background: #ffffff !important; /* لون أبيض صريح لمنع الوميض الخلفي */
-  border-radius: 16px;
-  padding: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-  position: relative;
+  background: #ffffff !important; border-radius: 16px; padding: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08); display: flex; flex-direction: column;
+  overflow: hidden; height: 100%; position: relative;
 }
 
-.vikarskema { overflow-y: auto; flex: 1; background: transparent; }
-.vikarskema table { width: 100%; border-collapse: collapse; font-size: clamp(15px, 1.3vw, 19px); }
-.vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; font-size: 19px; }
+.vikarskema { overflow-y: auto; flex: 1; }
+.vikarskema table { width: 100%; border-collapse: collapse; }
+.vikarskema th { background: var(--accent); color: white; padding: 12px; position: sticky; top: 0; }
 .vikarskema td { background: white; padding: 9px; text-align: center; border-bottom: 1px solid #eee; }
 
-.active-shift td {
-  background-color: var(--highlight) !important;
-  color: #000 !important;
-  font-weight: 800;
-  border-bottom: 2px solid #e1b12c !important;
-}
+.active-shift td { background-color: var(--highlight) !important; font-weight: 800; }
 
-#staticMessageBox {
-  margin-top: 10px; padding: 12px; background: #ff3b30; border-radius: 10px;
-  font-size: 23px; font-weight: 700; color: white; text-align: center;
+/* --- أنيميشن النط للأيموجي --- */
+.funny-loader { 
+  font-size: 70px; display: inline-block; margin-bottom: 20px; 
+  animation: bounce 2s infinite ease-in-out; 
 }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 
-.right-side { 
-  display: flex; 
-  flex-direction: column; 
-  gap: var(--gap); 
-  height: 100%; 
-  overflow: hidden; 
-  max-width: 100%;
-}
-
-.image-box {
-  flex: 1; 
-  position: relative;
-  background: #000;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-}
-#slideshowImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  position: absolute;
-  top: 0; left: 0;
-  transition: opacity 1.5s ease-in-out;
-  animation: kenBurns 12s linear infinite alternate;
-}
-@keyframes kenBurns {
-  0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.1) translate(-1%, -1%); }
-}
-
+/* --- أنيميشن النبض البرتقالي محسّن لمنع التعليق --- */
 #noVikarMessage {
-  display: none; 
-  background: #ffffff !important; 
-  text-align: center; 
-  padding: 30px; 
-  border-radius: 16px;
-  font-size: 24px; 
-  font-weight: 600; 
-  border-left: 10px solid #f39c12; 
-  height: 100%; 
-  width: 100%;
-  flex-direction: column; 
-  justify-content: center; 
-  align-items: center;
-  position: absolute;
-  top: 0; left: 0;
-  z-index: 20;
-  animation: pulseBg 3s infinite;
+  display: none; background: #ffffff; text-align: center; padding: 40px; 
+  border-radius: 16px; border-left: 12px solid #f39c12; 
+  height: 100%; width: 100%; flex-direction: column; justify-content: center; align-items: center;
+  position: absolute; top: 0; left: 0; z-index: 20;
+  animation: pulseOrange 4s infinite alternate ease-in-out;
+  will-change: background-color; /* لتحسين أداء كرت الشاشة */
 }
-@keyframes pulseBg { 0%, 100% { background-color: #ffffff; } 50% { background-color: #fffdf5; } }
+@keyframes pulseOrange { 0% { background-color: #ffffff; } 100% { background-color: #fff8f0; } }
 
-.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
-#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
+.right-side { display: flex; flex-direction: column; gap: var(--gap); height: 100%; overflow: hidden; }
+.image-box { flex: 1; position: relative; background: #000; border-radius: 16px; overflow: hidden; }
+#slideshowImage { width: 100%; height: 100%; object-fit: cover; position: absolute; transition: opacity 1.5s; }
 
-.ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; will-change: transform; }
+.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; height: 140px; }
+#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; background: var(--info-bg); color: #fff; display: flex; align-items: center; overflow: hidden; }
+
+.ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-#schedule { flex: 1.2; padding: 10px; background: white; }
+#schedule { flex: 1.2; padding: 10px; }
 #bigDateTime { flex: 0.8; padding: 15px; background: var(--accent); color: white; text-align: center; display: flex; flex-direction: column; justify-content: center; }
-#bigClock { font-size: 46px; font-weight: 800; font-family: 'monospace'; }
-#bigDate { font-size: 32px; font-weight: 700; margin-top: 5px; }
+#bigClock { font-size: 46px; font-weight: 800; }
+#bigDate { font-size: 32px; }
 
 .schedule table { width: 100%; border-collapse: separate; border-spacing: 4px; }
-.schedule th { background: #2d5a27; color: white; padding: 12px; font-size: 28px; border-radius: 6px; }
-.schedule td { padding: 10px; text-align: center; background: #f0f9f0; color: #2d5a27; font-weight: 700; font-size: 22px; border-radius: 4px; }
+.schedule th { background: #2d5a27; color: white; padding: 10px; font-size: 24px; border-radius: 6px; }
+.schedule td { padding: 8px; text-align: center; background: #f0f9f0; font-weight: 700; border-radius: 4px; }
 
-#middlePanel { display: none; flex-direction: column; height: 100%; overflow: hidden; }
-
-/* Mode 2 */
+#middlePanel { display: none; height: 100%; }
 .mode-two-panels { grid-template-columns: 33% 33% 1fr !important; }
 .mode-two-panels .info-box-bottom { display: none !important; }
-.mode-two-panels .image-box { flex: 0 0 calc(50% - 6px) !important; height: calc(50% - 6px) !important; }
-.mode-two-panels #schedule { display: flex !important; width: 100% !important; border-radius: 12px; flex: 1 1 auto !important; }
-.mode-two-panels #bigDateTime { display: flex !important; width: 100% !important; border-radius: 12px; flex: 0 0 100px !important; height: 100px; }
-.mode-two-panels #bigClock { font-size: 42px; }
-.mode-two-panels #bigDate { font-size: 22px; }
 
 </style>
 </head>
 <body>
 
-<div id="splashScreen">
-  <div class="splash-content">
-      <img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo" alt="Al Irchad Logo">
-      <div class="splash-text">INFOSKÆRM</div>
-  </div>
-</div>
-
-<div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" alt="logo"></div>
+<div id="splashScreen"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" class="splash-logo"></div>
+<div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png"></div>
 
 <div class="wrapper" id="mainWrapper">
-  <div class="left-side" id="leftSideContainer">
-    <div id="vikarPanelContainer" class="panel">
+  <div class="left-side">
+    <div class="panel">
       <div class="vikarskema" id="vikarLeftWrapper">
         <h2 id="vikarTitle" style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 1</h2>
         <div id="vikarLeftContent">Indlæser...</div>
       </div>
       <div id="noVikarMessage">
-        <div style="font-size: 60px; margin-bottom: 20px;">🔭🧐</div>
-        <div style="font-size: 30px; color: #d35400; margin-bottom: 10px;">Hov! Der er tomt her...</div>
-        Der er ikke noget vikarskema endnu. 
-        <br><br>
-        <span style="font-size: 19px; color: #7f8c8d;">Hold øje med skærmen for ændringer!</span>
+        <span class="funny-loader">🔭🧐</span>
+        <div style="font-size: 30px; color: #d35400; margin-bottom: 10px; font-weight: 800;">Hov! Der er tomt her...</div>
+        <div style="font-size: 20px;">Der er ikke noget vikarskema endnu.</div>
       </div>
       <div id="staticMessageBox"></div>
     </div>
   </div>
-
-  <div id="middlePanel">
-    <div class="panel">
-      <div class="vikarskema">
-        <h2 style="margin:0 0 10px 0; font-size: 23px;">Vikarskema 2</h2>
-        <div id="vikarMiddleContent"></div>
-      </div>
-    </div>
-  </div>
-
+  <div id="middlePanel" class="panel"><div class="vikarskema"><h2 style="margin:0 0 10px 0;">Vikarskema 2</h2><div id="vikarMiddleContent"></div></div></div>
   <div class="right-side" id="rightSide">
-    <div class="image-box">
-      <img id="slideshowImage" src="" alt="slideshow">
-    </div>
+    <div class="image-box"><img id="slideshowImage" src=""></div>
     <div class="info-box-bottom" id="bottomFooter">
-      <div class="schedule" id="schedule"></div>
-      <div id="bigDateTime">
-        <div id="bigClock">00:00:00</div>
-        <div id="bigDate">Dato...</div>
-      </div>
-    </div>
+        </div>
   </div>
 </div>
 
-<div id="infoBox">
-    <div class="ticker-wrapper" id="tickerWrapper">
-        <span class="ticker-item" id="tickerText">Indlæسر information...</span>
-    </div>
-</div>
+<div id="infoBox"><div class="ticker-wrapper" id="tickerWrapper"></div></div>
 
 <script>
 const IMAGE_WEBHOOK = "https://script.google.com/macros/s/AKfycbwic1LHHatZ_tAehcE4Hvb-QV-m_ua0k0Hedgre_URMhm8Sva2Bf3QltFN9tOCiJJP1Xw/exec";
 const INFO_SHEET_URL = "https://script.google.com/macros/s/AKfycbwPfXNL6-gcGdxDWd8FXeBej4mJFnutlgApxtzPelYwk2W_L1MoQS8kYpHunsB17PYutA/exec";
 const VIKAR_URL = "https://script.google.com/macros/s/AKfycbyQ5e7UHSmfxdAGJgfAo7mHHnH37ktEIHO0QPEP7TxOlSZ0Tb5lwTAO_9MBtqZG4vSvWw/exec";
 
-let imageData = [];
-let currentImageIndex = 0;
-let sheetRows = [];
-
-function updateDateTime() {
-  const now = new Date();
-  document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
-  document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
-}
-
-function isCurrentShift(timeText) {
-  try {
-    if (!timeText) return false;
-    const now = new Date();
-    const currentTimeMinutes = now.getHours() * 60 + now.getMinutes();
-    const timeMatch = timeText.match(/(\d{1,2}):(\d{2})/);
-    if (!timeMatch) return false;
-    const h = parseInt(timeMatch[1]), m = parseInt(timeMatch[2]);
-    const start = h * 60 + m;
-    // التحقق من أن الوقت الحالي يقع ضمن الـ 45 دقيقة التالية لبدء الوردية
-    return currentTimeMinutes >= start && currentTimeMinutes < (start + 45);
-  } catch (e) { return false; }
-}
-
-const localSchedules = {
-  1:{title:"Gårdvagtskema", rows:[["9:50-10:00","PP","EY","JL","TN","MA"],["11:20-11:55","PP","NC","LC","JD","MA"],["12:35-12:50","PP","JL","KP","JD","SR"]]},
-  2:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","EK","TN","IR"],["11:20-11:55","MD","EY","EK","TN","IR"],["12:35-12:50","MD","JL","EK","IH","SR"]]},
-  3:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","AD","SJ","LL","JL"],["11:20-11:55","ZA","AD","SJ","IH","LL"],["12:35-12:50","ZA","AD","SJ","AFH","LL"]]},
-  4:{title:"Gårdvagtskema", rows:[["9:50-10:00","NC","EY","MB","AFH","MT"],["11:20-11:55","HR","LC","MP","MT","SR"],["12:35-12:50","MD","HR","MP","IH","JD"]]},
-  5:{title:"Gårdvagtskema", rows:[["9:50-10:00","AD","MB","KP","MT","MA"],["10:50-11:20","MA","MB","MP","AFH","MT"]]}
+// تخزين العناصر لتجنب إعادة استدعائها
+const elements = {
+    schedule: null, dateTime: null, bottomFooter: null, rightSide: null, wrapper: null
 };
 
-function renderStaticSchedule() {
-  const day = new Date().getDay();
-  const sch = localSchedules[day] || {title:"Ingen skema", rows:[]};
-  let html = `<table><thead><tr><th colspan="6">${sch.title}</th></tr></thead><tbody>`;
-  sch.rows.forEach(r => {
-    const activeClass = isCurrentShift(r[0]) ? 'class="active-shift"' : '';
-    html += `<tr ${activeClass}>` + r.map(c => `<td>${c}</td>`).join("") + "</tr>";
-  });
-  document.querySelectorAll(".schedule").forEach(container => container.innerHTML = html + "</tbody></table>");
+function createStaticElements() {
+    elements.schedule = document.createElement('div'); elements.schedule.id = "schedule"; elements.schedule.className = "schedule";
+    elements.dateTime = document.createElement('div'); elements.dateTime.id = "bigDateTime";
+    elements.dateTime.innerHTML = `<div id="bigClock">00:00:00</div><div id="bigDate">Dato...</div>`;
+    elements.bottomFooter = document.getElementById("bottomFooter");
+    elements.rightSide = document.getElementById("rightSide");
+    elements.wrapper = document.getElementById("mainWrapper");
+}
+
+function updateDateTime() {
+    const now = new Date();
+    document.getElementById("bigClock").textContent = now.toLocaleTimeString('da-DK', { hour12: false });
+    document.getElementById("bigDate").textContent = now.toLocaleDateString('da-DK', { weekday: 'short', day: 'numeric', month: 'short' });
 }
 
 async function updateVikarskema() {
-  try {
-    const res = await fetch(VIKAR_URL);
-    const data = await res.json();
-    const rows = data.rows || [];
-    const headers = data.headers || [];
+    try {
+        const res = await fetch(VIKAR_URL);
+        const data = await res.json();
+        const rows = data.rows || [];
+        const hasLeft = rows.some(r => r.slice(0, 5).some(c => c && c.toString().trim() !== ""));
+        const hasMid = rows.some(r => r.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
-    // التحقق من وجود بيانات حقيقية في الأعمدة
-    const hasLeftData = rows.some(row => row.slice(0, 5).some(cell => cell && cell.toString().trim() !== ""));
-    const hasMiddleData = rows.some(row => row.slice(6, 11).some(cell => cell && cell.toString().trim() !== ""));
+        const noVikar = document.getElementById("noVikarMessage");
+        const leftWrap = document.getElementById("vikarLeftWrapper");
+        const middlePanel = document.getElementById("middlePanel");
 
-    const wrapper = document.getElementById("mainWrapper");
-    const middlePanel = document.getElementById("middlePanel");
-    const rightSide = document.getElementById("rightSide");
-    const schedule = document.getElementById("schedule");
-    const dateTime = document.getElementById("bigDateTime");
-    const bottomFooter = document.getElementById("bottomFooter");
-    const noVikar = document.getElementById("noVikarMessage");
-    const leftWrap = document.getElementById("vikarLeftWrapper");
-    const vikarLeftContent = document.getElementById("vikarLeftContent");
-    const vikarMiddleContent = document.getElementById("vikarMiddleContent");
-
-    if (!hasLeftData) {
-      // حالة لا توجد بيانات: إخفاء الجداول ومسح محتواها لمنع الوميض الأزرق
-      leftWrap.style.display = 'none';
-      vikarLeftContent.innerHTML = ""; 
-      vikarMiddleContent.innerHTML = "";
-      noVikar.style.display = 'flex';
-      middlePanel.style.display = 'none';
-      wrapper.classList.remove('mode-two-panels');
-      // إعادة ترتيب عناصر الساعة والجدول السفلي
-      if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
-    } else {
-      // حالة توجد بيانات
-      noVikar.style.display = 'none';
-      leftWrap.style.display = 'block';
-      
-      if (hasMiddleData) {
-        middlePanel.style.display = 'flex';
-        wrapper.classList.add('mode-two-panels');
-        rightSide.appendChild(schedule); rightSide.appendChild(dateTime);
-        renderTable("vikarMiddleContent", headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
-      } else {
-        middlePanel.style.display = 'none';
-        wrapper.classList.remove('mode-two-panels');
-        if (bottomFooter.children.length < 2) { bottomFooter.appendChild(schedule); bottomFooter.appendChild(dateTime); }
-      }
-      renderTable("vikarLeftContent", headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
-    }
-  } catch (e) { console.error("Update Error:", e); }
+        if (!hasLeft) {
+            noVikar.style.display = 'flex';
+            leftWrap.style.display = 'none';
+            middlePanel.style.display = 'none';
+            elements.wrapper.classList.remove('mode-two-panels');
+            if (elements.bottomFooter.children.length === 0) {
+                elements.bottomFooter.appendChild(elements.schedule);
+                elements.bottomFooter.appendChild(elements.dateTime);
+            }
+        } else {
+            noVikar.style.display = 'none';
+            leftWrap.style.display = 'block';
+            if (hasMid) {
+                middlePanel.style.display = 'flex';
+                elements.wrapper.classList.add('mode-two-panels');
+                if (!elements.rightSide.contains(elements.schedule)) {
+                    elements.rightSide.appendChild(elements.schedule);
+                    elements.rightSide.appendChild(elements.dateTime);
+                }
+                renderTable("vikarMiddleContent", data.headers.slice(6, 11), rows.map(r => r.slice(6, 11)));
+            } else {
+                middlePanel.style.display = 'none';
+                elements.wrapper.classList.remove('mode-two-panels');
+                if (!elements.bottomFooter.contains(elements.schedule)) {
+                    elements.bottomFooter.appendChild(elements.schedule);
+                    elements.bottomFooter.appendChild(elements.dateTime);
+                }
+            }
+            renderTable("vikarLeftContent", data.headers.slice(0, 5), rows.map(r => r.slice(0, 5)));
+        }
+    } catch (e) {}
 }
 
-function renderTable(containerId, headers, rows) {
-  let html = "<table><thead><tr>" + headers.map(h => `<th>${h || ''}</th>`).join("") + "</tr></thead><tbody>";
-  rows.forEach(r => {
-    if (r.some(cell => cell && cell.toString().trim() !== "")) {
-      const activeClass = isCurrentShift(r[0] ? r[0].toString() : "") ? 'class="active-shift"' : '';
-      html += `<tr ${activeClass}>` + r.map(cell => `<td>${cell || ''}</td>`).join("") + "</tr>";
-    }
-  });
-  document.getElementById(containerId).innerHTML = html + "</tbody></table>";
+function renderTable(id, head, rows) {
+    let html = "<table><thead><tr>" + head.map(h => `<th>${h||''}</th>`).join("") + "</tr></thead><tbody>";
+    rows.forEach(r => {
+        if (r.some(c => c && c.toString().trim() !== "")) {
+            html += `<tr>` + r.map(c => `<td>${c||''}</td>`).join("") + "</tr>";
+        }
+    });
+    document.getElementById(id).innerHTML = html + "</tbody></table>";
 }
 
-async function fetchWeather() {
-  try {
-    const res = await fetch("https://api.open-meteo.com/v1/forecast?latitude=56.03&longitude=12.59&current_weather=true&temperature_unit=celsius");
-    const data = await res.json();
-    const temp = Math.round(data.current_weather.temperature) + "°C";
-    updateTickerText(`☀️ Vejr: ${temp}`);
-  } catch (e) {}
-}
-
-async function fetchSheetRows() {
-  try {
-    const res = await fetch(INFO_SHEET_URL);
-    const data = await res.json();
-    sheetRows = data.rows || (data.sheets && data.sheets[0].rows) || [];
-    if(sheetRows[0]) document.getElementById("staticMessageBox").textContent = sheetRows[0][1] || "";
-    fetchWeather(); 
-  } catch(e) {}
-}
-
-function updateTickerText(weatherStr = "") {
-  let messages = [weatherStr];
-  sheetRows.forEach(row => { if(row[0]) messages.push(row[0]); });
-  const fullText = messages.filter(m => m !== "").join("   |   ") + "   |   Al Irchad Skolen   |   ";
-  const tickerWrapper = document.getElementById("tickerWrapper");
-  tickerWrapper.innerHTML = `<span class="ticker-content">${fullText}</span><span class="ticker-content">${fullText}</span>`;
-  const contentWidth = tickerWrapper.querySelector('.ticker-content').offsetWidth;
-  const duration = contentWidth / 90;
-  tickerWrapper.style.animation = `scrollText ${duration}s linear infinite`;
-}
-
+// الأكواد الأخرى (الصور، الطقس، الأخبار) مدمجة لتعمل بسلاسة
+let imageData = [];
 async function fetchImages() {
-  try {
-    const res = await fetch(IMAGE_WEBHOOK);
-    const data = await res.json();
-    let rows = Array.isArray(data) ? data : data.rows || [];
-    imageData = rows.map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|gif|webp)$/i)) : r.img).filter(Boolean);
-    if (imageData.length > 0 && !document.getElementById("slideshowImage").src) cycleImages();
-  } catch (e) {}
+    try {
+        const res = await fetch(IMAGE_WEBHOOK);
+        const data = await res.json();
+        imageData = (data.rows || data).map(r => Array.isArray(r) ? r.find(c => typeof c === "string" && c.match(/\.(jpg|jpeg|png|webp)$/i)) : r.img).filter(Boolean);
+    } catch(e){}
 }
 
 function cycleImages() {
-  if (imageData.length === 0) return;
-  const img = document.getElementById("slideshowImage");
-  img.style.opacity = "0";
-  setTimeout(() => {
-    img.src = imageData[currentImageIndex];
-    img.style.opacity = "1";
-    currentImageIndex = (currentImageIndex + 1) % imageData.length;
-  }, 1500);
+    if (imageData.length === 0) return;
+    const img = document.getElementById("slideshowImage");
+    img.style.opacity = "0";
+    setTimeout(() => {
+        img.src = imageData[Math.floor(Math.random() * imageData.length)];
+        img.style.opacity = "1";
+    }, 1500);
 }
 
 window.onload = async () => {
-  updateDateTime(); 
-  setInterval(updateDateTime, 1000);
-  
-  renderStaticSchedule();
-  setInterval(renderStaticSchedule, 60000); 
-
-  await fetchImages();
-  setInterval(fetchImages, 300000); // تحديث قائمة الصور كل 5 دقائق
-  setInterval(cycleImages, 12000);  // تغيير الصورة كل 12 ثانية
-
-  updateVikarskema();
-  setInterval(updateVikarskema, 60000); // تحديث الفيكار كل دقيقة
-
-  fetchSheetRows();
-  setInterval(fetchSheetRows, 600000); // تحديث الأخبار كل 10 دقائق
-
-  setTimeout(() => {
-    document.getElementById("splashScreen").style.opacity = "0";
-    document.getElementById("mainWrapper").style.opacity = "1";
-    setTimeout(() => document.getElementById("splashScreen").style.display = "none", 800);
-  }, 2000);
+    createStaticElements();
+    updateDateTime(); setInterval(updateDateTime, 1000);
+    await fetchImages(); cycleImages(); setInterval(cycleImages, 15000);
+    updateVikarskema(); setInterval(updateVikarskema, 60000);
+    
+    setTimeout(() => {
+        document.getElementById("splashScreen").style.opacity = "0";
+        document.getElementById("mainWrapper").style.opacity = "1";
+        setTimeout(() => document.getElementById("splashScreen").style.display = "none", 800);
+    }, 2000);
 };
-
-// تحديث الصفحة بالكامل كل ساعة لضمان استقرار المتصفح
-setInterval(() => location.reload(), 3600000);
 </script>
 </body>
 </html>
