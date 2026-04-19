@@ -44,11 +44,27 @@ body {
 
 #mainWrapper { 
   opacity: 0; transition: opacity 1s ease-in; 
-  height: 100vh; width: 100%; padding-bottom: 60px; 
+  height: 100vh; width: 100%; padding-bottom: 60px;
 }
 
-.logo { position: fixed; top: 25px; right: 35px; z-index: 100; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.15)); }
-.logo img { height: 75px; }
+/* --- تنسيق اللوجو الجديد داخل شريط الأخبار --- */
+.bottom-right-logo {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  height: 60px; /* نفس ارتفاع شريط الأخبار */
+  width: 120px; /* عرض صندوق اللوجو */
+  z-index: 3000; /* ليكون فوق شريط الأخبار */
+  background: white; /* خلفية بيضاء للوجو لتمييزه */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+}
+.bottom-right-logo img {
+  height: 50px; /* حجم اللوجو متناسب مع الشريط */
+  width: auto;
+}
 
 .wrapper {
   display: grid; grid-template-columns: 40% 1fr;
@@ -66,11 +82,10 @@ body {
 
 .vikarskema { overflow-y: auto; flex: 1; display: none; }
 
-/* تكبير الخط في الجداول */
 .vikarskema table { 
   width: 100%; 
   border-collapse: collapse; 
-  font-size: 24px; /* حجم خط الخلايا */
+  font-size: 24px; 
 }
 
 .vikarskema th { 
@@ -79,7 +94,7 @@ body {
   padding: 15px; 
   position: sticky; 
   top: 0; 
-  font-size: 26px; /* حجم خط العناوين */
+  font-size: 26px; 
 }
 
 .vikarskema td { 
@@ -116,10 +131,29 @@ body {
 #slideshowImage {
   width: 100%; height: 100%; object-fit: cover; position: absolute;
   top: 0; left: 0; transition: opacity 1.5s ease-in-out;
+  animation: cinematicZoom 25s infinite alternate ease-in-out;
 }
 
-.info-box-bottom { background: white; border-radius: 16px; overflow: hidden; display: flex; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-shrink: 0; }
-#infoBox { position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); color: #fff; overflow: hidden; display: flex; align-items: center; }
+@keyframes cinematicZoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.18); }
+}
+
+.info-box-bottom { 
+  background: white; 
+  border-radius: 16px; 
+  overflow: hidden; 
+  display: flex; 
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1); 
+  flex-shrink: 0; 
+}
+
+#infoBox { 
+  position: fixed; bottom: 0; left: 0; width: 100%; height: 60px; 
+  z-index: 2000; background: linear-gradient(135deg, var(--info-bg), #005bb5); 
+  color: #fff; overflow: hidden; display: flex; align-items: center;
+  padding-right: 130px; /* مساحة لعدم تداخل النص مع اللوجو في اليمين */
+}
 
 .ticker-wrapper { display: inline-flex; white-space: nowrap; font-size: 26px; font-weight: 600; }
 @keyframes scrollText { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
@@ -157,7 +191,9 @@ body {
   </div>
 </div>
 
-<div class="logo"><img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png"></div>
+<div class="bottom-right-logo">
+    <img src="https://raw.githubusercontent.com/ihayek86-spec/Infoscreen/66e40c3575155e33e7b1b58f639b025137028cd9/images/logo.png" alt="School Logo">
+</div>
 
 <div class="wrapper" id="mainWrapper">
   <div class="left-side">
@@ -219,14 +255,8 @@ async function updateVikarskema() {
     const data = await res.json();
     const rows = data.rows || [];
     const headers = data.headers || [];
-
-    // تنظيف شامل للصفوف للتأكد من وجود محتوى حقيقي
     const cleanRows = rows.filter(row => row.some(cell => cell && cell.toString().trim() !== ""));
-
-    // منطق جلب الجدولين بناءً على الأعمدة
-    // الجدول 1: الأعمدة A-E (0-4)
     const leftRows = cleanRows.filter(row => row.slice(0, 5).some(c => c && c.toString().trim() !== ""));
-    // الجدول 2: الأعمدة G-K (6-10)
     const middleRows = cleanRows.filter(row => row.slice(6, 11).some(c => c && c.toString().trim() !== ""));
 
     const hasLeftData = leftRows.length > 0;
@@ -251,20 +281,16 @@ async function updateVikarskema() {
       bottomFooter.appendChild(dateTime);
     } else {
       noVikar.style.display = 'none';
-
-      // عرض الجدول الأول
       if (hasLeftData) {
         renderTable("vikarLeftContent", headers.slice(0, 5), leftRows.map(r => r.slice(0, 5)));
         vikarLeftWrapper.style.display = 'block';
       } else {
         vikarLeftWrapper.style.display = 'none';
       }
-
-      // عرض الجدول الثاني (تم تصحيح الشرط هنا)
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
-        vikarMiddleWrapper.style.display = 'block'; // تأكيد العرض داخل البانل
+        vikarMiddleWrapper.style.display = 'block'; 
         wrapper.classList.add('mode-two-panels');
         rightSide.appendChild(schedule);
         rightSide.appendChild(dateTime);
@@ -309,7 +335,7 @@ async function fetchSheetRows() {
     const data = await res.json();
     let rows = data.rows || [];
     if(rows[0]) document.getElementById("staticMessageBox").textContent = rows[0][1] || "";
-    const fullText = rows.map(r => r[0]).filter(Boolean).join("   |   ") + "   |   Al Irchad Skolen   |   ";
+    const fullText = rows.map(r => r[0]).filter(Boolean).join("    |    ") + "    |    Al Irchad Skolen    |    ";
     const ticker = document.getElementById("tickerWrapper");
     ticker.innerHTML = `<span>${fullText}</span><span>${fullText}</span>`;
     ticker.style.animation = `scrollText ${fullText.length/3}s linear infinite`;
