@@ -296,19 +296,13 @@ async function updateVikarskema() {
     const schedule = document.getElementById("schedule");
     const dateTime = document.getElementById("bigDateTime");
 
-    // --- تعديل هنا: منع الوميض عبر فحص الحالة الحالية قبل النقل ---
-    const isCurrentlyTwoPanels = wrapper.classList.contains('mode-two-panels');
-
     if (!hasLeftData && !hasMiddleData) {
       vikarLeftWrapper.style.display = 'none';
       middlePanel.style.display = 'none';
       noVikar.style.display = 'flex'; 
       wrapper.classList.remove('mode-two-panels');
-      
-      // انقل العناصر فقط إذا لم تكن في مكانها الصحيح
-      if (schedule.parentElement !== bottomFooter) bottomFooter.appendChild(schedule);
-      if (dateTime.parentElement !== bottomFooter) bottomFooter.appendChild(dateTime);
-      
+      bottomFooter.appendChild(schedule);
+      bottomFooter.appendChild(dateTime);
     } else {
       noVikar.style.display = 'none';
       if (hasLeftData) {
@@ -317,27 +311,23 @@ async function updateVikarskema() {
       } else {
         vikarLeftWrapper.style.display = 'none';
       }
-
       if (hasMiddleData) {
         renderTable("vikarMiddleContent", headers.slice(6, 11), middleRows.map(r => r.slice(6, 11)));
         middlePanel.style.display = 'flex';
         vikarMiddleWrapper.style.display = 'block'; 
         wrapper.classList.add('mode-two-panels');
-
-        // انقل العناصر للجانب الأيمن فقط إذا لم تكن هناك بالفعل
-        if (schedule.parentElement !== rightSide) rightSide.appendChild(schedule);
-        if (dateTime.parentElement !== rightSide) rightSide.appendChild(dateTime);
+        rightSide.appendChild(schedule);
+        rightSide.appendChild(dateTime);
       } else {
         middlePanel.style.display = 'none';
         wrapper.classList.remove('mode-two-panels');
-
-        // أعد العناصر للأسفل فقط إذا كانت في الجانب الأيمن
-        if (schedule.parentElement !== bottomFooter) bottomFooter.appendChild(schedule);
-        if (dateTime.parentElement !== bottomFooter) bottomFooter.appendChild(dateTime);
+        bottomFooter.appendChild(schedule);
+        bottomFooter.appendChild(dateTime);
       }
     }
   } catch (e) { console.error("Error updating Vikarskema:", e); }
 }
+
 function renderTable(id, headers, rows) {
   if (rows.length === 0) return;
 
